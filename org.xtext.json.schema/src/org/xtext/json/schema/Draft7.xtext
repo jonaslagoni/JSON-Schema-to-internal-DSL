@@ -1,0 +1,70 @@
+grammar org.xtext.json.schema.Draft7 with org.eclipse.xtext.common.Terminals
+generate draft7 "http://www.xtext.org/json/schema/Draft7"
+
+Model:
+	'{'
+		(root+=Root  (',')?)*
+	'}';
+	
+terminal ID: '"' ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')* '"';
+
+Root:
+	{Root} Type | 
+	{Root} Length |
+	{Root} Multiples | 
+	{Root} Minimum | 
+	{Root} ExclusiveMinimum | 
+	{Root} Maximum | 
+	{Root} ExclusiveMaximum | 
+	Properties
+;
+
+/**
+ * General
+ */
+Type: 
+	'"type"' ':' ('['JsonTypes+']' | JsonTypes)
+;
+
+JsonTypes: 
+	'"string"'|'"integer"'|'"number"'|'"object"'|'"array"'|'"boolean"'|'"null"'
+;
+
+/**
+ * Object
+ */
+RequiredProperties:
+	'required' ':' '[' zuper=[Property] requiredProperties+= ']'
+;
+Properties:
+	{Properties} '"properties"' ':' '{' properties+=Property* '}'
+;
+
+Property:
+	name=ID ':' '{' property=Root '}'
+;
+/**
+ * Strings
+ */
+Length:
+	'"length":' INT
+;
+
+/**
+ * Numbers
+ */
+Multiples:
+	'"multiples":' INT
+;
+Minimum:
+	'"minimum":' INT
+;
+ExclusiveMinimum:
+	'"exclusiveMinimum":' INT
+;
+Maximum:
+	'"maximum":' INT
+;
+ExclusiveMaximum:
+	'"exclusiveMaximum":' INT
+;
