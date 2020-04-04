@@ -128,7 +128,7 @@ class Draft7ParsingTest {
 	def void invalidValidModel() {
 		val result = parseHelper.parse('''
 			{
-				"length": 23,
+				"length": 22,
 				"type": "object",
 				"properties": {
 					"testProp" : {

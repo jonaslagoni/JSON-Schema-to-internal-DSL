@@ -280,7 +280,7 @@ public class Draft7ParsingTest {
       _builder.append("{");
       _builder.newLine();
       _builder.append("\t");
-      _builder.append("\"length\": 23,");
+      _builder.append("\"length\": 22,");
       _builder.newLine();
       _builder.append("\t");
       _builder.append("\"type\": \"object\",");

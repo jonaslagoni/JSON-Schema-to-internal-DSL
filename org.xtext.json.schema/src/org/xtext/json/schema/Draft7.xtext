@@ -8,9 +8,8 @@ Model:
 	'}';
 	
 terminal JSON_ID: '"' ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')* '"';
-terminal NUMBER: ('0'..'9'*) ('.' ('0'..'9'*))?;
-terminal JSON_STRING: '"' ('[' |  ']' | '(' | ')' | '{' | '}' | '/' | '\\' | '$' | '^' | '-' | '?' | 'a'..'z'|'A'..'Z' | '0'..'9' | '.' | ',' | ';' | ':')* '"';
-terminal exp: ['^']*;
+terminal NUMBER: INT; // ('.' INT)?
+terminal REGEX_STRING: '"^' (.)* '$"';
 JsonSchemaRoot:
 	type=Type |
 	ObjectProperties | 
@@ -34,7 +33,7 @@ Type:
 ;
 
 JsonTypes: 
-	'"string"'|'"integer"'|'"number"'|'"object"'|'"array"'|'"boolean"'|'"null"'
+	type=('"string"'|'"integer"'|'"number"'|'"object"'|'"array"'|'"boolean"'|'"null"')
 ;
 
 /**
@@ -96,10 +95,10 @@ Length:
 	'"length"' ':' length=INT
 ;
 Pattern:
-	'"pattern"' ':' pattern=JSON_STRING
+	'"pattern"' ':' pattern=REGEX_STRING
 ;
 Format:
-	'"format"' ':' '"' (
+	'"format"' ':' '"' format=(
 		'date-time' | 
 		'time' | 
 		'date' | 

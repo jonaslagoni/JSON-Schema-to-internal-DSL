@@ -19,8 +19,12 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Type">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="types" unique="false" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="types" upperBound="-1"
+        eType="#//JsonTypes" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//JsonTypes"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="JsonTypes">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ObjectProperties" eSuperTypes="#//JsonSchemaRoot">
@@ -28,6 +32,35 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="requiredProperties" eType="#//RequiredProperties"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="PropertyNames" eType="#//PropertyNames"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="MinProperties" eType="#//MinProperties"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="MaxProperties" eType="#//MaxProperties"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dependencies" eType="#//Dependencies"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyNames"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Dependencies">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dependencies" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SchemaDependencies">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dependencyProperty" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="object" upperBound="-1"
+        eType="#//ObjectProperties" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyDependencies">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dependencyProperty" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dependencyPresents" upperBound="-1"
+        eType="#//JsonTypes" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MinProperties">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minProperties" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MaxProperties">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxProperties" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RequiredProperties">
     <eStructuralFeatures xsi:type="ecore:EReference" name="requiredProperties" upperBound="-1"
@@ -50,26 +83,31 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="pattern" eType="#//Pattern"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="format" eType="#//Format"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Length">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="length" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Pattern">
+  <eClassifiers xsi:type="ecore:EClass" name="Pattern" eSuperTypes="#//PropertyNames">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Format">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="format" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Multiples" eSuperTypes="#//NumberProperties">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="multipleOf" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Minimum">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minimum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minimum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ExclusiveMinimum">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exclusiveMinimum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exclusiveMinimum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Maximum">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maximum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maximum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ExclusiveMaximum">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exclusiveMaximum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exclusiveMaximum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
 </ecore:EPackage>

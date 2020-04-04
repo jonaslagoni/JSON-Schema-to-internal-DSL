@@ -19,12 +19,37 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//NumberProperties/exclusiveMaximum"/>
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//Type">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Type/types"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Type/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Type/types"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Type/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Draft7.ecore#//JsonTypes">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//JsonTypes/type"/>
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//ObjectProperties">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//ObjectProperties/properties"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//ObjectProperties/requiredProperties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//ObjectProperties/PropertyNames"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//ObjectProperties/MinProperties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//ObjectProperties/MaxProperties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//ObjectProperties/dependencies"/>
+    </genClasses>
+    <genClasses ecoreClass="Draft7.ecore#//PropertyNames"/>
+    <genClasses ecoreClass="Draft7.ecore#//Dependencies">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Dependencies/dependencies"/>
+    </genClasses>
+    <genClasses ecoreClass="Draft7.ecore#//SchemaDependencies">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//SchemaDependencies/dependencyProperty"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//SchemaDependencies/object"/>
+    </genClasses>
+    <genClasses ecoreClass="Draft7.ecore#//PropertyDependencies">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//PropertyDependencies/dependencyProperty"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//PropertyDependencies/dependencyPresents"/>
+    </genClasses>
+    <genClasses ecoreClass="Draft7.ecore#//MinProperties">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//MinProperties/minProperties"/>
+    </genClasses>
+    <genClasses ecoreClass="Draft7.ecore#//MaxProperties">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//MaxProperties/maxProperties"/>
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//RequiredProperties">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//RequiredProperties/requiredProperties"/>
@@ -42,12 +67,16 @@
     <genClasses ecoreClass="Draft7.ecore#//StringProperties">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//StringProperties/length"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//StringProperties/pattern"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//StringProperties/format"/>
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//Length">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Length/length"/>
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//Pattern">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Pattern/pattern"/>
+    </genClasses>
+    <genClasses ecoreClass="Draft7.ecore#//Format">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Format/format"/>
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//Multiples">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Multiples/multipleOf"/>
