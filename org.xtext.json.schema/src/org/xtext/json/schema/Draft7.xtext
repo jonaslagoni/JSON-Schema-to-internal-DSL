@@ -8,32 +8,126 @@ Model:
 	'}';
 	
 terminal JSON_ID: '"' ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')* '"';
-terminal NUMBER: INT; // ('.' INT)?
+terminal NUMBER: INT ('.' INT)?; 
 terminal REGEX_STRING: '"^' (.)* '$"';
+terminal REF_STRING: '"#' (.)* '"';
+terminal BOOLEAN: 'true' | 'false';
+terminal ARRAY: '[' (.)* ']';
+
 JsonSchemaRoot:
 	type=Type |
-	ObjectProperties | 
-	StringProperties |
-	NumberProperties
+	enumValue=Enum |
+	const=Constant |
+	anyOfs=AnyOf |
+	oneOfs=OneOf |
+	allOfs=AllOf |
+	objectProps=ObjectProperties | 
+	stringProps=StringProperties |
+	numberProps=NumberProperties | 
+	arrayProps=ArrayProperties | 
+	not=Not |
+	ifStatement=IfStatement |
+	thenStatement=ThenStatement |
+	elseStatement=ElseStatement | 
+	schema=Schema |
+	reference=Reference |
+	title=Title |
+	description=Description |
+	default=Default |
+	examples=Examples |
+	comment=Comment |
+	id=IdProp
 ;
 
-NumberProperties:
-	Multiples |
-	minimum=Minimum | 
-	exclusiveMinimum=ExclusiveMinimum | 
-	maximum=Maximum | 
-	exclusiveMaximum=ExclusiveMaximum 
-;
 /**
  * General
  */
- 
+Title:
+	'"title"' ':' '"' title=STRING '"'
+;
+Description:
+	'"description"' ':' '"' description=STRING '"'
+;
+Comment:
+	'"$comment"' ':' '"' comment=STRING '"'
+;
+IdProp:
+	'"$id"' ':' '"' id=STRING '"'
+;
+Default:
+	'"default"' ':' '"' defaultValue=STRING '"'
+;
+Examples:
+	'"examples"' ':' '[' '"' exampleValues+=ExamplesValuesType+ '"' ']'
+;
+ExamplesValuesType:
+	STRING | BOOLEAN | NUMBER
+;
+Schema:
+	'"$schema"' ':' '"http://json-schema.org/draft-07/schema#"'
+;
+Reference:
+	'"$ref"' ':' ref=REF_STRING
+;
+IfStatement:
+	'"if"' ':' ifModel=Model
+;
+ThenStatement:
+	'"then"' ':' thenModel=Model
+;
+ElseStatement:
+	'"else"' ':' thenModel=Model
+;
 Type: 
 	'"type"' ':' ('[' (types+=JsonTypes ((',' types+=JsonTypes)*)?) ']' | type=JsonTypes)
 ;
 
 JsonTypes: 
 	type=('"string"'|'"integer"'|'"number"'|'"object"'|'"array"'|'"boolean"'|'"null"')
+;
+
+Enum:
+	'"enum"' ':'  enumValue=ARRAY
+;
+Constant:
+	'"const"' ':' const=STRING
+;
+AnyOf: 
+	'anyOf' ':' '[' (anyOfs+=Model ((',' anyOfs+=Model)*)?) ']'
+;
+OneOf:
+	'oneOf' ':' '[' (oneOfs+=Model ((',' oneOfs+=Model)*)?) ']'
+;
+AllOf:
+	'allOf' ':' '[' (allOfs+=Model ((',' allOfs+=Model)*)?) ']'
+;
+Not:
+	'not' ':' not=Model
+;
+
+/**
+ * Array
+ */
+ ArrayProperties:
+ 	items=Items |
+ 	contains=Contains |
+	additionalProperties=AdditionalProperties | 
+	uniqueItems=UnqueItems
+ ;
+Items:
+ 	'"items"' ':' '[' (items+=Model ((',' items+=Model)*)?) ']'
+;
+Contains:
+ 	'"contains"' ':' (ContainsArray | ContainsObject)
+;
+ContainsArray:
+	'[' (contains+=Model ((',' contains+=Model)*)?) ']'
+;
+ContainsObject:
+	'{' contain=Model '}'
+;
+UnqueItems:
+	'"uniqueItems"' ':' unique=BOOLEAN
 ;
 
 /**
@@ -46,7 +140,8 @@ ObjectProperties:
 	PropertyNames=PropertyNames |
 	MinProperties=MinProperties |
 	MaxProperties=MaxProperties | 
-	dependencies=Dependencies
+	dependencies=Dependencies | 
+	additionalProperties=AdditionalProperties
 ;
 PropertyNames:
 	'"propertyNames"' ':' '{'
@@ -72,15 +167,18 @@ MaxProperties:
 RequiredProperties:
 	'"required"' ':' '[' requiredProperties+=RequiredPropertiesName ']'
 ;
+AdditionalProperties:
+	'"additionalProperties"' ':' allowed=BOOLEAN
+;
 RequiredPropertiesName:
 	name=JSON_ID
 ;
 Properties:
-	{Properties}'"properties"' ':' '{' properties+=Property* '}'
+	'"properties"' ':' '{' properties+=Property+ '}'
 ;
 
 Property:
-	{Property}name=JSON_ID ':' '{' properties+=JsonSchemaRoot*'}'
+	{Property}name=JSON_ID ':' '{' (props+=JsonSchemaRoot  (',')?)*'}'
 ;
 
 /**
@@ -89,7 +187,9 @@ Property:
 StringProperties:
 	length=Length |
 	pattern=Pattern | 
-	format=Format
+	format=Format |
+	contentMediaType=ContentMediaType |
+	contentEncoding=ContentEncoding
 ;
 Length:
 	'"length"' ':' length=INT
@@ -117,9 +217,23 @@ Format:
 		'regex'
 	) '"'
 ;
+ContentMediaType:
+	'"contentMediaType"' ':' '"' mediaType=STRING '"'
+;
+ContentEncoding:
+	'"contentEncoding"' ':' '"' encoding=STRING '"'
+;
 /**
  * Numeric
  */
+ 
+NumberProperties:
+	Multiples |
+	minimum=Minimum | 
+	exclusiveMinimum=ExclusiveMinimum | 
+	maximum=Maximum | 
+	exclusiveMaximum=ExclusiveMaximum 
+;
 Multiples:
 	'"multiples"' ':' multipleOf=INT
 ;
