@@ -3,55 +3,57 @@
  */
 package org.xtext.json.schema.draft7.impl;
 
-import java.util.Collection;
-
-import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
 
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
-
 import org.xtext.json.schema.draft7.Draft7Package;
-import org.xtext.json.schema.draft7.JsonSchemaRoot;
-import org.xtext.json.schema.draft7.Model;
+import org.xtext.json.schema.draft7.Maximum;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Model</b></em>'.
+ * An implementation of the model object '<em><b>Maximum</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.xtext.json.schema.draft7.impl.ModelImpl#getRoot <em>Root</em>}</li>
+ *   <li>{@link org.xtext.json.schema.draft7.impl.MaximumImpl#getMaximum <em>Maximum</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class ModelImpl extends MinimalEObjectImpl.Container implements Model
+public class MaximumImpl extends MinimalEObjectImpl.Container implements Maximum
 {
   /**
-   * The cached value of the '{@link #getRoot() <em>Root</em>}' containment reference list.
+   * The default value of the '{@link #getMaximum() <em>Maximum</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getRoot()
+   * @see #getMaximum()
    * @generated
    * @ordered
    */
-  protected EList<JsonSchemaRoot> root;
+  protected static final int MAXIMUM_EDEFAULT = 0;
+
+  /**
+   * The cached value of the '{@link #getMaximum() <em>Maximum</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMaximum()
+   * @generated
+   * @ordered
+   */
+  protected int maximum = MAXIMUM_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected ModelImpl()
+  protected MaximumImpl()
   {
     super();
   }
@@ -64,7 +66,7 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
   @Override
   protected EClass eStaticClass()
   {
-    return Draft7Package.Literals.MODEL;
+    return Draft7Package.Literals.MAXIMUM;
   }
 
   /**
@@ -73,13 +75,9 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
    * @generated
    */
   @Override
-  public EList<JsonSchemaRoot> getRoot()
+  public int getMaximum()
   {
-    if (root == null)
-    {
-      root = new EObjectContainmentEList<JsonSchemaRoot>(JsonSchemaRoot.class, this, Draft7Package.MODEL__ROOT);
-    }
-    return root;
+    return maximum;
   }
 
   /**
@@ -88,14 +86,12 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
    * @generated
    */
   @Override
-  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  public void setMaximum(int newMaximum)
   {
-    switch (featureID)
-    {
-      case Draft7Package.MODEL__ROOT:
-        return ((InternalEList<?>)getRoot()).basicRemove(otherEnd, msgs);
-    }
-    return super.eInverseRemove(otherEnd, featureID, msgs);
+    int oldMaximum = maximum;
+    maximum = newMaximum;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, Draft7Package.MAXIMUM__MAXIMUM, oldMaximum, maximum));
   }
 
   /**
@@ -108,8 +104,8 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
   {
     switch (featureID)
     {
-      case Draft7Package.MODEL__ROOT:
-        return getRoot();
+      case Draft7Package.MAXIMUM__MAXIMUM:
+        return getMaximum();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -119,15 +115,13 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case Draft7Package.MODEL__ROOT:
-        getRoot().clear();
-        getRoot().addAll((Collection<? extends JsonSchemaRoot>)newValue);
+      case Draft7Package.MAXIMUM__MAXIMUM:
+        setMaximum((Integer)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -143,8 +137,8 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
   {
     switch (featureID)
     {
-      case Draft7Package.MODEL__ROOT:
-        getRoot().clear();
+      case Draft7Package.MAXIMUM__MAXIMUM:
+        setMaximum(MAXIMUM_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -160,10 +154,27 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
   {
     switch (featureID)
     {
-      case Draft7Package.MODEL__ROOT:
-        return root != null && !root.isEmpty();
+      case Draft7Package.MAXIMUM__MAXIMUM:
+        return maximum != MAXIMUM_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
 
-} //ModelImpl
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuilder result = new StringBuilder(super.toString());
+    result.append(" (maximum: ");
+    result.append(maximum);
+    result.append(')');
+    return result.toString();
+  }
+
+} //MaximumImpl

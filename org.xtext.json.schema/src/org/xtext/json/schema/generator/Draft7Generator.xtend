@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import org.xtext.json.schema.draft7.Model
 
 /**
  * Generates code from your model files on save.
@@ -16,6 +17,9 @@ import org.eclipse.xtext.generator.IGeneratorContext
 class Draft7Generator extends AbstractGenerator {
 
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
+		var model = resource.allContents.filter(Model).next
+		var roots = model.getRoot
+		
 //		fsa.generateFile('greetings.txt', 'People to greet: ' + 
 //			resource.allContents
 //				.filter(Greeting)

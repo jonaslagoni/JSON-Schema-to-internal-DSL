@@ -33,13 +33,40 @@ public interface Draft7Factory extends EFactory
   Model createModel();
 
   /**
-   * Returns a new object of class '<em>Root</em>'.
+   * Returns a new object of class '<em>Json Schema Root</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Root</em>'.
+   * @return a new object of class '<em>Json Schema Root</em>'.
    * @generated
    */
-  Root createRoot();
+  JsonSchemaRoot createJsonSchemaRoot();
+
+  /**
+   * Returns a new object of class '<em>Number Properties</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Number Properties</em>'.
+   * @generated
+   */
+  NumberProperties createNumberProperties();
+
+  /**
+   * Returns a new object of class '<em>Type</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Type</em>'.
+   * @generated
+   */
+  Type createType();
+
+  /**
+   * Returns a new object of class '<em>Object Properties</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Object Properties</em>'.
+   * @generated
+   */
+  ObjectProperties createObjectProperties();
 
   /**
    * Returns a new object of class '<em>Required Properties</em>'.
@@ -51,22 +78,103 @@ public interface Draft7Factory extends EFactory
   RequiredProperties createRequiredProperties();
 
   /**
-   * Returns a new object of class '<em>JSON Properties</em>'.
+   * Returns a new object of class '<em>Required Properties Name</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>JSON Properties</em>'.
+   * @return a new object of class '<em>Required Properties Name</em>'.
    * @generated
    */
-  JSONProperties createJSONProperties();
+  RequiredPropertiesName createRequiredPropertiesName();
 
   /**
-   * Returns a new object of class '<em>JSON Property</em>'.
+   * Returns a new object of class '<em>Properties</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>JSON Property</em>'.
+   * @return a new object of class '<em>Properties</em>'.
    * @generated
    */
-  JSONProperty createJSONProperty();
+  Properties createProperties();
+
+  /**
+   * Returns a new object of class '<em>Property</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Property</em>'.
+   * @generated
+   */
+  Property createProperty();
+
+  /**
+   * Returns a new object of class '<em>String Properties</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>String Properties</em>'.
+   * @generated
+   */
+  StringProperties createStringProperties();
+
+  /**
+   * Returns a new object of class '<em>Length</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Length</em>'.
+   * @generated
+   */
+  Length createLength();
+
+  /**
+   * Returns a new object of class '<em>Pattern</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Pattern</em>'.
+   * @generated
+   */
+  Pattern createPattern();
+
+  /**
+   * Returns a new object of class '<em>Multiples</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Multiples</em>'.
+   * @generated
+   */
+  Multiples createMultiples();
+
+  /**
+   * Returns a new object of class '<em>Minimum</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Minimum</em>'.
+   * @generated
+   */
+  Minimum createMinimum();
+
+  /**
+   * Returns a new object of class '<em>Exclusive Minimum</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Exclusive Minimum</em>'.
+   * @generated
+   */
+  ExclusiveMinimum createExclusiveMinimum();
+
+  /**
+   * Returns a new object of class '<em>Maximum</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Maximum</em>'.
+   * @generated
+   */
+  Maximum createMaximum();
+
+  /**
+   * Returns a new object of class '<em>Exclusive Maximum</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Exclusive Maximum</em>'.
+   * @generated
+   */
+  ExclusiveMaximum createExclusiveMaximum();
 
   /**
    * Returns the package supported by this factory.

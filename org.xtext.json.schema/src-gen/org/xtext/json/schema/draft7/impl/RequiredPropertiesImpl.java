@@ -3,17 +3,23 @@
  */
 package org.xtext.json.schema.draft7.impl;
 
-import org.eclipse.emf.common.notify.Notification;
+import java.util.Collection;
+
+import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
+
 import org.xtext.json.schema.draft7.Draft7Package;
-import org.xtext.json.schema.draft7.JSONProperty;
 import org.xtext.json.schema.draft7.RequiredProperties;
+import org.xtext.json.schema.draft7.RequiredPropertiesName;
 
 /**
  * <!-- begin-user-doc -->
@@ -23,7 +29,7 @@ import org.xtext.json.schema.draft7.RequiredProperties;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.xtext.json.schema.draft7.impl.RequiredPropertiesImpl#getZuper <em>Zuper</em>}</li>
+ *   <li>{@link org.xtext.json.schema.draft7.impl.RequiredPropertiesImpl#getRequiredProperties <em>Required Properties</em>}</li>
  * </ul>
  *
  * @generated
@@ -31,14 +37,14 @@ import org.xtext.json.schema.draft7.RequiredProperties;
 public class RequiredPropertiesImpl extends MinimalEObjectImpl.Container implements RequiredProperties
 {
   /**
-   * The cached value of the '{@link #getZuper() <em>Zuper</em>}' reference.
+   * The cached value of the '{@link #getRequiredProperties() <em>Required Properties</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getZuper()
+   * @see #getRequiredProperties()
    * @generated
    * @ordered
    */
-  protected JSONProperty zuper;
+  protected EList<RequiredPropertiesName> requiredProperties;
 
   /**
    * <!-- begin-user-doc -->
@@ -67,29 +73,13 @@ public class RequiredPropertiesImpl extends MinimalEObjectImpl.Container impleme
    * @generated
    */
   @Override
-  public JSONProperty getZuper()
+  public EList<RequiredPropertiesName> getRequiredProperties()
   {
-    if (zuper != null && zuper.eIsProxy())
+    if (requiredProperties == null)
     {
-      InternalEObject oldZuper = (InternalEObject)zuper;
-      zuper = (JSONProperty)eResolveProxy(oldZuper);
-      if (zuper != oldZuper)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, Draft7Package.REQUIRED_PROPERTIES__ZUPER, oldZuper, zuper));
-      }
+      requiredProperties = new EObjectContainmentEList<RequiredPropertiesName>(RequiredPropertiesName.class, this, Draft7Package.REQUIRED_PROPERTIES__REQUIRED_PROPERTIES);
     }
-    return zuper;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public JSONProperty basicGetZuper()
-  {
-    return zuper;
+    return requiredProperties;
   }
 
   /**
@@ -98,12 +88,14 @@ public class RequiredPropertiesImpl extends MinimalEObjectImpl.Container impleme
    * @generated
    */
   @Override
-  public void setZuper(JSONProperty newZuper)
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
-    JSONProperty oldZuper = zuper;
-    zuper = newZuper;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, Draft7Package.REQUIRED_PROPERTIES__ZUPER, oldZuper, zuper));
+    switch (featureID)
+    {
+      case Draft7Package.REQUIRED_PROPERTIES__REQUIRED_PROPERTIES:
+        return ((InternalEList<?>)getRequiredProperties()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
   }
 
   /**
@@ -116,9 +108,8 @@ public class RequiredPropertiesImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case Draft7Package.REQUIRED_PROPERTIES__ZUPER:
-        if (resolve) return getZuper();
-        return basicGetZuper();
+      case Draft7Package.REQUIRED_PROPERTIES__REQUIRED_PROPERTIES:
+        return getRequiredProperties();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -128,13 +119,15 @@ public class RequiredPropertiesImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case Draft7Package.REQUIRED_PROPERTIES__ZUPER:
-        setZuper((JSONProperty)newValue);
+      case Draft7Package.REQUIRED_PROPERTIES__REQUIRED_PROPERTIES:
+        getRequiredProperties().clear();
+        getRequiredProperties().addAll((Collection<? extends RequiredPropertiesName>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -150,8 +143,8 @@ public class RequiredPropertiesImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case Draft7Package.REQUIRED_PROPERTIES__ZUPER:
-        setZuper((JSONProperty)null);
+      case Draft7Package.REQUIRED_PROPERTIES__REQUIRED_PROPERTIES:
+        getRequiredProperties().clear();
         return;
     }
     super.eUnset(featureID);
@@ -167,8 +160,8 @@ public class RequiredPropertiesImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case Draft7Package.REQUIRED_PROPERTIES__ZUPER:
-        return zuper != null;
+      case Draft7Package.REQUIRED_PROPERTIES__REQUIRED_PROPERTIES:
+        return requiredProperties != null && !requiredProperties.isEmpty();
     }
     return super.eIsSet(featureID);
   }

@@ -12,11 +12,23 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 import org.xtext.json.schema.draft7.Draft7Factory;
 import org.xtext.json.schema.draft7.Draft7Package;
-import org.xtext.json.schema.draft7.JSONProperties;
-import org.xtext.json.schema.draft7.JSONProperty;
+import org.xtext.json.schema.draft7.ExclusiveMaximum;
+import org.xtext.json.schema.draft7.ExclusiveMinimum;
+import org.xtext.json.schema.draft7.JsonSchemaRoot;
+import org.xtext.json.schema.draft7.Length;
+import org.xtext.json.schema.draft7.Maximum;
+import org.xtext.json.schema.draft7.Minimum;
 import org.xtext.json.schema.draft7.Model;
+import org.xtext.json.schema.draft7.Multiples;
+import org.xtext.json.schema.draft7.NumberProperties;
+import org.xtext.json.schema.draft7.ObjectProperties;
+import org.xtext.json.schema.draft7.Pattern;
+import org.xtext.json.schema.draft7.Properties;
+import org.xtext.json.schema.draft7.Property;
 import org.xtext.json.schema.draft7.RequiredProperties;
-import org.xtext.json.schema.draft7.Root;
+import org.xtext.json.schema.draft7.RequiredPropertiesName;
+import org.xtext.json.schema.draft7.StringProperties;
+import org.xtext.json.schema.draft7.Type;
 
 /**
  * <!-- begin-user-doc -->
@@ -38,7 +50,28 @@ public class Draft7PackageImpl extends EPackageImpl implements Draft7Package
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass rootEClass = null;
+  private EClass jsonSchemaRootEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass numberPropertiesEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass typeEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass objectPropertiesEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -52,14 +85,77 @@ public class Draft7PackageImpl extends EPackageImpl implements Draft7Package
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass jsonPropertiesEClass = null;
+  private EClass requiredPropertiesNameEClass = null;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass jsonPropertyEClass = null;
+  private EClass propertiesEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass propertyEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass stringPropertiesEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass lengthEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass patternEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass multiplesEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass minimumEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass exclusiveMinimumEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass maximumEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass exclusiveMaximumEClass = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -152,9 +248,141 @@ public class Draft7PackageImpl extends EPackageImpl implements Draft7Package
    * @generated
    */
   @Override
-  public EClass getRoot()
+  public EClass getJsonSchemaRoot()
   {
-    return rootEClass;
+    return jsonSchemaRootEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getJsonSchemaRoot_Type()
+  {
+    return (EReference)jsonSchemaRootEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getNumberProperties()
+  {
+    return numberPropertiesEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getNumberProperties_Minimum()
+  {
+    return (EReference)numberPropertiesEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getNumberProperties_ExclusiveMinimum()
+  {
+    return (EReference)numberPropertiesEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getNumberProperties_Maximum()
+  {
+    return (EReference)numberPropertiesEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getNumberProperties_ExclusiveMaximum()
+  {
+    return (EReference)numberPropertiesEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getType()
+  {
+    return typeEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getType_Types()
+  {
+    return (EAttribute)typeEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getType_Type()
+  {
+    return (EAttribute)typeEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getObjectProperties()
+  {
+    return objectPropertiesEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getObjectProperties_Properties()
+  {
+    return (EReference)objectPropertiesEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getObjectProperties_RequiredProperties()
+  {
+    return (EReference)objectPropertiesEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -174,7 +402,7 @@ public class Draft7PackageImpl extends EPackageImpl implements Draft7Package
    * @generated
    */
   @Override
-  public EReference getRequiredProperties_Zuper()
+  public EReference getRequiredProperties_RequiredProperties()
   {
     return (EReference)requiredPropertiesEClass.getEStructuralFeatures().get(0);
   }
@@ -185,9 +413,9 @@ public class Draft7PackageImpl extends EPackageImpl implements Draft7Package
    * @generated
    */
   @Override
-  public EClass getJSONProperties()
+  public EClass getRequiredPropertiesName()
   {
-    return jsonPropertiesEClass;
+    return requiredPropertiesNameEClass;
   }
 
   /**
@@ -196,9 +424,9 @@ public class Draft7PackageImpl extends EPackageImpl implements Draft7Package
    * @generated
    */
   @Override
-  public EReference getJSONProperties_Properties()
+  public EAttribute getRequiredPropertiesName_Name()
   {
-    return (EReference)jsonPropertiesEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)requiredPropertiesNameEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -207,9 +435,9 @@ public class Draft7PackageImpl extends EPackageImpl implements Draft7Package
    * @generated
    */
   @Override
-  public EClass getJSONProperty()
+  public EClass getProperties()
   {
-    return jsonPropertyEClass;
+    return propertiesEClass;
   }
 
   /**
@@ -218,9 +446,9 @@ public class Draft7PackageImpl extends EPackageImpl implements Draft7Package
    * @generated
    */
   @Override
-  public EAttribute getJSONProperty_Name()
+  public EReference getProperties_Properties()
   {
-    return (EAttribute)jsonPropertyEClass.getEStructuralFeatures().get(0);
+    return (EReference)propertiesEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -229,9 +457,218 @@ public class Draft7PackageImpl extends EPackageImpl implements Draft7Package
    * @generated
    */
   @Override
-  public EReference getJSONProperty_Property()
+  public EClass getProperty()
   {
-    return (EReference)jsonPropertyEClass.getEStructuralFeatures().get(1);
+    return propertyEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getProperty_Name()
+  {
+    return (EAttribute)propertyEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getProperty_Properties()
+  {
+    return (EReference)propertyEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getStringProperties()
+  {
+    return stringPropertiesEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getStringProperties_Length()
+  {
+    return (EReference)stringPropertiesEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EReference getStringProperties_Pattern()
+  {
+    return (EReference)stringPropertiesEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getLength()
+  {
+    return lengthEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getLength_Length()
+  {
+    return (EAttribute)lengthEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getPattern()
+  {
+    return patternEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getPattern_Pattern()
+  {
+    return (EAttribute)patternEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getMultiples()
+  {
+    return multiplesEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getMultiples_MultipleOf()
+  {
+    return (EAttribute)multiplesEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getMinimum()
+  {
+    return minimumEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getMinimum_Minimum()
+  {
+    return (EAttribute)minimumEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getExclusiveMinimum()
+  {
+    return exclusiveMinimumEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getExclusiveMinimum_ExclusiveMinimum()
+  {
+    return (EAttribute)exclusiveMinimumEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getMaximum()
+  {
+    return maximumEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getMaximum_Maximum()
+  {
+    return (EAttribute)maximumEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EClass getExclusiveMaximum()
+  {
+    return exclusiveMaximumEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public EAttribute getExclusiveMaximum_ExclusiveMaximum()
+  {
+    return (EAttribute)exclusiveMaximumEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -268,17 +705,60 @@ public class Draft7PackageImpl extends EPackageImpl implements Draft7Package
     modelEClass = createEClass(MODEL);
     createEReference(modelEClass, MODEL__ROOT);
 
-    rootEClass = createEClass(ROOT);
+    jsonSchemaRootEClass = createEClass(JSON_SCHEMA_ROOT);
+    createEReference(jsonSchemaRootEClass, JSON_SCHEMA_ROOT__TYPE);
+
+    numberPropertiesEClass = createEClass(NUMBER_PROPERTIES);
+    createEReference(numberPropertiesEClass, NUMBER_PROPERTIES__MINIMUM);
+    createEReference(numberPropertiesEClass, NUMBER_PROPERTIES__EXCLUSIVE_MINIMUM);
+    createEReference(numberPropertiesEClass, NUMBER_PROPERTIES__MAXIMUM);
+    createEReference(numberPropertiesEClass, NUMBER_PROPERTIES__EXCLUSIVE_MAXIMUM);
+
+    typeEClass = createEClass(TYPE);
+    createEAttribute(typeEClass, TYPE__TYPES);
+    createEAttribute(typeEClass, TYPE__TYPE);
+
+    objectPropertiesEClass = createEClass(OBJECT_PROPERTIES);
+    createEReference(objectPropertiesEClass, OBJECT_PROPERTIES__PROPERTIES);
+    createEReference(objectPropertiesEClass, OBJECT_PROPERTIES__REQUIRED_PROPERTIES);
 
     requiredPropertiesEClass = createEClass(REQUIRED_PROPERTIES);
-    createEReference(requiredPropertiesEClass, REQUIRED_PROPERTIES__ZUPER);
+    createEReference(requiredPropertiesEClass, REQUIRED_PROPERTIES__REQUIRED_PROPERTIES);
 
-    jsonPropertiesEClass = createEClass(JSON_PROPERTIES);
-    createEReference(jsonPropertiesEClass, JSON_PROPERTIES__PROPERTIES);
+    requiredPropertiesNameEClass = createEClass(REQUIRED_PROPERTIES_NAME);
+    createEAttribute(requiredPropertiesNameEClass, REQUIRED_PROPERTIES_NAME__NAME);
 
-    jsonPropertyEClass = createEClass(JSON_PROPERTY);
-    createEAttribute(jsonPropertyEClass, JSON_PROPERTY__NAME);
-    createEReference(jsonPropertyEClass, JSON_PROPERTY__PROPERTY);
+    propertiesEClass = createEClass(PROPERTIES);
+    createEReference(propertiesEClass, PROPERTIES__PROPERTIES);
+
+    propertyEClass = createEClass(PROPERTY);
+    createEAttribute(propertyEClass, PROPERTY__NAME);
+    createEReference(propertyEClass, PROPERTY__PROPERTIES);
+
+    stringPropertiesEClass = createEClass(STRING_PROPERTIES);
+    createEReference(stringPropertiesEClass, STRING_PROPERTIES__LENGTH);
+    createEReference(stringPropertiesEClass, STRING_PROPERTIES__PATTERN);
+
+    lengthEClass = createEClass(LENGTH);
+    createEAttribute(lengthEClass, LENGTH__LENGTH);
+
+    patternEClass = createEClass(PATTERN);
+    createEAttribute(patternEClass, PATTERN__PATTERN);
+
+    multiplesEClass = createEClass(MULTIPLES);
+    createEAttribute(multiplesEClass, MULTIPLES__MULTIPLE_OF);
+
+    minimumEClass = createEClass(MINIMUM);
+    createEAttribute(minimumEClass, MINIMUM__MINIMUM);
+
+    exclusiveMinimumEClass = createEClass(EXCLUSIVE_MINIMUM);
+    createEAttribute(exclusiveMinimumEClass, EXCLUSIVE_MINIMUM__EXCLUSIVE_MINIMUM);
+
+    maximumEClass = createEClass(MAXIMUM);
+    createEAttribute(maximumEClass, MAXIMUM__MAXIMUM);
+
+    exclusiveMaximumEClass = createEClass(EXCLUSIVE_MAXIMUM);
+    createEAttribute(exclusiveMaximumEClass, EXCLUSIVE_MAXIMUM__EXCLUSIVE_MAXIMUM);
   }
 
   /**
@@ -310,23 +790,69 @@ public class Draft7PackageImpl extends EPackageImpl implements Draft7Package
     // Set bounds for type parameters
 
     // Add supertypes to classes
-    jsonPropertiesEClass.getESuperTypes().add(this.getRoot());
+    numberPropertiesEClass.getESuperTypes().add(this.getJsonSchemaRoot());
+    objectPropertiesEClass.getESuperTypes().add(this.getJsonSchemaRoot());
+    stringPropertiesEClass.getESuperTypes().add(this.getJsonSchemaRoot());
+    multiplesEClass.getESuperTypes().add(this.getNumberProperties());
 
     // Initialize classes and features; add operations and parameters
     initEClass(modelEClass, Model.class, "Model", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getModel_Root(), this.getRoot(), null, "root", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getModel_Root(), this.getJsonSchemaRoot(), null, "root", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(rootEClass, Root.class, "Root", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEClass(jsonSchemaRootEClass, JsonSchemaRoot.class, "JsonSchemaRoot", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getJsonSchemaRoot_Type(), this.getType(), null, "type", null, 0, 1, JsonSchemaRoot.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(numberPropertiesEClass, NumberProperties.class, "NumberProperties", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getNumberProperties_Minimum(), this.getMinimum(), null, "minimum", null, 0, 1, NumberProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getNumberProperties_ExclusiveMinimum(), this.getExclusiveMinimum(), null, "exclusiveMinimum", null, 0, 1, NumberProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getNumberProperties_Maximum(), this.getMaximum(), null, "maximum", null, 0, 1, NumberProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getNumberProperties_ExclusiveMaximum(), this.getExclusiveMaximum(), null, "exclusiveMaximum", null, 0, 1, NumberProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(typeEClass, Type.class, "Type", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getType_Types(), ecorePackage.getEString(), "types", null, 0, -1, Type.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getType_Type(), ecorePackage.getEString(), "type", null, 0, 1, Type.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(objectPropertiesEClass, ObjectProperties.class, "ObjectProperties", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getObjectProperties_Properties(), this.getProperties(), null, "properties", null, 0, 1, ObjectProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getObjectProperties_RequiredProperties(), this.getRequiredProperties(), null, "requiredProperties", null, 0, 1, ObjectProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(requiredPropertiesEClass, RequiredProperties.class, "RequiredProperties", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getRequiredProperties_Zuper(), this.getJSONProperty(), null, "zuper", null, 0, 1, RequiredProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getRequiredProperties_RequiredProperties(), this.getRequiredPropertiesName(), null, "requiredProperties", null, 0, -1, RequiredProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(jsonPropertiesEClass, JSONProperties.class, "JSONProperties", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getJSONProperties_Properties(), this.getJSONProperty(), null, "properties", null, 0, -1, JSONProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(requiredPropertiesNameEClass, RequiredPropertiesName.class, "RequiredPropertiesName", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getRequiredPropertiesName_Name(), ecorePackage.getEString(), "name", null, 0, 1, RequiredPropertiesName.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(jsonPropertyEClass, JSONProperty.class, "JSONProperty", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getJSONProperty_Name(), ecorePackage.getEString(), "name", null, 0, 1, JSONProperty.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getJSONProperty_Property(), this.getRoot(), null, "property", null, 0, 1, JSONProperty.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(propertiesEClass, Properties.class, "Properties", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getProperties_Properties(), this.getProperty(), null, "properties", null, 0, -1, Properties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(propertyEClass, Property.class, "Property", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getProperty_Name(), ecorePackage.getEString(), "name", null, 0, 1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getProperty_Properties(), this.getJsonSchemaRoot(), null, "properties", null, 0, -1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(stringPropertiesEClass, StringProperties.class, "StringProperties", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getStringProperties_Length(), this.getLength(), null, "length", null, 0, 1, StringProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getStringProperties_Pattern(), this.getPattern(), null, "pattern", null, 0, 1, StringProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(lengthEClass, Length.class, "Length", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getLength_Length(), ecorePackage.getEInt(), "length", null, 0, 1, Length.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(patternEClass, Pattern.class, "Pattern", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getPattern_Pattern(), ecorePackage.getEString(), "pattern", null, 0, 1, Pattern.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(multiplesEClass, Multiples.class, "Multiples", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMultiples_MultipleOf(), ecorePackage.getEInt(), "multipleOf", null, 0, 1, Multiples.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(minimumEClass, Minimum.class, "Minimum", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMinimum_Minimum(), ecorePackage.getEInt(), "minimum", null, 0, 1, Minimum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(exclusiveMinimumEClass, ExclusiveMinimum.class, "ExclusiveMinimum", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getExclusiveMinimum_ExclusiveMinimum(), ecorePackage.getEInt(), "exclusiveMinimum", null, 0, 1, ExclusiveMinimum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(maximumEClass, Maximum.class, "Maximum", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getMaximum_Maximum(), ecorePackage.getEInt(), "maximum", null, 0, 1, Maximum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(exclusiveMaximumEClass, ExclusiveMaximum.class, "ExclusiveMaximum", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getExclusiveMaximum_ExclusiveMaximum(), ecorePackage.getEInt(), "exclusiveMaximum", null, 0, 1, ExclusiveMaximum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Create resource
     createResource(eNS_URI);

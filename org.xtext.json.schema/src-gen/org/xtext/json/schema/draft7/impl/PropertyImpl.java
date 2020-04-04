@@ -3,8 +3,12 @@
  */
 package org.xtext.json.schema.draft7.impl;
 
+import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -12,25 +16,28 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
+
 import org.xtext.json.schema.draft7.Draft7Package;
-import org.xtext.json.schema.draft7.JSONProperty;
-import org.xtext.json.schema.draft7.Root;
+import org.xtext.json.schema.draft7.JsonSchemaRoot;
+import org.xtext.json.schema.draft7.Property;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>JSON Property</b></em>'.
+ * An implementation of the model object '<em><b>Property</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.xtext.json.schema.draft7.impl.JSONPropertyImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.xtext.json.schema.draft7.impl.JSONPropertyImpl#getProperty <em>Property</em>}</li>
+ *   <li>{@link org.xtext.json.schema.draft7.impl.PropertyImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.xtext.json.schema.draft7.impl.PropertyImpl#getProperties <em>Properties</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class JSONPropertyImpl extends MinimalEObjectImpl.Container implements JSONProperty
+public class PropertyImpl extends MinimalEObjectImpl.Container implements Property
 {
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -53,21 +60,21 @@ public class JSONPropertyImpl extends MinimalEObjectImpl.Container implements JS
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getProperty() <em>Property</em>}' containment reference.
+   * The cached value of the '{@link #getProperties() <em>Properties</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getProperty()
+   * @see #getProperties()
    * @generated
    * @ordered
    */
-  protected Root property;
+  protected EList<JsonSchemaRoot> properties;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected JSONPropertyImpl()
+  protected PropertyImpl()
   {
     super();
   }
@@ -80,7 +87,7 @@ public class JSONPropertyImpl extends MinimalEObjectImpl.Container implements JS
   @Override
   protected EClass eStaticClass()
   {
-    return Draft7Package.Literals.JSON_PROPERTY;
+    return Draft7Package.Literals.PROPERTY;
   }
 
   /**
@@ -105,7 +112,7 @@ public class JSONPropertyImpl extends MinimalEObjectImpl.Container implements JS
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, Draft7Package.JSON_PROPERTY__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, Draft7Package.PROPERTY__NAME, oldName, name));
   }
 
   /**
@@ -114,48 +121,13 @@ public class JSONPropertyImpl extends MinimalEObjectImpl.Container implements JS
    * @generated
    */
   @Override
-  public Root getProperty()
+  public EList<JsonSchemaRoot> getProperties()
   {
-    return property;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetProperty(Root newProperty, NotificationChain msgs)
-  {
-    Root oldProperty = property;
-    property = newProperty;
-    if (eNotificationRequired())
+    if (properties == null)
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, Draft7Package.JSON_PROPERTY__PROPERTY, oldProperty, newProperty);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
+      properties = new EObjectContainmentEList<JsonSchemaRoot>(JsonSchemaRoot.class, this, Draft7Package.PROPERTY__PROPERTIES);
     }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setProperty(Root newProperty)
-  {
-    if (newProperty != property)
-    {
-      NotificationChain msgs = null;
-      if (property != null)
-        msgs = ((InternalEObject)property).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - Draft7Package.JSON_PROPERTY__PROPERTY, null, msgs);
-      if (newProperty != null)
-        msgs = ((InternalEObject)newProperty).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - Draft7Package.JSON_PROPERTY__PROPERTY, null, msgs);
-      msgs = basicSetProperty(newProperty, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, Draft7Package.JSON_PROPERTY__PROPERTY, newProperty, newProperty));
+    return properties;
   }
 
   /**
@@ -168,8 +140,8 @@ public class JSONPropertyImpl extends MinimalEObjectImpl.Container implements JS
   {
     switch (featureID)
     {
-      case Draft7Package.JSON_PROPERTY__PROPERTY:
-        return basicSetProperty(null, msgs);
+      case Draft7Package.PROPERTY__PROPERTIES:
+        return ((InternalEList<?>)getProperties()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -184,10 +156,10 @@ public class JSONPropertyImpl extends MinimalEObjectImpl.Container implements JS
   {
     switch (featureID)
     {
-      case Draft7Package.JSON_PROPERTY__NAME:
+      case Draft7Package.PROPERTY__NAME:
         return getName();
-      case Draft7Package.JSON_PROPERTY__PROPERTY:
-        return getProperty();
+      case Draft7Package.PROPERTY__PROPERTIES:
+        return getProperties();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -197,16 +169,18 @@ public class JSONPropertyImpl extends MinimalEObjectImpl.Container implements JS
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case Draft7Package.JSON_PROPERTY__NAME:
+      case Draft7Package.PROPERTY__NAME:
         setName((String)newValue);
         return;
-      case Draft7Package.JSON_PROPERTY__PROPERTY:
-        setProperty((Root)newValue);
+      case Draft7Package.PROPERTY__PROPERTIES:
+        getProperties().clear();
+        getProperties().addAll((Collection<? extends JsonSchemaRoot>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -222,11 +196,11 @@ public class JSONPropertyImpl extends MinimalEObjectImpl.Container implements JS
   {
     switch (featureID)
     {
-      case Draft7Package.JSON_PROPERTY__NAME:
+      case Draft7Package.PROPERTY__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case Draft7Package.JSON_PROPERTY__PROPERTY:
-        setProperty((Root)null);
+      case Draft7Package.PROPERTY__PROPERTIES:
+        getProperties().clear();
         return;
     }
     super.eUnset(featureID);
@@ -242,10 +216,10 @@ public class JSONPropertyImpl extends MinimalEObjectImpl.Container implements JS
   {
     switch (featureID)
     {
-      case Draft7Package.JSON_PROPERTY__NAME:
+      case Draft7Package.PROPERTY__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case Draft7Package.JSON_PROPERTY__PROPERTY:
-        return property != null;
+      case Draft7Package.PROPERTY__PROPERTIES:
+        return properties != null && !properties.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -267,4 +241,4 @@ public class JSONPropertyImpl extends MinimalEObjectImpl.Container implements JS
     return result.toString();
   }
 
-} //JSONPropertyImpl
+} //PropertyImpl

@@ -5,34 +5,36 @@ package org.xtext.json.schema.draft7;
 
 import org.eclipse.emf.common.util.EList;
 
+import org.eclipse.emf.ecore.EObject;
+
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>JSON Properties</b></em>'.
+ * A representation of the model object '<em><b>Properties</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.xtext.json.schema.draft7.JSONProperties#getProperties <em>Properties</em>}</li>
+ *   <li>{@link org.xtext.json.schema.draft7.Properties#getProperties <em>Properties</em>}</li>
  * </ul>
  *
- * @see org.xtext.json.schema.draft7.Draft7Package#getJSONProperties()
+ * @see org.xtext.json.schema.draft7.Draft7Package#getProperties()
  * @model
  * @generated
  */
-public interface JSONProperties extends Root
+public interface Properties extends EObject
 {
   /**
    * Returns the value of the '<em><b>Properties</b></em>' containment reference list.
-   * The list contents are of type {@link org.xtext.json.schema.draft7.JSONProperty}.
+   * The list contents are of type {@link org.xtext.json.schema.draft7.Property}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Properties</em>' containment reference list.
-   * @see org.xtext.json.schema.draft7.Draft7Package#getJSONProperties_Properties()
+   * @see org.xtext.json.schema.draft7.Draft7Package#getProperties_Properties()
    * @model containment="true"
    * @generated
    */
-  EList<JSONProperty> getProperties();
+  EList<Property> getProperties();
 
-} // JSONProperties
+} // Properties

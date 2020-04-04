@@ -3,55 +3,57 @@
  */
 package org.xtext.json.schema.draft7.impl;
 
-import java.util.Collection;
-
-import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
 
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
-
 import org.xtext.json.schema.draft7.Draft7Package;
-import org.xtext.json.schema.draft7.JsonSchemaRoot;
-import org.xtext.json.schema.draft7.Model;
+import org.xtext.json.schema.draft7.Minimum;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Model</b></em>'.
+ * An implementation of the model object '<em><b>Minimum</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.xtext.json.schema.draft7.impl.ModelImpl#getRoot <em>Root</em>}</li>
+ *   <li>{@link org.xtext.json.schema.draft7.impl.MinimumImpl#getMinimum <em>Minimum</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class ModelImpl extends MinimalEObjectImpl.Container implements Model
+public class MinimumImpl extends MinimalEObjectImpl.Container implements Minimum
 {
   /**
-   * The cached value of the '{@link #getRoot() <em>Root</em>}' containment reference list.
+   * The default value of the '{@link #getMinimum() <em>Minimum</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getRoot()
+   * @see #getMinimum()
    * @generated
    * @ordered
    */
-  protected EList<JsonSchemaRoot> root;
+  protected static final int MINIMUM_EDEFAULT = 0;
+
+  /**
+   * The cached value of the '{@link #getMinimum() <em>Minimum</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMinimum()
+   * @generated
+   * @ordered
+   */
+  protected int minimum = MINIMUM_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected ModelImpl()
+  protected MinimumImpl()
   {
     super();
   }
@@ -64,7 +66,7 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
   @Override
   protected EClass eStaticClass()
   {
-    return Draft7Package.Literals.MODEL;
+    return Draft7Package.Literals.MINIMUM;
   }
 
   /**
@@ -73,13 +75,9 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
    * @generated
    */
   @Override
-  public EList<JsonSchemaRoot> getRoot()
+  public int getMinimum()
   {
-    if (root == null)
-    {
-      root = new EObjectContainmentEList<JsonSchemaRoot>(JsonSchemaRoot.class, this, Draft7Package.MODEL__ROOT);
-    }
-    return root;
+    return minimum;
   }
 
   /**
@@ -88,14 +86,12 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
    * @generated
    */
   @Override
-  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  public void setMinimum(int newMinimum)
   {
-    switch (featureID)
-    {
-      case Draft7Package.MODEL__ROOT:
-        return ((InternalEList<?>)getRoot()).basicRemove(otherEnd, msgs);
-    }
-    return super.eInverseRemove(otherEnd, featureID, msgs);
+    int oldMinimum = minimum;
+    minimum = newMinimum;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, Draft7Package.MINIMUM__MINIMUM, oldMinimum, minimum));
   }
 
   /**
@@ -108,8 +104,8 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
   {
     switch (featureID)
     {
-      case Draft7Package.MODEL__ROOT:
-        return getRoot();
+      case Draft7Package.MINIMUM__MINIMUM:
+        return getMinimum();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -119,15 +115,13 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case Draft7Package.MODEL__ROOT:
-        getRoot().clear();
-        getRoot().addAll((Collection<? extends JsonSchemaRoot>)newValue);
+      case Draft7Package.MINIMUM__MINIMUM:
+        setMinimum((Integer)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -143,8 +137,8 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
   {
     switch (featureID)
     {
-      case Draft7Package.MODEL__ROOT:
-        getRoot().clear();
+      case Draft7Package.MINIMUM__MINIMUM:
+        setMinimum(MINIMUM_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -160,10 +154,27 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
   {
     switch (featureID)
     {
-      case Draft7Package.MODEL__ROOT:
-        return root != null && !root.isEmpty();
+      case Draft7Package.MINIMUM__MINIMUM:
+        return minimum != MINIMUM_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
 
-} //ModelImpl
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuilder result = new StringBuilder(super.toString());
+    result.append(" (minimum: ");
+    result.append(minimum);
+    result.append(')');
+    return result.toString();
+  }
+
+} //MinimumImpl

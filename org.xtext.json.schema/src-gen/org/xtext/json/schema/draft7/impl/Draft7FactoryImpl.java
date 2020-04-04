@@ -66,10 +66,22 @@ public class Draft7FactoryImpl extends EFactoryImpl implements Draft7Factory
     switch (eClass.getClassifierID())
     {
       case Draft7Package.MODEL: return createModel();
-      case Draft7Package.ROOT: return createRoot();
+      case Draft7Package.JSON_SCHEMA_ROOT: return createJsonSchemaRoot();
+      case Draft7Package.NUMBER_PROPERTIES: return createNumberProperties();
+      case Draft7Package.TYPE: return createType();
+      case Draft7Package.OBJECT_PROPERTIES: return createObjectProperties();
       case Draft7Package.REQUIRED_PROPERTIES: return createRequiredProperties();
-      case Draft7Package.JSON_PROPERTIES: return createJSONProperties();
-      case Draft7Package.JSON_PROPERTY: return createJSONProperty();
+      case Draft7Package.REQUIRED_PROPERTIES_NAME: return createRequiredPropertiesName();
+      case Draft7Package.PROPERTIES: return createProperties();
+      case Draft7Package.PROPERTY: return createProperty();
+      case Draft7Package.STRING_PROPERTIES: return createStringProperties();
+      case Draft7Package.LENGTH: return createLength();
+      case Draft7Package.PATTERN: return createPattern();
+      case Draft7Package.MULTIPLES: return createMultiples();
+      case Draft7Package.MINIMUM: return createMinimum();
+      case Draft7Package.EXCLUSIVE_MINIMUM: return createExclusiveMinimum();
+      case Draft7Package.MAXIMUM: return createMaximum();
+      case Draft7Package.EXCLUSIVE_MAXIMUM: return createExclusiveMaximum();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -93,10 +105,46 @@ public class Draft7FactoryImpl extends EFactoryImpl implements Draft7Factory
    * @generated
    */
   @Override
-  public Root createRoot()
+  public JsonSchemaRoot createJsonSchemaRoot()
   {
-    RootImpl root = new RootImpl();
-    return root;
+    JsonSchemaRootImpl jsonSchemaRoot = new JsonSchemaRootImpl();
+    return jsonSchemaRoot;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NumberProperties createNumberProperties()
+  {
+    NumberPropertiesImpl numberProperties = new NumberPropertiesImpl();
+    return numberProperties;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Type createType()
+  {
+    TypeImpl type = new TypeImpl();
+    return type;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public ObjectProperties createObjectProperties()
+  {
+    ObjectPropertiesImpl objectProperties = new ObjectPropertiesImpl();
+    return objectProperties;
   }
 
   /**
@@ -117,10 +165,10 @@ public class Draft7FactoryImpl extends EFactoryImpl implements Draft7Factory
    * @generated
    */
   @Override
-  public JSONProperties createJSONProperties()
+  public RequiredPropertiesName createRequiredPropertiesName()
   {
-    JSONPropertiesImpl jsonProperties = new JSONPropertiesImpl();
-    return jsonProperties;
+    RequiredPropertiesNameImpl requiredPropertiesName = new RequiredPropertiesNameImpl();
+    return requiredPropertiesName;
   }
 
   /**
@@ -129,10 +177,118 @@ public class Draft7FactoryImpl extends EFactoryImpl implements Draft7Factory
    * @generated
    */
   @Override
-  public JSONProperty createJSONProperty()
+  public Properties createProperties()
   {
-    JSONPropertyImpl jsonProperty = new JSONPropertyImpl();
-    return jsonProperty;
+    PropertiesImpl properties = new PropertiesImpl();
+    return properties;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Property createProperty()
+  {
+    PropertyImpl property = new PropertyImpl();
+    return property;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public StringProperties createStringProperties()
+  {
+    StringPropertiesImpl stringProperties = new StringPropertiesImpl();
+    return stringProperties;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Length createLength()
+  {
+    LengthImpl length = new LengthImpl();
+    return length;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Pattern createPattern()
+  {
+    PatternImpl pattern = new PatternImpl();
+    return pattern;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Multiples createMultiples()
+  {
+    MultiplesImpl multiples = new MultiplesImpl();
+    return multiples;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Minimum createMinimum()
+  {
+    MinimumImpl minimum = new MinimumImpl();
+    return minimum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public ExclusiveMinimum createExclusiveMinimum()
+  {
+    ExclusiveMinimumImpl exclusiveMinimum = new ExclusiveMinimumImpl();
+    return exclusiveMinimum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Maximum createMaximum()
+  {
+    MaximumImpl maximum = new MaximumImpl();
+    return maximum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public ExclusiveMaximum createExclusiveMaximum()
+  {
+    ExclusiveMaximumImpl exclusiveMaximum = new ExclusiveMaximumImpl();
+    return exclusiveMaximum;
   }
 
   /**

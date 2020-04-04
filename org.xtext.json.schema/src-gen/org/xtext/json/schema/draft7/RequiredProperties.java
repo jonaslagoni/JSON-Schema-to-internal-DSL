@@ -3,6 +3,8 @@
  */
 package org.xtext.json.schema.draft7;
 
+import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -14,7 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.xtext.json.schema.draft7.RequiredProperties#getZuper <em>Zuper</em>}</li>
+ *   <li>{@link org.xtext.json.schema.draft7.RequiredProperties#getRequiredProperties <em>Required Properties</em>}</li>
  * </ul>
  *
  * @see org.xtext.json.schema.draft7.Draft7Package#getRequiredProperties()
@@ -24,25 +26,15 @@ import org.eclipse.emf.ecore.EObject;
 public interface RequiredProperties extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Zuper</b></em>' reference.
+   * Returns the value of the '<em><b>Required Properties</b></em>' containment reference list.
+   * The list contents are of type {@link org.xtext.json.schema.draft7.RequiredPropertiesName}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Zuper</em>' reference.
-   * @see #setZuper(JSONProperty)
-   * @see org.xtext.json.schema.draft7.Draft7Package#getRequiredProperties_Zuper()
-   * @model
+   * @return the value of the '<em>Required Properties</em>' containment reference list.
+   * @see org.xtext.json.schema.draft7.Draft7Package#getRequiredProperties_RequiredProperties()
+   * @model containment="true"
    * @generated
    */
-  JSONProperty getZuper();
-
-  /**
-   * Sets the value of the '{@link org.xtext.json.schema.draft7.RequiredProperties#getZuper <em>Zuper</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Zuper</em>' reference.
-   * @see #getZuper()
-   * @generated
-   */
-  void setZuper(JSONProperty value);
+  EList<RequiredPropertiesName> getRequiredProperties();
 
 } // RequiredProperties

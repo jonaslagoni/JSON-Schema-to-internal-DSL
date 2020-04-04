@@ -3,10 +3,14 @@
  */
 package org.xtext.json.schema.generator;
 
+import com.google.common.collect.Iterators;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.generator.AbstractGenerator;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGeneratorContext;
+import org.xtext.json.schema.draft7.JsonSchemaRoot;
+import org.xtext.json.schema.draft7.Model;
 
 /**
  * Generates code from your model files on save.
@@ -17,5 +21,7 @@ import org.eclipse.xtext.generator.IGeneratorContext;
 public class Draft7Generator extends AbstractGenerator {
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
+    Model model = Iterators.<Model>filter(resource.getAllContents(), Model.class).next();
+    EList<JsonSchemaRoot> roots = model.getRoot();
   }
 }

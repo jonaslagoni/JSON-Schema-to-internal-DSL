@@ -2,28 +2,35 @@ grammar org.xtext.json.schema.Draft7 with org.eclipse.xtext.common.Terminals
 generate draft7 "http://www.xtext.org/json/schema/Draft7"
 
 Model:
+	{Model}
 	'{'
-		(root+=Root  (',')?)*
+		(root+=JsonSchemaRoot  (',')?)*
 	'}';
 	
-terminal ID: '"' ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')* '"';
-
-Root:
-	{Root} Type | 
-	{Root} Length |
-	{Root} Multiples | 
-	{Root} Minimum | 
-	{Root} ExclusiveMinimum | 
-	{Root} Maximum | 
-	{Root} ExclusiveMaximum | 
-	Properties
+terminal JSON_ID: '"' ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')* '"';
+terminal NUMBER: ('0'..'9'*) ('.' ('0'..'9'*))?;
+terminal JSON_STRING: '"' ('[' |  ']' | '(' | ')' | '{' | '}' | '/' | '\\' | '$' | '^' | '-' | '?' | 'a'..'z'|'A'..'Z' | '0'..'9' | '.' | ',' | ';' | ':')* '"';
+terminal exp: ['^']*;
+JsonSchemaRoot:
+	type=Type |
+	ObjectProperties | 
+	StringProperties |
+	NumberProperties
 ;
 
+NumberProperties:
+	Multiples |
+	minimum=Minimum | 
+	exclusiveMinimum=ExclusiveMinimum | 
+	maximum=Maximum | 
+	exclusiveMaximum=ExclusiveMaximum 
+;
 /**
  * General
  */
+ 
 Type: 
-	'"type"' ':' ('['JsonTypes+']' | JsonTypes)
+	'"type"' ':' ('[' (types+=JsonTypes ((',' types+=JsonTypes)*)?) ']' | type=JsonTypes)
 ;
 
 JsonTypes: 
@@ -33,38 +40,99 @@ JsonTypes:
 /**
  * Object
  */
+ 
+ObjectProperties:
+	properties=Properties |
+	requiredProperties=RequiredProperties | 
+	PropertyNames=PropertyNames |
+	MinProperties=MinProperties |
+	MaxProperties=MaxProperties | 
+	dependencies=Dependencies
+;
+PropertyNames:
+	'"propertyNames"' ':' '{'
+		Pattern
+	'}'
+;
+Dependencies:
+	'"dependencies"' ':' '{' dependencies+=(PropertyDependencies|SchemaDependencies)+ '}'
+;
+
+SchemaDependencies:
+	dependencyProperty=JSON_ID ':' '{' object+=ObjectProperties+ '}'
+;
+PropertyDependencies:
+	dependencyProperty=JSON_ID ':' '[' (dependencyPresents+=JsonTypes ((',' dependencyPresents+=JsonTypes)*)?) ']'
+;
+MinProperties:
+	'"minProperties"' ':' minProperties=INT
+;
+MaxProperties:
+	'"maxProperties"' ':' maxProperties=INT
+;
 RequiredProperties:
-	'required' ':' '[' zuper=[Property] requiredProperties+= ']'
+	'"required"' ':' '[' requiredProperties+=RequiredPropertiesName ']'
+;
+RequiredPropertiesName:
+	name=JSON_ID
 ;
 Properties:
-	{Properties} '"properties"' ':' '{' properties+=Property* '}'
+	{Properties}'"properties"' ':' '{' properties+=Property* '}'
 ;
 
 Property:
-	name=ID ':' '{' property=Root '}'
-;
-/**
- * Strings
- */
-Length:
-	'"length":' INT
+	{Property}name=JSON_ID ':' '{' properties+=JsonSchemaRoot*'}'
 ;
 
 /**
- * Numbers
+ * Strings
+ */
+StringProperties:
+	length=Length |
+	pattern=Pattern | 
+	format=Format
+;
+Length:
+	'"length"' ':' length=INT
+;
+Pattern:
+	'"pattern"' ':' pattern=JSON_STRING
+;
+Format:
+	'"format"' ':' '"' (
+		'date-time' | 
+		'time' | 
+		'date' | 
+		'email' | 
+		'idn-email' | 
+		'hostname' | 
+		'ipv4' | 
+		'ipv6' | 
+		'uri' | 
+		'uri-reference' | 
+		'iri' | 
+		'iri-reference' | 
+		'uri-template' | 
+		'json-pointer' | 
+		'relative-json-pointer' | 
+		'regex'
+	) '"'
+;
+/**
+ * Numeric
  */
 Multiples:
-	'"multiples":' INT
+	'"multiples"' ':' multipleOf=INT
 ;
 Minimum:
-	'"minimum":' INT
+	'"minimum"' ':' minimum=NUMBER
 ;
 ExclusiveMinimum:
-	'"exclusiveMinimum":' INT
+	'"exclusiveMinimum"' ':' exclusiveMinimum=NUMBER
 ;
 Maximum:
-	'"maximum":' INT
+	'"maximum"' ':' maximum=NUMBER
 ;
 ExclusiveMaximum:
-	'"exclusiveMaximum":' INT
+	'"exclusiveMaximum"' ':' exclusiveMaximum=NUMBER
 ;

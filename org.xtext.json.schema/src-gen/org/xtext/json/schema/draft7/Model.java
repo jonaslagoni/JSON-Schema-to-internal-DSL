@@ -27,7 +27,7 @@ public interface Model extends EObject
 {
   /**
    * Returns the value of the '<em><b>Root</b></em>' containment reference list.
-   * The list contents are of type {@link org.xtext.json.schema.draft7.Root}.
+   * The list contents are of type {@link org.xtext.json.schema.draft7.JsonSchemaRoot}.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the value of the '<em>Root</em>' containment reference list.
@@ -35,6 +35,6 @@ public interface Model extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<Root> getRoot();
+  EList<JsonSchemaRoot> getRoot();
 
 } // Model

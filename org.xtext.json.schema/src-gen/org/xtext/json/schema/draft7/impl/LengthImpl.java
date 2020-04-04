@@ -3,55 +3,57 @@
  */
 package org.xtext.json.schema.draft7.impl;
 
-import java.util.Collection;
-
-import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
 
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
-
 import org.xtext.json.schema.draft7.Draft7Package;
-import org.xtext.json.schema.draft7.JsonSchemaRoot;
-import org.xtext.json.schema.draft7.Model;
+import org.xtext.json.schema.draft7.Length;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Model</b></em>'.
+ * An implementation of the model object '<em><b>Length</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.xtext.json.schema.draft7.impl.ModelImpl#getRoot <em>Root</em>}</li>
+ *   <li>{@link org.xtext.json.schema.draft7.impl.LengthImpl#getLength <em>Length</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class ModelImpl extends MinimalEObjectImpl.Container implements Model
+public class LengthImpl extends MinimalEObjectImpl.Container implements Length
 {
   /**
-   * The cached value of the '{@link #getRoot() <em>Root</em>}' containment reference list.
+   * The default value of the '{@link #getLength() <em>Length</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getRoot()
+   * @see #getLength()
    * @generated
    * @ordered
    */
-  protected EList<JsonSchemaRoot> root;
+  protected static final int LENGTH_EDEFAULT = 0;
+
+  /**
+   * The cached value of the '{@link #getLength() <em>Length</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getLength()
+   * @generated
+   * @ordered
+   */
+  protected int length = LENGTH_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected ModelImpl()
+  protected LengthImpl()
   {
     super();
   }
@@ -64,7 +66,7 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
   @Override
   protected EClass eStaticClass()
   {
-    return Draft7Package.Literals.MODEL;
+    return Draft7Package.Literals.LENGTH;
   }
 
   /**
@@ -73,13 +75,9 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
    * @generated
    */
   @Override
-  public EList<JsonSchemaRoot> getRoot()
+  public int getLength()
   {
-    if (root == null)
-    {
-      root = new EObjectContainmentEList<JsonSchemaRoot>(JsonSchemaRoot.class, this, Draft7Package.MODEL__ROOT);
-    }
-    return root;
+    return length;
   }
 
   /**
@@ -88,14 +86,12 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
    * @generated
    */
   @Override
-  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  public void setLength(int newLength)
   {
-    switch (featureID)
-    {
-      case Draft7Package.MODEL__ROOT:
-        return ((InternalEList<?>)getRoot()).basicRemove(otherEnd, msgs);
-    }
-    return super.eInverseRemove(otherEnd, featureID, msgs);
+    int oldLength = length;
+    length = newLength;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, Draft7Package.LENGTH__LENGTH, oldLength, length));
   }
 
   /**
@@ -108,8 +104,8 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
   {
     switch (featureID)
     {
-      case Draft7Package.MODEL__ROOT:
-        return getRoot();
+      case Draft7Package.LENGTH__LENGTH:
+        return getLength();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -119,15 +115,13 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case Draft7Package.MODEL__ROOT:
-        getRoot().clear();
-        getRoot().addAll((Collection<? extends JsonSchemaRoot>)newValue);
+      case Draft7Package.LENGTH__LENGTH:
+        setLength((Integer)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -143,8 +137,8 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
   {
     switch (featureID)
     {
-      case Draft7Package.MODEL__ROOT:
-        getRoot().clear();
+      case Draft7Package.LENGTH__LENGTH:
+        setLength(LENGTH_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -160,10 +154,27 @@ public class ModelImpl extends MinimalEObjectImpl.Container implements Model
   {
     switch (featureID)
     {
-      case Draft7Package.MODEL__ROOT:
-        return root != null && !root.isEmpty();
+      case Draft7Package.LENGTH__LENGTH:
+        return length != LENGTH_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }
 
-} //ModelImpl
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuilder result = new StringBuilder(super.toString());
+    result.append(" (length: ");
+    result.append(length);
+    result.append(')');
+    return result.toString();
+  }
+
+} //LengthImpl

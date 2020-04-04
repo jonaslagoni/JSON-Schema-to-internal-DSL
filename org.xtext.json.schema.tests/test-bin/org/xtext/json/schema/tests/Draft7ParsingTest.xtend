@@ -31,6 +31,39 @@ class Draft7ParsingTest {
 	}
 	
 	@Test
+	def void multipleTypes() {
+		val result = parseHelper.parse('''
+			{
+				"type": ["object", "string"]
+			}
+		''')
+		Assertions.assertNotNull(result)
+		val errors = result.eResource.errors
+		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
+	}
+	@Test
+	def void multipleTypes2() {
+		val result = parseHelper.parse('''
+			{
+				"type": ["object", "string", "number"]
+			}
+		''')
+		Assertions.assertNotNull(result)
+		val errors = result.eResource.errors
+		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
+	}
+	@Test
+	def void multipleTypesOne() {
+		val result = parseHelper.parse('''
+			{
+				"type": ["object"]
+			}
+		''')
+		Assertions.assertNotNull(result)
+		val errors = result.eResource.errors
+		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
+	}
+	@Test
 	def void properties() {
 		val result = parseHelper.parse('''
 			{
@@ -51,7 +84,7 @@ class Draft7ParsingTest {
 		val result = parseHelper.parse('''
 			{
 				"type": "object",
-				"required": ["testProp"],
+				"required": [ "testProp" ],
 				"properties": {
 					"testProp" : {
 						"type": "integer"
@@ -64,9 +97,38 @@ class Draft7ParsingTest {
 		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
 	}
 	@Test
+	def void regularExpression() {
+		val result = parseHelper.parse('''
+			{
+				"type": "string",
+				"pattern": "^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$"
+			}
+		''')
+		Assertions.assertNotNull(result)
+		val errors = result.eResource.errors
+		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
+	}
+	@Test
 	def void loadModel() {
 		val result = parseHelper.parse('''
 			{
+				"type": "object",
+				"properties": {
+					"testProp" : {
+						"type": "integer"
+					}
+				}
+			}
+		''')
+		Assertions.assertNotNull(result)
+		val errors = result.eResource.errors
+		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
+	}
+	@Test
+	def void invalidValidModel() {
+		val result = parseHelper.parse('''
+			{
+				"length": 23,
 				"type": "object",
 				"properties": {
 					"testProp" : {

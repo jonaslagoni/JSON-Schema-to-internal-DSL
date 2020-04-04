@@ -80,10 +80,33 @@ public class Draft7Switch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case Draft7Package.ROOT:
+      case Draft7Package.JSON_SCHEMA_ROOT:
       {
-        Root root = (Root)theEObject;
-        T result = caseRoot(root);
+        JsonSchemaRoot jsonSchemaRoot = (JsonSchemaRoot)theEObject;
+        T result = caseJsonSchemaRoot(jsonSchemaRoot);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case Draft7Package.NUMBER_PROPERTIES:
+      {
+        NumberProperties numberProperties = (NumberProperties)theEObject;
+        T result = caseNumberProperties(numberProperties);
+        if (result == null) result = caseJsonSchemaRoot(numberProperties);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case Draft7Package.TYPE:
+      {
+        Type type = (Type)theEObject;
+        T result = caseType(type);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case Draft7Package.OBJECT_PROPERTIES:
+      {
+        ObjectProperties objectProperties = (ObjectProperties)theEObject;
+        T result = caseObjectProperties(objectProperties);
+        if (result == null) result = caseJsonSchemaRoot(objectProperties);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -94,18 +117,83 @@ public class Draft7Switch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case Draft7Package.JSON_PROPERTIES:
+      case Draft7Package.REQUIRED_PROPERTIES_NAME:
       {
-        JSONProperties jsonProperties = (JSONProperties)theEObject;
-        T result = caseJSONProperties(jsonProperties);
-        if (result == null) result = caseRoot(jsonProperties);
+        RequiredPropertiesName requiredPropertiesName = (RequiredPropertiesName)theEObject;
+        T result = caseRequiredPropertiesName(requiredPropertiesName);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case Draft7Package.JSON_PROPERTY:
+      case Draft7Package.PROPERTIES:
       {
-        JSONProperty jsonProperty = (JSONProperty)theEObject;
-        T result = caseJSONProperty(jsonProperty);
+        Properties properties = (Properties)theEObject;
+        T result = caseProperties(properties);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case Draft7Package.PROPERTY:
+      {
+        Property property = (Property)theEObject;
+        T result = caseProperty(property);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case Draft7Package.STRING_PROPERTIES:
+      {
+        StringProperties stringProperties = (StringProperties)theEObject;
+        T result = caseStringProperties(stringProperties);
+        if (result == null) result = caseJsonSchemaRoot(stringProperties);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case Draft7Package.LENGTH:
+      {
+        Length length = (Length)theEObject;
+        T result = caseLength(length);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case Draft7Package.PATTERN:
+      {
+        Pattern pattern = (Pattern)theEObject;
+        T result = casePattern(pattern);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case Draft7Package.MULTIPLES:
+      {
+        Multiples multiples = (Multiples)theEObject;
+        T result = caseMultiples(multiples);
+        if (result == null) result = caseNumberProperties(multiples);
+        if (result == null) result = caseJsonSchemaRoot(multiples);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case Draft7Package.MINIMUM:
+      {
+        Minimum minimum = (Minimum)theEObject;
+        T result = caseMinimum(minimum);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case Draft7Package.EXCLUSIVE_MINIMUM:
+      {
+        ExclusiveMinimum exclusiveMinimum = (ExclusiveMinimum)theEObject;
+        T result = caseExclusiveMinimum(exclusiveMinimum);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case Draft7Package.MAXIMUM:
+      {
+        Maximum maximum = (Maximum)theEObject;
+        T result = caseMaximum(maximum);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case Draft7Package.EXCLUSIVE_MAXIMUM:
+      {
+        ExclusiveMaximum exclusiveMaximum = (ExclusiveMaximum)theEObject;
+        T result = caseExclusiveMaximum(exclusiveMaximum);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -130,17 +218,65 @@ public class Draft7Switch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Root</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Json Schema Root</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Root</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Json Schema Root</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseRoot(Root object)
+  public T caseJsonSchemaRoot(JsonSchemaRoot object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Number Properties</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Number Properties</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseNumberProperties(NumberProperties object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Type</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Type</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseType(Type object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Object Properties</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Object Properties</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseObjectProperties(ObjectProperties object)
   {
     return null;
   }
@@ -162,33 +298,177 @@ public class Draft7Switch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>JSON Properties</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Required Properties Name</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>JSON Properties</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Required Properties Name</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseJSONProperties(JSONProperties object)
+  public T caseRequiredPropertiesName(RequiredPropertiesName object)
   {
     return null;
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>JSON Property</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Properties</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>JSON Property</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Properties</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseJSONProperty(JSONProperty object)
+  public T caseProperties(Properties object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Property</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Property</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseProperty(Property object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>String Properties</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>String Properties</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseStringProperties(StringProperties object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Length</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Length</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseLength(Length object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Pattern</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Pattern</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T casePattern(Pattern object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Multiples</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Multiples</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMultiples(Multiples object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Minimum</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Minimum</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMinimum(Minimum object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Exclusive Minimum</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Exclusive Minimum</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseExclusiveMinimum(ExclusiveMinimum object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Maximum</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Maximum</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMaximum(Maximum object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Exclusive Maximum</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Exclusive Maximum</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseExclusiveMaximum(ExclusiveMaximum object)
   {
     return null;
   }

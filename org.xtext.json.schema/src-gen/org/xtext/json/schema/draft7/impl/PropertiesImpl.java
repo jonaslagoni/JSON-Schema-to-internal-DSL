@@ -12,27 +12,29 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.xtext.json.schema.draft7.Draft7Package;
-import org.xtext.json.schema.draft7.JSONProperties;
-import org.xtext.json.schema.draft7.JSONProperty;
+import org.xtext.json.schema.draft7.Properties;
+import org.xtext.json.schema.draft7.Property;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>JSON Properties</b></em>'.
+ * An implementation of the model object '<em><b>Properties</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.xtext.json.schema.draft7.impl.JSONPropertiesImpl#getProperties <em>Properties</em>}</li>
+ *   <li>{@link org.xtext.json.schema.draft7.impl.PropertiesImpl#getProperties <em>Properties</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class JSONPropertiesImpl extends RootImpl implements JSONProperties
+public class PropertiesImpl extends MinimalEObjectImpl.Container implements Properties
 {
   /**
    * The cached value of the '{@link #getProperties() <em>Properties</em>}' containment reference list.
@@ -42,14 +44,14 @@ public class JSONPropertiesImpl extends RootImpl implements JSONProperties
    * @generated
    * @ordered
    */
-  protected EList<JSONProperty> properties;
+  protected EList<Property> properties;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected JSONPropertiesImpl()
+  protected PropertiesImpl()
   {
     super();
   }
@@ -62,7 +64,7 @@ public class JSONPropertiesImpl extends RootImpl implements JSONProperties
   @Override
   protected EClass eStaticClass()
   {
-    return Draft7Package.Literals.JSON_PROPERTIES;
+    return Draft7Package.Literals.PROPERTIES;
   }
 
   /**
@@ -71,11 +73,11 @@ public class JSONPropertiesImpl extends RootImpl implements JSONProperties
    * @generated
    */
   @Override
-  public EList<JSONProperty> getProperties()
+  public EList<Property> getProperties()
   {
     if (properties == null)
     {
-      properties = new EObjectContainmentEList<JSONProperty>(JSONProperty.class, this, Draft7Package.JSON_PROPERTIES__PROPERTIES);
+      properties = new EObjectContainmentEList<Property>(Property.class, this, Draft7Package.PROPERTIES__PROPERTIES);
     }
     return properties;
   }
@@ -90,7 +92,7 @@ public class JSONPropertiesImpl extends RootImpl implements JSONProperties
   {
     switch (featureID)
     {
-      case Draft7Package.JSON_PROPERTIES__PROPERTIES:
+      case Draft7Package.PROPERTIES__PROPERTIES:
         return ((InternalEList<?>)getProperties()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -106,7 +108,7 @@ public class JSONPropertiesImpl extends RootImpl implements JSONProperties
   {
     switch (featureID)
     {
-      case Draft7Package.JSON_PROPERTIES__PROPERTIES:
+      case Draft7Package.PROPERTIES__PROPERTIES:
         return getProperties();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -123,9 +125,9 @@ public class JSONPropertiesImpl extends RootImpl implements JSONProperties
   {
     switch (featureID)
     {
-      case Draft7Package.JSON_PROPERTIES__PROPERTIES:
+      case Draft7Package.PROPERTIES__PROPERTIES:
         getProperties().clear();
-        getProperties().addAll((Collection<? extends JSONProperty>)newValue);
+        getProperties().addAll((Collection<? extends Property>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -141,7 +143,7 @@ public class JSONPropertiesImpl extends RootImpl implements JSONProperties
   {
     switch (featureID)
     {
-      case Draft7Package.JSON_PROPERTIES__PROPERTIES:
+      case Draft7Package.PROPERTIES__PROPERTIES:
         getProperties().clear();
         return;
     }
@@ -158,10 +160,10 @@ public class JSONPropertiesImpl extends RootImpl implements JSONProperties
   {
     switch (featureID)
     {
-      case Draft7Package.JSON_PROPERTIES__PROPERTIES:
+      case Draft7Package.PROPERTIES__PROPERTIES:
         return properties != null && !properties.isEmpty();
     }
     return super.eIsSet(featureID);
   }
 
-} //JSONPropertiesImpl
+} //PropertiesImpl

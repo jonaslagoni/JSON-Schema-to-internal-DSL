@@ -10,7 +10,6 @@ import org.eclipse.xtext.IGrammarAccess;
 import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.serializer.analysis.GrammarAlias.AbstractElementAlias;
-import org.eclipse.xtext.serializer.analysis.GrammarAlias.AlternativeAlias;
 import org.eclipse.xtext.serializer.analysis.GrammarAlias.TokenAlias;
 import org.eclipse.xtext.serializer.analysis.ISyntacticSequencerPDAProvider.ISynNavigable;
 import org.eclipse.xtext.serializer.analysis.ISyntacticSequencerPDAProvider.ISynTransition;
@@ -21,111 +20,19 @@ import org.xtext.json.schema.services.Draft7GrammarAccess;
 public class Draft7SyntacticSequencer extends AbstractSyntacticSequencer {
 
 	protected Draft7GrammarAccess grammarAccess;
-	protected AbstractElementAlias match_Model_CommaKeyword_1_1_q;
-	protected AbstractElementAlias match_Root_ExclusiveMaximumParserRuleCall_6_1_or_ExclusiveMinimumParserRuleCall_4_1_or_LengthParserRuleCall_1_1_or_MaximumParserRuleCall_5_1_or_MinimumParserRuleCall_3_1_or_MultiplesParserRuleCall_2_1_or_TypeParserRuleCall_0_1;
+	protected AbstractElementAlias match_Model_CommaKeyword_2_1_q;
 	
 	@Inject
 	protected void init(IGrammarAccess access) {
 		grammarAccess = (Draft7GrammarAccess) access;
-		match_Model_CommaKeyword_1_1_q = new TokenAlias(false, true, grammarAccess.getModelAccess().getCommaKeyword_1_1());
-		match_Root_ExclusiveMaximumParserRuleCall_6_1_or_ExclusiveMinimumParserRuleCall_4_1_or_LengthParserRuleCall_1_1_or_MaximumParserRuleCall_5_1_or_MinimumParserRuleCall_3_1_or_MultiplesParserRuleCall_2_1_or_TypeParserRuleCall_0_1 = new AlternativeAlias(false, false, new TokenAlias(false, false, grammarAccess.getRootAccess().getExclusiveMaximumParserRuleCall_6_1()), new TokenAlias(false, false, grammarAccess.getRootAccess().getExclusiveMinimumParserRuleCall_4_1()), new TokenAlias(false, false, grammarAccess.getRootAccess().getLengthParserRuleCall_1_1()), new TokenAlias(false, false, grammarAccess.getRootAccess().getMaximumParserRuleCall_5_1()), new TokenAlias(false, false, grammarAccess.getRootAccess().getMinimumParserRuleCall_3_1()), new TokenAlias(false, false, grammarAccess.getRootAccess().getMultiplesParserRuleCall_2_1()), new TokenAlias(false, false, grammarAccess.getRootAccess().getTypeParserRuleCall_0_1()));
+		match_Model_CommaKeyword_2_1_q = new TokenAlias(false, true, grammarAccess.getModelAccess().getCommaKeyword_2_1());
 	}
 	
 	@Override
 	protected String getUnassignedRuleCallToken(EObject semanticObject, RuleCall ruleCall, INode node) {
-		if (ruleCall.getRule() == grammarAccess.getExclusiveMaximumRule())
-			return getExclusiveMaximumToken(semanticObject, ruleCall, node);
-		else if (ruleCall.getRule() == grammarAccess.getExclusiveMinimumRule())
-			return getExclusiveMinimumToken(semanticObject, ruleCall, node);
-		else if (ruleCall.getRule() == grammarAccess.getLengthRule())
-			return getLengthToken(semanticObject, ruleCall, node);
-		else if (ruleCall.getRule() == grammarAccess.getMaximumRule())
-			return getMaximumToken(semanticObject, ruleCall, node);
-		else if (ruleCall.getRule() == grammarAccess.getMinimumRule())
-			return getMinimumToken(semanticObject, ruleCall, node);
-		else if (ruleCall.getRule() == grammarAccess.getMultiplesRule())
-			return getMultiplesToken(semanticObject, ruleCall, node);
-		else if (ruleCall.getRule() == grammarAccess.getTypeRule())
-			return getTypeToken(semanticObject, ruleCall, node);
 		return "";
 	}
 	
-	/**
-	 * ExclusiveMaximum:
-	 * 	'"exclusiveMaximum":' INT
-	 * ;
-	 */
-	protected String getExclusiveMaximumToken(EObject semanticObject, RuleCall ruleCall, INode node) {
-		if (node != null)
-			return getTokenText(node);
-		return "\"exclusiveMaximum\":";
-	}
-	
-	/**
-	 * ExclusiveMinimum:
-	 * 	'"exclusiveMinimum":' INT
-	 * ;
-	 */
-	protected String getExclusiveMinimumToken(EObject semanticObject, RuleCall ruleCall, INode node) {
-		if (node != null)
-			return getTokenText(node);
-		return "\"exclusiveMinimum\":";
-	}
-	
-	/**
-	 * Length:
-	 * 	'"length":' INT
-	 * ;
-	 */
-	protected String getLengthToken(EObject semanticObject, RuleCall ruleCall, INode node) {
-		if (node != null)
-			return getTokenText(node);
-		return "\"length\":";
-	}
-	
-	/**
-	 * Maximum:
-	 * 	'"maximum":' INT
-	 * ;
-	 */
-	protected String getMaximumToken(EObject semanticObject, RuleCall ruleCall, INode node) {
-		if (node != null)
-			return getTokenText(node);
-		return "\"maximum\":";
-	}
-	
-	/**
-	 * Minimum:
-	 * 	'"minimum":' INT
-	 * ;
-	 */
-	protected String getMinimumToken(EObject semanticObject, RuleCall ruleCall, INode node) {
-		if (node != null)
-			return getTokenText(node);
-		return "\"minimum\":";
-	}
-	
-	/**
-	 * Multiples:
-	 * 	'"multiples":' INT
-	 * ;
-	 */
-	protected String getMultiplesToken(EObject semanticObject, RuleCall ruleCall, INode node) {
-		if (node != null)
-			return getTokenText(node);
-		return "\"multiples\":";
-	}
-	
-	/**
-	 * Type: 
-	 * 	'"type"' ':' ('['JsonTypes+']' | JsonTypes)
-	 * ;
-	 */
-	protected String getTypeToken(EObject semanticObject, RuleCall ruleCall, INode node) {
-		if (node != null)
-			return getTokenText(node);
-		return "\"type\" : [ \"string\" ]";
-	}
 	
 	@Override
 	protected void emitUnassignedTokens(EObject semanticObject, ISynTransition transition, INode fromNode, INode toNode) {
@@ -133,10 +40,8 @@ public class Draft7SyntacticSequencer extends AbstractSyntacticSequencer {
 		List<INode> transitionNodes = collectNodes(fromNode, toNode);
 		for (AbstractElementAlias syntax : transition.getAmbiguousSyntaxes()) {
 			List<INode> syntaxNodes = getNodesFor(transitionNodes, syntax);
-			if (match_Model_CommaKeyword_1_1_q.equals(syntax))
-				emit_Model_CommaKeyword_1_1_q(semanticObject, getLastNavigableState(), syntaxNodes);
-			else if (match_Root_ExclusiveMaximumParserRuleCall_6_1_or_ExclusiveMinimumParserRuleCall_4_1_or_LengthParserRuleCall_1_1_or_MaximumParserRuleCall_5_1_or_MinimumParserRuleCall_3_1_or_MultiplesParserRuleCall_2_1_or_TypeParserRuleCall_0_1.equals(syntax))
-				emit_Root_ExclusiveMaximumParserRuleCall_6_1_or_ExclusiveMinimumParserRuleCall_4_1_or_LengthParserRuleCall_1_1_or_MaximumParserRuleCall_5_1_or_MinimumParserRuleCall_3_1_or_MultiplesParserRuleCall_2_1_or_TypeParserRuleCall_0_1(semanticObject, getLastNavigableState(), syntaxNodes);
+			if (match_Model_CommaKeyword_2_1_q.equals(syntax))
+				emit_Model_CommaKeyword_2_1_q(semanticObject, getLastNavigableState(), syntaxNodes);
 			else acceptNodes(getLastNavigableState(), syntaxNodes);
 		}
 	}
@@ -146,29 +51,10 @@ public class Draft7SyntacticSequencer extends AbstractSyntacticSequencer {
 	 *     ','?
 	 *
 	 * This ambiguous syntax occurs at:
-	 *     root+=Root (ambiguity) '}' (rule end)
-	 *     root+=Root (ambiguity) root+=Root
+	 *     root+=JsonSchemaRoot (ambiguity) '}' (rule end)
+	 *     root+=JsonSchemaRoot (ambiguity) root+=JsonSchemaRoot
 	 */
-	protected void emit_Model_CommaKeyword_1_1_q(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
-		acceptNodes(transition, nodes);
-	}
-	
-	/**
-	 * Ambiguous syntax:
-	 *     (
-	  *         Type | 
-	  *         Length | 
-	  *         Multiples | 
-	  *         Minimum | 
-	  *         ExclusiveMinimum | 
-	  *         Maximum | 
-	  *         ExclusiveMaximum
-	  *     )
-	 *
-	 * This ambiguous syntax occurs at:
-	 *     (rule start) (ambiguity) (rule start)
-	 */
-	protected void emit_Root_ExclusiveMaximumParserRuleCall_6_1_or_ExclusiveMinimumParserRuleCall_4_1_or_LengthParserRuleCall_1_1_or_MaximumParserRuleCall_5_1_or_MinimumParserRuleCall_3_1_or_MultiplesParserRuleCall_2_1_or_TypeParserRuleCall_0_1(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
+	protected void emit_Model_CommaKeyword_2_1_q(EObject semanticObject, ISynNavigable transition, List<INode> nodes) {
 		acceptNodes(transition, nodes);
 	}
 	
