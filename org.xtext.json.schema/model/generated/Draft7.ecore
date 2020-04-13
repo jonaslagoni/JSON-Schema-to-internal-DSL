@@ -1,248 +1,248 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="draft7" nsURI="http://www.xtext.org/json/schema/Draft7" nsPrefix="draft7">
-  <eClassifiers xsi:type="ecore:EClass" name="Model">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="root" upperBound="-1" eType="#//JsonSchemaRoot"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="JsonSchemaRoot">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//Type" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="enumValue" eType="#//Enum"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="const" eType="#//Constant"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="anyOfs" eType="#//AnyOf"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="oneOfs" eType="#//OneOf"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="allOfs" eType="#//AllOf"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="objectProps" eType="#//ObjectProperties"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="stringProps" eType="#//StringProperties"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="numberProps" eType="#//NumberProperties"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="arrayProps" eType="#//ArrayProperties"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="not" eType="#//Not" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="ifStatement" eType="#//IfStatement"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="thenStatement" eType="#//ThenStatement"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="elseStatement" eType="#//ElseStatement"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="schema" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="reference" eType="#//Reference"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="title" eType="#//Title"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="description" eType="#//Description"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="default" eType="#//Default"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="examples" eType="#//Examples"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="comment" eType="#//Comment"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="id" eType="#//IdProp" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Title">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Description">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Comment">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IdProp">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Default">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Examples">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleValues" unique="false"
-        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Reference">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ref" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IfStatement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="ifModel" eType="#//Model"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ThenStatement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="thenModel" eType="#//Model"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ElseStatement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="thenModel" eType="#//Model"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Type">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="types" upperBound="-1"
-        eType="#//JsonTypes" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//JsonTypes"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="JsonTypes">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Enum">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="enumValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Constant">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="const" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AnyOf">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="anyOfs" upperBound="-1"
-        eType="#//Model" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OneOf">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="oneOfs" upperBound="-1"
-        eType="#//Model" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AllOf">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="allOfs" upperBound="-1"
-        eType="#//Model" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Not">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="not" eType="#//Model" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ArrayProperties">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="items" eType="#//Items"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="contains" eType="#//Contains"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="additionalProperties" eType="#//AdditionalProperties"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="uniqueItems" eType="#//UnqueItems"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Items">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="items" upperBound="-1"
-        eType="#//Model" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Contains"/>
-  <eClassifiers xsi:type="ecore:EClass" name="ContainsArray" eSuperTypes="#//Contains">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="contains" upperBound="-1"
-        eType="#//Model" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ContainsObject" eSuperTypes="#//Contains">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="contain" eType="#//Model"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="UnqueItems">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unique" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ObjectProperties">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" eType="#//Properties"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="requiredProperties" eType="#//RequiredProperties"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="PropertyNames" eType="#//PropertyNames"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="MinProperties" eType="#//MinProperties"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="MaxProperties" eType="#//MaxProperties"
+  <eClassifiers xsi:type="ecore:EClass" name="Schema" eSuperTypes="#//AbstractSchema">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//Types"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dependencies" eType="#//Dependencies"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="additionalProperties" eType="#//AdditionalProperties"
         containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PropertyNames"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Dependencies">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dependencies" upperBound="-1"
-        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SchemaDependencies">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dependencyProperty" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="object" upperBound="-1"
-        eType="#//ObjectProperties" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PropertyDependencies">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dependencyProperty" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dependencyPresents" upperBound="-1"
-        eType="#//JsonTypes" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MinProperties">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minProperties" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MaxProperties">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxProperties" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RequiredProperties">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="additionalItems" eType="#//AdditionalItems"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="default" eType="#//Default"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="patternProperties" upperBound="-1"
+        eType="#//NamedSchema" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="example" eType="#//Example"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="items" eType="#//Items"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="contains" eType="#//Contains"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="definitions" upperBound="-1"
+        eType="#//NamedSchema" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="requiredProperties" upperBound="-1"
-        eType="#//RequiredPropertiesName" containment="true"/>
+        eType="#//AnyString" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
+        eType="#//NamedSchema" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="enumValues" upperBound="-1"
+        eType="#//AnyString" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ifSchema" eType="#//Schema"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="thenSchema" eType="#//Schema"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elseSchema" eType="#//Schema"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="const" eType="#//AnyString"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="anyOfs" upperBound="-1"
+        eType="#//AbstractSchema" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="oneOfs" upperBound="-1"
+        eType="#//AbstractSchema" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="allOfs" upperBound="-1"
+        eType="#//AbstractSchema" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="not" eType="#//AbstractSchema"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unique" eType="#//Boolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyNames" eType="#//AbstractSchema"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minProperties" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxProperties" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxItems" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minItems" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxLength" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minLength" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pattern" eType="#//AnyString"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="format" eType="#//FormatTypes"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mediaType" eType="#//AnyString"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="encoding" eType="#//AnyString"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="multipleOf" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="minimum" eType="#//Number"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exclusiveMinimum" eType="#//Number"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="maximum" eType="#//Number"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exclusiveMaximum" eType="#//Number"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Dependencies">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="PropertyDependency" eType="#//PropertyDependency"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="schemaDependencies" upperBound="-1"
+        eType="#//NamedSchema" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyDependency">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="name" eType="#//AnyString"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dependencies" upperBound="-1"
+        eType="#//AnyString" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Contains">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="containSchemas" upperBound="-1"
+        eType="#//Schema" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Items">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="items" upperBound="-1"
+        eType="#//AbstractSchema" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AdditionalProperties">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="allowed" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="allowedBoolean" eType="#//Boolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="schema" eType="#//AbstractSchema"
+        containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RequiredPropertiesName">
+  <eClassifiers xsi:type="ecore:EClass" name="AdditionalItems">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="allowedBoolean" eType="#//Boolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="schema" eType="#//AbstractSchema"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Default">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultSchema" eType="#//AbstractSchema"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultString" eType="#//AnyString"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultBoolean" eType="#//Boolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultNumber" eType="#//Number"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultArrayItems" upperBound="-1"
+        eType="#//AbstractSchema" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Example">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exampleSchema" eType="#//Schema"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exampleString" eType="#//AnyString"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleBoolean" eType="#//Boolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exampleNumber" eType="#//Number"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exampleArrayItems" upperBound="-1"
+        eType="#//Schema" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Types">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="jsonTypes" unique="false"
+        upperBound="-1" eType="#//JsonTypes"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="jsonType" eType="#//JsonTypes"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AbstractSchema"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Reference" eSuperTypes="#//AbstractSchema">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="uri" eType="#//AnyString"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NamedSchema">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="name" eType="#//AnyString"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="schema" eType="#//AbstractSchema"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Boolean">
+    <eLiterals name="trueValue" literal="true"/>
+    <eLiterals name="falseValue" value="1" literal="false"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="JsonTypes">
+    <eLiterals name="string" literal="&quot;string&quot;"/>
+    <eLiterals name="integer" value="1" literal="&quot;integer&quot;"/>
+    <eLiterals name="number" value="2" literal="&quot;number&quot;"/>
+    <eLiterals name="object" value="3" literal="&quot;object&quot;"/>
+    <eLiterals name="array" value="4" literal="&quot;array&quot;"/>
+    <eLiterals name="boolean" value="5" literal="&quot;boolean&quot;"/>
+    <eLiterals name="null" value="6" literal="&quot;null&quot;"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FormatTypes">
+    <eLiterals name="date_time" literal="&quot;date-time&quot;"/>
+    <eLiterals name="time" value="1" literal="&quot;time&quot;"/>
+    <eLiterals name="date" value="2" literal="&quot;date&quot;"/>
+    <eLiterals name="email" value="3" literal="&quot;email&quot;"/>
+    <eLiterals name="idn_email" value="4" literal="&quot;idn-email&quot;"/>
+    <eLiterals name="hostname" value="5" literal="&quot;hostname&quot;"/>
+    <eLiterals name="ipv4" value="6" literal="&quot;ipv4&quot;"/>
+    <eLiterals name="ipv6" value="7" literal="&quot;ipv6&quot;"/>
+    <eLiterals name="uri" value="8" literal="&quot;uri&quot;"/>
+    <eLiterals name="uri_reference" value="9" literal="&quot;uri-reference&quot;"/>
+    <eLiterals name="iri" value="10" literal="&quot;iri&quot;"/>
+    <eLiterals name="iri_reference" value="11" literal="&quot;iri-reference&quot;"/>
+    <eLiterals name="uri_template" value="12" literal="&quot;uri-template&quot;"/>
+    <eLiterals name="json_pointer" value="13" literal="&quot;json-pointer&quot;"/>
+    <eLiterals name="relative_json_pointer" value="14" literal="&quot;relative-json-pointer&quot;"/>
+    <eLiterals name="regex" value="15" literal="&quot;regex&quot;"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AnyString">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="keyword" eType="#//JsonSchemaKeyword"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Properties">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
-        eType="#//Property" containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Number">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="number" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="decimal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Property">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="props" upperBound="-1"
-        eType="#//JsonSchemaRoot" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="StringProperties">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="length" eType="#//Length"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="pattern" eType="#//Pattern"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="format" eType="#//Format"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="contentMediaType" eType="#//ContentMediaType"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="contentEncoding" eType="#//ContentEncoding"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Length">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="length" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Pattern" eSuperTypes="#//PropertyNames">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Format">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="format" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ContentMediaType">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mediaType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ContentEncoding">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="encoding" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="NumberProperties">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="minimum" eType="#//Minimum"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="exclusiveMinimum" eType="#//ExclusiveMinimum"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="maximum" eType="#//Maximum"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="exclusiveMaximum" eType="#//ExclusiveMaximum"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Multiples" eSuperTypes="#//NumberProperties">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="multipleOf" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Minimum">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="minimum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ExclusiveMinimum">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exclusiveMinimum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Maximum">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maximum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ExclusiveMaximum">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exclusiveMaximum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="JsonSchemaKeyword">
+    <eLiterals name="title" literal="&quot;title&quot;"/>
+    <eLiterals name="schemaDraft7" value="1" literal="&quot;http://json-schema.org/draft-07/schema#&quot;"/>
+    <eLiterals name="additionalProperties" value="2" literal="&quot;additionalProperties&quot;"/>
+    <eLiterals name="additionalItems" value="3" literal="&quot;additionalItems&quot;"/>
+    <eLiterals name="description" value="4" literal="&quot;description&quot;"/>
+    <eLiterals name="comment" value="5" literal="&quot;$comment&quot;"/>
+    <eLiterals name="id" value="6" literal="&quot;$id&quot;"/>
+    <eLiterals name="default" value="7" literal="&quot;default&quot;"/>
+    <eLiterals name="examples" value="8" literal="&quot;examples&quot;"/>
+    <eLiterals name="schema" value="9" literal="&quot;$schema&quot;"/>
+    <eLiterals name="ref" value="10" literal="&quot;$ref&quot;"/>
+    <eLiterals name="enumKeyword" value="11" literal="&quot;enum&quot;"/>
+    <eLiterals name="const" value="12" literal="&quot;const&quot;"/>
+    <eLiterals name="type" value="13" literal="&quot;type&quot;"/>
+    <eLiterals name="string" value="14" literal="&quot;string&quot;"/>
+    <eLiterals name="integer" value="15" literal="&quot;integer&quot;"/>
+    <eLiterals name="number" value="16" literal="&quot;number&quot;"/>
+    <eLiterals name="object" value="17" literal="&quot;object&quot;"/>
+    <eLiterals name="array" value="18" literal="&quot;array&quot;"/>
+    <eLiterals name="boolean" value="19" literal="&quot;boolean&quot;"/>
+    <eLiterals name="null" value="20" literal="&quot;null&quot;"/>
+    <eLiterals name="date_time" value="21" literal="&quot;date-time&quot;"/>
+    <eLiterals name="time" value="22" literal="&quot;time&quot;"/>
+    <eLiterals name="date" value="23" literal="&quot;date&quot;"/>
+    <eLiterals name="email" value="24" literal="&quot;email&quot;"/>
+    <eLiterals name="idn_email" value="25" literal="&quot;idn-email&quot;"/>
+    <eLiterals name="hostname" value="26" literal="&quot;hostname&quot;"/>
+    <eLiterals name="ipv4" value="27" literal="&quot;ipv4&quot;"/>
+    <eLiterals name="ipv6" value="28" literal="&quot;ipv6&quot;"/>
+    <eLiterals name="uri" value="29" literal="&quot;uri&quot;"/>
+    <eLiterals name="uri_reference" value="30" literal="&quot;uri-reference&quot;"/>
+    <eLiterals name="iri" value="31" literal="&quot;iri&quot;"/>
+    <eLiterals name="iri_reference" value="32" literal="&quot;iri-reference&quot;"/>
+    <eLiterals name="uri_template" value="33" literal="&quot;uri-template&quot;"/>
+    <eLiterals name="json_pointer" value="34" literal="&quot;json-pointer&quot;"/>
+    <eLiterals name="relative_json_pointer" value="35" literal="&quot;relative-json-pointer&quot;"/>
+    <eLiterals name="regex" value="36" literal="&quot;regex&quot;"/>
+    <eLiterals name="contains" value="37" literal="&quot;contains&quot;"/>
+    <eLiterals name="uniqueItems" value="38" literal="&quot;uniqueItems&quot;"/>
+    <eLiterals name="propertyNames" value="39" literal="&quot;propertyNames&quot;"/>
+    <eLiterals name="length" value="40" literal="&quot;length&quot;"/>
+    <eLiterals name="pattern" value="41" literal="&quot;pattern&quot;"/>
+    <eLiterals name="format" value="42" literal="&quot;format&quot;"/>
+    <eLiterals name="minProperties" value="43" literal="&quot;minProperties&quot;"/>
+    <eLiterals name="maxProperties" value="44" literal="&quot;maxProperties&quot;"/>
+    <eLiterals name="dependencies" value="45" literal="&quot;dependencies&quot;"/>
+    <eLiterals name="patternProperties" value="46" literal="&quot;patternProperties&quot;"/>
+    <eLiterals name="required" value="47" literal="&quot;required&quot;"/>
+    <eLiterals name="properties" value="48" literal="&quot;properties&quot;"/>
+    <eLiterals name="if" value="49" literal="&quot;if&quot;"/>
+    <eLiterals name="then" value="50" literal="&quot;then&quot;"/>
+    <eLiterals name="else" value="51" literal="&quot;else&quot;"/>
+    <eLiterals name="anyOf" value="52" literal="&quot;anyOf&quot;"/>
+    <eLiterals name="oneOf" value="53" literal="&quot;oneOf&quot;"/>
+    <eLiterals name="allOf" value="54" literal="&quot;allOf&quot;"/>
+    <eLiterals name="not" value="55" literal="&quot;not&quot;"/>
+    <eLiterals name="items" value="56" literal="&quot;items&quot;"/>
+    <eLiterals name="contentMediaType" value="57" literal="&quot;contentMediaType&quot;"/>
+    <eLiterals name="contentEncoding" value="58" literal="&quot;contentEncoding&quot;"/>
+    <eLiterals name="multiples" value="59" literal="&quot;multiples&quot;"/>
+    <eLiterals name="minimum" value="60" literal="&quot;minimum&quot;"/>
+    <eLiterals name="exclusiveMinimum" value="61" literal="&quot;exclusiveMinimum&quot;"/>
+    <eLiterals name="maximum" value="62" literal="&quot;maximum&quot;"/>
+    <eLiterals name="exclusiveMaximum" value="63" literal="&quot;exclusiveMaximum&quot;"/>
   </eClassifiers>
 </ecore:EPackage>

@@ -3,14 +3,14 @@
  */
 package org.xtext.json.schema.generator;
 
-import com.google.common.collect.Iterators;
-import org.eclipse.emf.common.util.EList;
+import java.util.List;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.generator.AbstractGenerator;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGeneratorContext;
-import org.xtext.json.schema.draft7.JsonSchemaRoot;
-import org.xtext.json.schema.draft7.Model;
+import org.xtext.json.schema.draft7.AnyString;
+import org.xtext.json.schema.draft7.NamedSchema;
+import org.xtext.json.schema.draft7.Schema;
 
 /**
  * Generates code from your model files on save.
@@ -19,9 +19,28 @@ import org.xtext.json.schema.draft7.Model;
  */
 @SuppressWarnings("all")
 public class Draft7Generator extends AbstractGenerator {
+  private Schema root;
+  
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
-    Model model = Iterators.<Model>filter(resource.getAllContents(), Model.class).next();
-    EList<JsonSchemaRoot> roots = model.getRoot();
+    throw new Error("Unresolved compilation problems:"
+      + "\nThe method or field objectProperties is undefined"
+      + "\nThe method generateBuilderFile(IFileSystemAccess2) is undefined"
+      + "\nThe method or field objectProperties is undefined"
+      + "\nInvalid number of arguments. The method recursiveObjectsFinder(List<NamedSchema>) is not applicable for the arguments (EList<NamedSchema>,String)"
+      + "\nforEach cannot be resolved"
+      + "\nadd cannot be resolved");
+  }
+  
+  public abstract void recursiveObjectsFinder(final List<NamedSchema> properties);
+  
+  public String getName(final AnyString anyString) {
+    String _xifexpression = null;
+    if (((anyString.getName() != null) && (!anyString.getName().isEmpty()))) {
+      _xifexpression = anyString.getName();
+    } else {
+      _xifexpression = anyString.getKeyword().name();
+    }
+    return _xifexpression;
   }
 }

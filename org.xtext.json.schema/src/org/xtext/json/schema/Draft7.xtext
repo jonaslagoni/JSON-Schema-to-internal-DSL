@@ -1,251 +1,202 @@
 grammar org.xtext.json.schema.Draft7 with org.eclipse.xtext.common.Terminals
 generate draft7 "http://www.xtext.org/json/schema/Draft7"
 
-Model:
-	{Model}
-	'{'
-		(root+=JsonSchemaRoot  (',')?)*
-	'}';
-	
-terminal JSON_ID: '"' ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')* '"';
-terminal NUMBER: INT ('.' INT)?; 
-terminal REGEX_STRING: '"^' (.)* '$"';
-terminal REF_STRING: '"#' (.)* '"';
-terminal BOOLEAN: 'true' | 'false';
-terminal ARRAY: '[' (.)* ']';
-
-JsonSchemaRoot:
-	type=Type |
-	enumValue=Enum |
-	const=Constant |
-	anyOfs=AnyOf |
-	oneOfs=OneOf |
-	allOfs=AllOf |
-	objectProps=ObjectProperties | 
-	stringProps=StringProperties |
-	numberProps=NumberProperties | 
-	arrayProps=ArrayProperties | 
-	not=Not |
-	ifStatement=IfStatement |
-	thenStatement=ThenStatement |
-	elseStatement=ElseStatement | 
-	schema=Schema |
-	reference=Reference |
-	title=Title |
-	description=Description |
-	default=Default |
-	examples=Examples |
-	comment=Comment |
-	id=IdProp
-;
-
-/**
- * General
- */
-Title:
-	'"title"' ':' '"' title=STRING '"'
-;
-Description:
-	'"description"' ':' '"' description=STRING '"'
-;
-Comment:
-	'"$comment"' ':' '"' comment=STRING '"'
-;
-IdProp:
-	'"$id"' ':' '"' id=STRING '"'
-;
-Default:
-	'"default"' ':' '"' defaultValue=STRING '"'
-;
-Examples:
-	'"examples"' ':' '[' '"' exampleValues+=ExamplesValuesType+ '"' ']'
-;
-ExamplesValuesType:
-	STRING | BOOLEAN | NUMBER
-;
 Schema:
-	'"$schema"' ':' '"http://json-schema.org/draft-07/schema#"'
-;
-Reference:
-	'"$ref"' ':' ref=REF_STRING
-;
-IfStatement:
-	'"if"' ':' ifModel=Model
-;
-ThenStatement:
-	'"then"' ':' thenModel=Model
-;
-ElseStatement:
-	'"else"' ':' thenModel=Model
-;
-Type: 
-	'"type"' ':' ('[' (types+=JsonTypes ((',' types+=JsonTypes)*)?) ']' | type=JsonTypes)
-;
-
-JsonTypes: 
-	type=('"string"'|'"integer"'|'"number"'|'"object"'|'"array"'|'"boolean"'|'"null"')
-;
-
-Enum:
-	'"enum"' ':'  enumValue=ARRAY
-;
-Constant:
-	'"const"' ':' const=STRING
-;
-AnyOf: 
-	'anyOf' ':' '[' (anyOfs+=Model ((',' anyOfs+=Model)*)?) ']'
-;
-OneOf:
-	'oneOf' ':' '[' (oneOfs+=Model ((',' oneOfs+=Model)*)?) ']'
-;
-AllOf:
-	'allOf' ':' '[' (allOfs+=Model ((',' allOfs+=Model)*)?) ']'
-;
-Not:
-	'not' ':' not=Model
-;
-
-/**
- * Array
- */
- ArrayProperties:
- 	items=Items |
- 	contains=Contains |
-	additionalProperties=AdditionalProperties | 
-	uniqueItems=UnqueItems
- ;
-Items:
- 	'"items"' ':' '[' (items+=Model ((',' items+=Model)*)?) ']'
-;
-Contains:
- 	'"contains"' ':' (ContainsArray | ContainsObject)
-;
-ContainsArray:
-	'[' (contains+=Model ((',' contains+=Model)*)?) ']'
-;
-ContainsObject:
-	'{' contain=Model '}'
-;
-UnqueItems:
-	'"uniqueItems"' ':' unique=BOOLEAN
-;
-
-/**
- * Object
- */
- 
-ObjectProperties:
-	properties=Properties |
-	requiredProperties=RequiredProperties | 
-	PropertyNames=PropertyNames |
-	MinProperties=MinProperties |
-	MaxProperties=MaxProperties | 
-	dependencies=Dependencies | 
-	additionalProperties=AdditionalProperties
-;
-PropertyNames:
-	'"propertyNames"' ':' '{'
-		Pattern
+	{Schema}
+	'{'
+		(
+			('"type"' ':' type=Types ','?)?
+			&('"dependencies"' ':' '{' dependencies=Dependencies '}' ','?)?
+			&('"additionalProperties"' ':' additionalProperties=AdditionalProperties ','?)?
+			&('"additionalItems"' ':' additionalItems=AdditionalItems ','?)?
+			&('"default"' ':' default=Default ','?)?
+			&('"patternProperties"' ':' '{' patternProperties+=NamedSchema (',' patternProperties+=NamedSchema)* '}' ','?)?
+			&('"examples"' ':' example=Example ','?)?
+			&('"items"' ':' items=Items ','?)?
+			&('"contains"' ':' contains=Contains ','?)?
+			&('"definitions"' ':' '{' definitions+=NamedSchema (',' definitions+=NamedSchema)* '}' ','?)?
+			&('"title"' ':' title=STRING ','?)?
+			&('"required"' ':' '[' requiredProperties+=AnyString (',' requiredProperties+=AnyString)* ']' ','?)?
+			&('"description"' ':' description=STRING ','?)?
+			&('"properties"' ':' '{' properties+=NamedSchema (',' properties+=NamedSchema)* '}' ','?)?
+			&('"enum"' ':'  '[' enumValues+=AnyString (',' enumValues+=AnyString)* ']' ','?)?
+			&('"$schema"' ':' '"http://json-schema.org/draft-07/schema#"' ','?)?
+			&('"if"' ':' ifSchema=Schema ','?)?
+			&('"then"' ':' thenSchema=Schema ','?)?
+			&('"else"' ':' elseSchema=Schema ','?)?
+			&('"enum"' ':'  '[' enumValues+=AnyString (',' enumValues+=AnyString)* ']' ','?)?
+			&('"const"' ':' const=AnyString ','?)?
+			&('"anyOf"' ':' '[' anyOfs+=AbstractSchema (',' anyOfs+=AbstractSchema)* ']' ','?)?
+			&('"oneOf"' ':' '[' oneOfs+=AbstractSchema (',' oneOfs+=AbstractSchema)* ']' ','?)?
+			&('"allOf"' ':' '[' allOfs+=AbstractSchema (',' allOfs+=AbstractSchema)* ']' ','?)?
+			&('"not"' ':' not=AbstractSchema ','?)?
+			&('"uniqueItems"' ':' unique=Boolean ','?)?
+			&('"propertyNames"' ':' propertyNames=AbstractSchema ','?)?
+			&('"minProperties"' ':' minProperties=INT ','?)?
+			&('"maxProperties"' ':' maxProperties=INT ','?)?
+			&('"maxItems"' ':' maxItems=INT ','?)?
+			&('"minItems"' ':' minItems=INT ','?)?
+			&('"maxLength"' ':' maxLength=INT ','?)?
+			&('"minLength"' ':' minLength=INT ','?)?
+			&('"pattern"' ':' pattern=AnyString ','?)?
+			&('"format"' ':' format=FormatTypes ','?)?
+			&('"contentMediaType"' ':' mediaType=AnyString ','?)?
+			&('"contentEncoding"' ':'  encoding=AnyString ','?)?
+			&('"multiples"' ':' multipleOf=INT ','?)?
+			&('"minimum"' ':' minimum=Number ','?)?
+			&('"exclusiveMinimum"' ':' exclusiveMinimum=Number ','?)?
+			&('"maximum"' ':' maximum=Number ','?)?
+			&('"exclusiveMaximum"' ':' exclusiveMaximum=Number ','?)?
+		)
 	'}'
 ;
 Dependencies:
-	'"dependencies"' ':' '{' dependencies+=(PropertyDependencies|SchemaDependencies)+ '}'
+	PropertyDependency=PropertyDependency
+	| (schemaDependencies+=NamedSchema (',' schemaDependencies+=NamedSchema)*)
 ;
-
-SchemaDependencies:
-	dependencyProperty=JSON_ID ':' '{' object+=ObjectProperties+ '}'
+PropertyDependency:
+	name=AnyString ':' '[' dependencies+=AnyString (',' dependencies+=AnyString)* ']'
 ;
-PropertyDependencies:
-	dependencyProperty=JSON_ID ':' '[' (dependencyPresents+=JsonTypes ((',' dependencyPresents+=JsonTypes)*)?) ']'
+Contains:
+	('[' containSchemas+=Schema (',' containSchemas+=Schema)* ']') | ('{' containSchemas+=Schema '}')
 ;
-MinProperties:
-	'"minProperties"' ':' minProperties=INT
-;
-MaxProperties:
-	'"maxProperties"' ':' maxProperties=INT
-;
-RequiredProperties:
-	'"required"' ':' '[' requiredProperties+=RequiredPropertiesName ']'
+Items:
+	('[' items+=AbstractSchema (','items+=AbstractSchema)* ']') | items+=AbstractSchema
 ;
 AdditionalProperties:
-	'"additionalProperties"' ':' allowed=BOOLEAN
+	allowedBoolean=Boolean | schema=AbstractSchema
 ;
-RequiredPropertiesName:
-	name=JSON_ID
+AdditionalItems:
+	allowedBoolean=Boolean | schema=AbstractSchema
 ;
-Properties:
-	'"properties"' ':' '{' properties+=Property+ '}'
+Default:
+	defaultSchema=AbstractSchema | defaultString=AnyString | defaultBoolean=Boolean | defaultNumber=Number | ('[' defaultArrayItems+=AbstractSchema (',' defaultArrayItems+=AbstractSchema)* ']')
+;
+Example:
+	exampleSchema=Schema | exampleString=AnyString | exampleBoolean=Boolean | exampleNumber=Number | ('[' exampleArrayItems+=Schema (',' exampleArrayItems+=Schema)* ']')
+;
+Types:
+	('[' jsonTypes+=JsonTypes (',' jsonTypes+=JsonTypes)* ']') | jsonType=JsonTypes
+;
+AbstractSchema:
+	Reference | Schema
 ;
 
-Property:
-	{Property}name=JSON_ID ':' '{' (props+=JsonSchemaRoot  (',')?)*'}'
+Reference:
+	{Reference} '{' '"$ref"' ':' uri=AnyString '}'
 ;
 
-/**
- * Strings
- */
-StringProperties:
-	length=Length |
-	pattern=Pattern | 
-	format=Format |
-	contentMediaType=ContentMediaType |
-	contentEncoding=ContentEncoding
+NamedSchema:
+	{NamedSchema} name=AnyString ':' schema=AbstractSchema
 ;
-Length:
-	'"length"' ':' length=INT
+
+
+
+
+enum Boolean:
+	trueValue='true' 
+	| falseValue='false'
 ;
-Pattern:
-	'"pattern"' ':' pattern=REGEX_STRING
+
+enum JsonTypes: 
+	string='"string"'
+	| integer='"integer"'
+	| number='"number"'
+	| object='"object"'
+	| array='"array"'
+	| boolean='"boolean"'
+	| null='"null"'
 ;
-Format:
-	'"format"' ':' '"' format=(
-		'date-time' | 
-		'time' | 
-		'date' | 
-		'email' | 
-		'idn-email' | 
-		'hostname' | 
-		'ipv4' | 
-		'ipv6' | 
-		'uri' | 
-		'uri-reference' | 
-		'iri' | 
-		'iri-reference' | 
-		'uri-template' | 
-		'json-pointer' | 
-		'relative-json-pointer' | 
-		'regex'
-	) '"'
+
+enum FormatTypes:
+	date_time='"date-time"' | 
+	time='"time"' | 
+	date='"date"' | 
+	email='"email"' | 
+	idn_email='"idn-email"' | 
+	hostname='"hostname"' | 
+	ipv4='"ipv4"' | 
+	ipv6='"ipv6"' | 
+	uri='"uri"' | 
+	uri_reference='"uri-reference"' | 
+	iri='"iri"' | 
+	iri_reference='"iri-reference"' | 
+	uri_template='"uri-template"' | 
+	json_pointer='"json-pointer"' | 
+	relative_json_pointer='"relative-json-pointer"' | 
+	regex='"regex"'
 ;
-ContentMediaType:
-	'"contentMediaType"' ':' '"' mediaType=STRING '"'
+AnyString:
+	name=STRING
+	| keyword=JsonSchemaKeyword
 ;
-ContentEncoding:
-	'"contentEncoding"' ':' '"' encoding=STRING '"'
+Number:
+	number=INT ('.' decimal=INT)?
 ;
-/**
- * Numeric
- */
- 
-NumberProperties:
-	Multiples |
-	minimum=Minimum | 
-	exclusiveMinimum=ExclusiveMinimum | 
-	maximum=Maximum | 
-	exclusiveMaximum=ExclusiveMaximum 
-;
-Multiples:
-	'"multiples"' ':' multipleOf=INT
-;
-Minimum:
-	'"minimum"' ':' minimum=NUMBER
-;
-ExclusiveMinimum:
-	'"exclusiveMinimum"' ':' exclusiveMinimum=NUMBER
-;
-Maximum:
-	'"maximum"' ':' maximum=NUMBER
-;
-ExclusiveMaximum:
-	'"exclusiveMaximum"' ':' exclusiveMaximum=NUMBER
-;
+enum JsonSchemaKeyword:
+	title='"title"'
+	| schemaDraft7='"http://json-schema.org/draft-07/schema#"'
+	| additionalProperties='"additionalProperties"'
+	| additionalItems='"additionalItems"'
+	| description='"description"'
+	| comment='"$comment"'
+	| id='"$id"'
+	| default='"default"'
+	| examples='"examples"'
+	| schema='"$schema"'
+	| ref='"$ref"'
+	| enumKeyword='"enum"'
+	| const='"const"'
+	| type='"type"'	
+	| string='"string"'
+	| integer='"integer"'
+	| number='"number"'
+	| object='"object"'
+	| array='"array"'
+	| boolean='"boolean"'
+	| null='"null"'
+	| date_time='"date-time"'
+	| time='"time"'
+	| date='"date"'
+	| email='"email"'
+	| idn_email='"idn-email"'
+	| hostname='"hostname"'
+	| ipv4='"ipv4"'
+	| ipv6='"ipv6"'
+	| uri='"uri"'
+	| uri_reference='"uri-reference"'
+	| iri='"iri"'
+	| iri_reference='"iri-reference"'
+	| uri_template='"uri-template"'
+	| json_pointer='"json-pointer"'
+	| relative_json_pointer='"relative-json-pointer"'
+	| regex='"regex"'
+	| contains='"contains"'
+	| uniqueItems='"uniqueItems"'
+	| propertyNames='"propertyNames"'
+	| length='"length"'
+	| pattern='"pattern"'
+	| format='"format"'
+	| minProperties='"minProperties"'
+	| maxProperties='"maxProperties"'
+	| dependencies='"dependencies"'
+	| patternProperties='"patternProperties"'
+	| required='"required"'
+	| properties='"properties"'
+	| if='"if"'
+	| then='"then"'
+	| else='"else"'
+	| anyOf='"anyOf"'
+	| oneOf='"oneOf"'
+	| allOf='"allOf"'
+	| not='"not"'	
+	| items='"items"'
+	| contentMediaType='"contentMediaType"'
+	| contentEncoding='"contentEncoding"'
+	| multiples='"multiples"'
+	| minimum='"minimum"'
+	| exclusiveMinimum='"exclusiveMinimum"'
+	| maximum='"maximum"'
+	| exclusiveMaximum='"exclusiveMaximum"';
+
+

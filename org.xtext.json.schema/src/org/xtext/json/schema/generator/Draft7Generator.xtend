@@ -7,7 +7,10 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import org.xtext.json.schema.draft7.Model
+import org.xtext.json.schema.draft7.Schema
+import java.util.List
+import java.util.ArrayList
+import org.xtext.json.schema.draft7.*
 
 /**
  * Generates code from your model files on save.
@@ -15,15 +18,60 @@ import org.xtext.json.schema.draft7.Model
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#code-generation
  */
 class Draft7Generator extends AbstractGenerator {
+	Schema root;
 
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
-		var model = resource.allContents.filter(Model).next
-		var roots = model.getRoot
+		root = resource.allContents.filter(Schema).next
+		objectProperties.forEach[generateBuilderFile(fsa)]
+		var rootname = root.title !== null ?  root.title : "root"
+		objectProperties.add(new CustomModel(root, rootname))
+		root.properties.recursiveObjectsFinder(rootname)
 		
-//		fsa.generateFile('greetings.txt', 'People to greet: ' + 
-//			resource.allContents
-//				.filter(Greeting)
-//				.map[name]
-//				.join(', '))
+	}
+	
+	def void recursiveObjectsFinder(List<NamedSchema> properties )
+	
+	def String getName(AnyString anyString){
+		return anyString.name !== null && !anyString.name.empty ? anyString.name : anyString.keyword.name()
+	}
+	
+//	def generateBuilderFile(CustomModel model, IFileSystemAccess2 fsa) {
+//		fsa.generateFile(model.name.toFirstUpper+".java",model.generateBuilder)
+//	}
+//	def CharSequence generateBuilder(CustomModel model) '''
+//	import java.util.*;
+//	public class «model.name»Builder {
+//		private «model.name.toFirstUpper» «model.name.toFirstLower»;
+//		«model.generateBuilderConstructor()»
+//	}
+//	'''
+//
+//	
+//	def CharSequence generateBuilderConstructor(CustomModel model) '''
+//	public «model.name»Builder(«FOR a:model.model.jsonSchemaProperties.findFirst([JsonSchemaProperty e | e.objectProps !== null]).objectProps.objectRequiredProperties.requiredProperties SEPARATOR ","»«a.name.string.toFirstUpper» «a.name.string.toFirstLower»«ENDFOR») {
+//		«FOR a:model.model.jsonSchemaProperties.findFirst([JsonSchemaProperty e | e.objectProps !== null]).objectProps.objectRequiredProperties.requiredProperties»
+//		this.«a.name.string.toFirstLower» = «a.name.string.toFirstLower»
+//		«ENDFOR»
+//	}
+//	'''
+//
+//	def CharSequence generateBuilderFluentInterface(CustomModel model) '''
+//	«FOR a:model.model.jsonSchemaProperties.findFirst([JsonSchemaProperty e | e.objectProps !== null]).objectProps.objectProperties.properties»
+//	public «a.name.string»Builder «a.name.string.toFirstLower»() {
+//		«model.name.toFirstLower».get«a.name.string.toFirstUpper»();
+//		return this;
+//	}
+//	«ENDFOR»
+//	'''
+	
+}
+
+class CustomModel {
+	public String parentName;
+	public AbstractSchema model;
+	public String name;
+	new(AbstractSchema model, String name){
+		this.model = model
+		this.name = name
 	}
 }

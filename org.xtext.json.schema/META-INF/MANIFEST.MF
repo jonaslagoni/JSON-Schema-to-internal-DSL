@@ -25,5 +25,6 @@ Export-Package: org.xtext.json.schema.validation,
  org.xtext.json.schema,
  org.xtext.json.schema.draft7,
  org.xtext.json.schema.parser.antlr.internal,
- org.xtext.json.schema.draft7.impl
+ org.xtext.json.schema.draft7.impl,
+ org.xtext.json.schema.parser.antlr.lexer
 Import-Package: org.apache.log4j
