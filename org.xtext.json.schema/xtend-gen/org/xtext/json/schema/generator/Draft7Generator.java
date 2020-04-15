@@ -3,7 +3,10 @@
  */
 package org.xtext.json.schema.generator;
 
+import com.google.common.collect.Iterators;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -45,9 +48,31 @@ public class Draft7Generator extends AbstractGenerator {
   
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nno viable alternative at input \')\'"
-      + "\nInvalid number of arguments. The method put(K, V) is not applicable for the arguments (String)");
+    ArrayList<CustomModel> _arrayList = new ArrayList<CustomModel>();
+    this.objectList = _arrayList;
+    HashMap<String, CustomModel> _hashMap = new HashMap<String, CustomModel>();
+    this.definitionsMap = _hashMap;
+    this.root = Iterators.<Schema>filter(resource.getAllContents(), Schema.class).next();
+    String _xifexpression = null;
+    String _title = this.root.getTitle();
+    boolean _tripleNotEquals = (_title != null);
+    if (_tripleNotEquals) {
+      _xifexpression = StringExtensions.toFirstUpper(this.root.getTitle().replace(" ", "").replace(".", ""));
+    } else {
+      _xifexpression = "root";
+    }
+    String rootname = _xifexpression;
+    CustomModel _customModel = new CustomModel(this.root, rootname);
+    this.objectList.add(_customModel);
+    this.recursiveObjectsFinder(this.root.getProperties(), rootname);
+    final Consumer<NamedSchema> _function = (NamedSchema definition) -> {
+    };
+    this.root.getDefinitions().forEach(_function);
+    final Consumer<CustomModel> _function_1 = (CustomModel model) -> {
+      this.generateModelFile(model, fsa);
+    };
+    this.objectList.forEach(_function_1);
+    System.out.println(this.objectList.size());
   }
   
   public void recursiveObjectsFinder(final List<NamedSchema> properties, final String parentName) {
