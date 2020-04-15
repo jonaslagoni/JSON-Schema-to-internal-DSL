@@ -127,7 +127,6 @@
   <eClassifiers xsi:type="ecore:EClass" name="Types">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="jsonTypes" unique="false"
         upperBound="-1" eType="#//JsonTypes"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="jsonType" eType="#//JsonTypes"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AbstractSchema"/>
   <eClassifiers xsi:type="ecore:EClass" name="Reference" eSuperTypes="#//AbstractSchema">

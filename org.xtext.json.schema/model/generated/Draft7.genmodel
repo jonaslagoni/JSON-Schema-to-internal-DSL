@@ -183,7 +183,6 @@
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//Types">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Types/jsonTypes"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Types/jsonType"/>
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//AbstractSchema"/>
     <genClasses ecoreClass="Draft7.ecore#//Reference">

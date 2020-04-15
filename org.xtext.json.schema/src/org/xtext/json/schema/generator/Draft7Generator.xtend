@@ -7,10 +7,19 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import org.xtext.json.schema.draft7.Schema
 import java.util.List
 import java.util.ArrayList
-import org.xtext.json.schema.draft7.*
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.xtext.json.schema.draft7.Schema
+import org.xtext.json.schema.draft7.AbstractSchema
+import org.xtext.json.schema.draft7.AnyString
+import org.xtext.json.schema.draft7.JsonTypes
+import org.xtext.json.schema.draft7.NamedSchema
+import org.eclipse.xtext.naming.IQualifiedNameProvider
+import com.google.inject.Inject
+import org.xtext.json.schema.draft7.Types
+import java.util.Map
+import java.util.HashMap
 
 /**
  * Generates code from your model files on save.
@@ -18,21 +27,181 @@ import org.xtext.json.schema.draft7.*
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#code-generation
  */
 class Draft7Generator extends AbstractGenerator {
-	Schema root;
-
+	@Inject extension IQualifiedNameProvider
+	Schema root
+	Map<String, CustomModel> definitionsMap
+	List<CustomModel> objectList
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
+		objectList = new ArrayList()
+		definitionsMap = new HashMap()
 		root = resource.allContents.filter(Schema).next
-		objectProperties.forEach[generateBuilderFile(fsa)]
-		var rootname = root.title !== null ?  root.title : "root"
-		objectProperties.add(new CustomModel(root, rootname))
+		var rootname = root.title !== null ?  root.title.replace(" ", "").replace(".", "").toFirstUpper : "root"
+		objectList.add(new CustomModel(root, rootname))
 		root.properties.recursiveObjectsFinder(rootname)
-		
+		root.definitions.forEach[definition | {
+			//definitionsMap.put('''«definition.name.realizeName»''', )
+		}]
+		objectList.forEach[model | {
+			model.generateModelFile(fsa)
+		}]
+		System.out.println(objectList.size)
 	}
 	
-	def void recursiveObjectsFinder(List<NamedSchema> properties )
+	def void recursiveObjectsFinder(List<NamedSchema> properties, String parentName){
+		properties.forEach[property | {
+			if(property.schema.isSchema){
+				var schema = (property.schema as Schema)
+				if(property.schema.isObject){
+					val cm = new CustomModel(schema, property.name.realizeName)
+					cm.parentName = parentName;
+					objectList.add(cm)
+					schema.properties.recursiveObjectsFinder(property.name.realizeName)
+				}
+				if(schema.anyOfs !== null && !schema.anyOfs.empty){
+					schema.anyOfs.complexityObjectsFinder(property.name.realizeName)
+				}
+				if(schema.oneOfs !== null && !schema.oneOfs.empty){
+					schema.oneOfs.complexityObjectsFinder(property.name.realizeName)
+				}
+				if(schema.allOfs !== null && !schema.allOfs.empty){
+					schema.allOfs.complexityObjectsFinder(property.name.realizeName)
+				}
+			}
+		}]
+	}
 	
-	def String getName(AnyString anyString){
-		return anyString.name !== null && !anyString.name.empty ? anyString.name : anyString.keyword.name()
+	var anonymCounter = 1
+	def void complexityObjectsFinder(List<AbstractSchema> schemas, String parentName){
+		schemas.forEach[abstractSchema | {
+			if(abstractSchema.isSchema){
+				var schema = (abstractSchema as Schema)
+				val name = "anonym-"+(anonymCounter++)
+				if(schema.isObject){
+					val cm = new CustomModel(schema, name)
+					cm.parentName = parentName;
+					objectList.add(cm)
+					schema.properties.recursiveObjectsFinder(name)
+				}
+				if(schema.anyOfs !== null && !schema.anyOfs.empty){
+					schema.anyOfs.complexityObjectsFinder(name)
+				}
+				if(schema.oneOfs !== null && !schema.oneOfs.empty){
+					schema.oneOfs.complexityObjectsFinder(name)
+				}
+				if(schema.allOfs !== null && !schema.allOfs.empty){
+					schema.allOfs.complexityObjectsFinder(name)
+				}
+			}
+		}]
+	}
+	def generateModelFile(CustomModel model, IFileSystemAccess2 fsa) {
+		System.out.println("Test")
+		fsa.generateFile("model/" +model.name.toFirstUpper+".java", model.generateModel)
+	}
+	
+	def CharSequence generateModel(CustomModel model) '''
+	import java.util.*;
+	public class «model.name.toFirstUpper» {
+		«model.generateModelProperties»
+		«model.generateModelConstructor»
+	}
+	'''
+	
+	def CharSequence generateModelProperties(CustomModel model){		
+		return '''
+		«FOR property:(model.model as Schema).properties»
+			«IF property.schema instanceof Schema && (property.schema as Schema).type !== null»
+				«FOR type:(property.schema as Schema).type.jsonTypes»
+					«IF type.toJavaType(model) !== null»
+					private «type.toJavaType(model)» «property.name.realizeName.toFirstLower»;
+					«ENDIF»
+				«ENDFOR»
+			«ENDIF»
+		«ENDFOR»
+		'''
+	
+	}
+	
+	def CharSequence generateModelConstructor(CustomModel model) {
+		
+	//TODO Ensure when there are multiple types it should generate multiple constructors 	
+	return '''
+	public «model.name.toFirstUpper»(«FOR requiredPropString:(model.model as Schema).requiredProperties SEPARATOR ","»
+	«IF requiredPropString.getRequiredProperty(model) !== null»
+		«requiredPropString.getRequiredProperty(model).type.jsonTypes.get(0).toJavaType(model)» «requiredPropString.realizeName.toFirstLower»
+	«ENDIF»«ENDFOR») {
+		«FOR requiredProp:(model.model as Schema).requiredProperties»
+		«IF requiredProp.getRequiredProperty(model) !== null»
+		this.«requiredProp.realizeName.toFirstLower» = «requiredProp.realizeName.toFirstLower»;
+		«ENDIF»
+		«ENDFOR»
+	}
+	'''
+	}
+	
+	def Schema getRequiredProperty(AnyString requiredProp, CustomModel model){
+		if(model.model.isSchema){
+			for(i : 0 .. (model.model as Schema).properties.size-1){
+				var property = (model.model as Schema).properties.get(i)
+				if(property.schema.isSchema){
+					if(requiredProp.realizeName.equals(property.name.realizeName)){
+						return property.schema as Schema
+					}
+					
+				}
+			}
+		}
+		return null
+	}
+	
+	
+	def String toJavaType(JsonTypes type, CustomModel model){
+		switch(type){
+			case BOOLEAN: {
+				return 'Boolean'
+			}
+			case INTEGER: {
+				return 'Integer'
+			}
+			case NULL: {
+				return null
+			}
+			case NUMBER: {
+				return 'Double'
+			}
+			case OBJECT: {
+				return model.name.toFirstUpper
+			}
+			case STRING: {
+				return 'String'
+			}
+			case ARRAY: {
+				return 'List<' + model.parentName.toFirstUpper + '>' 
+			}
+			default: {
+				return null
+			}
+		}
+	}
+	
+	def boolean isSchema(AbstractSchema schema){
+		if(schema instanceof Schema){
+			return true
+		}
+		return false
+	}
+	
+	def boolean isObject(AbstractSchema schema){
+		if(schema.isSchema){
+			if((schema as Schema).type !== null && (schema as Schema).type.jsonTypes.findFirst[t | t === JsonTypes.OBJECT] !== null){
+				return true
+			}
+		}
+		return false
+	}
+	
+	def String realizeName(AnyString anyString){
+		return anyString.name !== null && !anyString.name.empty ? anyString.name : anyString.keyword.name().toLowerCase
 	}
 	
 //	def generateBuilderFile(CustomModel model, IFileSystemAccess2 fsa) {
@@ -67,9 +236,9 @@ class Draft7Generator extends AbstractGenerator {
 }
 
 class CustomModel {
-	public String parentName;
-	public AbstractSchema model;
-	public String name;
+	@Accessors String parentName;
+	@Accessors AbstractSchema model;
+	@Accessors String name;
 	new(AbstractSchema model, String name){
 		this.model = model
 		this.name = name

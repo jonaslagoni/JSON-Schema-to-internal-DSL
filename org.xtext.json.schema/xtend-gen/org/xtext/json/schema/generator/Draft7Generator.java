@@ -3,14 +3,28 @@
  */
 package org.xtext.json.schema.generator;
 
+import com.google.inject.Inject;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.generator.AbstractGenerator;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGeneratorContext;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.xbase.lib.Extension;
+import org.eclipse.xtext.xbase.lib.Functions.Function1;
+import org.eclipse.xtext.xbase.lib.IntegerRange;
+import org.eclipse.xtext.xbase.lib.IterableExtensions;
+import org.eclipse.xtext.xbase.lib.StringExtensions;
+import org.xtext.json.schema.draft7.AbstractSchema;
 import org.xtext.json.schema.draft7.AnyString;
+import org.xtext.json.schema.draft7.JsonTypes;
 import org.xtext.json.schema.draft7.NamedSchema;
 import org.xtext.json.schema.draft7.Schema;
+import org.xtext.json.schema.generator.CustomModel;
 
 /**
  * Generates code from your model files on save.
@@ -19,27 +33,283 @@ import org.xtext.json.schema.draft7.Schema;
  */
 @SuppressWarnings("all")
 public class Draft7Generator extends AbstractGenerator {
+  @Inject
+  @Extension
+  private IQualifiedNameProvider _iQualifiedNameProvider;
+  
   private Schema root;
+  
+  private Map<String, CustomModel> definitionsMap;
+  
+  private List<CustomModel> objectList;
   
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
     throw new Error("Unresolved compilation problems:"
-      + "\nThe method or field objectProperties is undefined"
-      + "\nThe method generateBuilderFile(IFileSystemAccess2) is undefined"
-      + "\nThe method or field objectProperties is undefined"
-      + "\nInvalid number of arguments. The method recursiveObjectsFinder(List<NamedSchema>) is not applicable for the arguments (EList<NamedSchema>,String)"
-      + "\nforEach cannot be resolved"
-      + "\nadd cannot be resolved");
+      + "\nno viable alternative at input \')\'"
+      + "\nInvalid number of arguments. The method put(K, V) is not applicable for the arguments (String)");
   }
   
-  public abstract void recursiveObjectsFinder(final List<NamedSchema> properties);
+  public void recursiveObjectsFinder(final List<NamedSchema> properties, final String parentName) {
+    final Consumer<NamedSchema> _function = (NamedSchema property) -> {
+      boolean _isSchema = this.isSchema(property.getSchema());
+      if (_isSchema) {
+        AbstractSchema _schema = property.getSchema();
+        Schema schema = ((Schema) _schema);
+        boolean _isObject = this.isObject(property.getSchema());
+        if (_isObject) {
+          String _realizeName = this.realizeName(property.getName());
+          final CustomModel cm = new CustomModel(schema, _realizeName);
+          cm.setParentName(parentName);
+          this.objectList.add(cm);
+          this.recursiveObjectsFinder(schema.getProperties(), this.realizeName(property.getName()));
+        }
+        if (((schema.getAnyOfs() != null) && (!schema.getAnyOfs().isEmpty()))) {
+          this.complexityObjectsFinder(schema.getAnyOfs(), this.realizeName(property.getName()));
+        }
+        if (((schema.getOneOfs() != null) && (!schema.getOneOfs().isEmpty()))) {
+          this.complexityObjectsFinder(schema.getOneOfs(), this.realizeName(property.getName()));
+        }
+        if (((schema.getAllOfs() != null) && (!schema.getAllOfs().isEmpty()))) {
+          this.complexityObjectsFinder(schema.getAllOfs(), this.realizeName(property.getName()));
+        }
+      }
+    };
+    properties.forEach(_function);
+  }
   
-  public String getName(final AnyString anyString) {
+  private int anonymCounter = 1;
+  
+  public void complexityObjectsFinder(final List<AbstractSchema> schemas, final String parentName) {
+    final Consumer<AbstractSchema> _function = (AbstractSchema abstractSchema) -> {
+      boolean _isSchema = this.isSchema(abstractSchema);
+      if (_isSchema) {
+        Schema schema = ((Schema) abstractSchema);
+        int _plusPlus = this.anonymCounter++;
+        final String name = ("anonym-" + Integer.valueOf(_plusPlus));
+        boolean _isObject = this.isObject(schema);
+        if (_isObject) {
+          final CustomModel cm = new CustomModel(schema, name);
+          cm.setParentName(parentName);
+          this.objectList.add(cm);
+          this.recursiveObjectsFinder(schema.getProperties(), name);
+        }
+        if (((schema.getAnyOfs() != null) && (!schema.getAnyOfs().isEmpty()))) {
+          this.complexityObjectsFinder(schema.getAnyOfs(), name);
+        }
+        if (((schema.getOneOfs() != null) && (!schema.getOneOfs().isEmpty()))) {
+          this.complexityObjectsFinder(schema.getOneOfs(), name);
+        }
+        if (((schema.getAllOfs() != null) && (!schema.getAllOfs().isEmpty()))) {
+          this.complexityObjectsFinder(schema.getAllOfs(), name);
+        }
+      }
+    };
+    schemas.forEach(_function);
+  }
+  
+  public void generateModelFile(final CustomModel model, final IFileSystemAccess2 fsa) {
+    System.out.println("Test");
+    String _firstUpper = StringExtensions.toFirstUpper(model.getName());
+    String _plus = ("model/" + _firstUpper);
+    String _plus_1 = (_plus + ".java");
+    fsa.generateFile(_plus_1, this.generateModel(model));
+  }
+  
+  public CharSequence generateModel(final CustomModel model) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("import java.util.*;");
+    _builder.newLine();
+    _builder.append("public class ");
+    String _firstUpper = StringExtensions.toFirstUpper(model.getName());
+    _builder.append(_firstUpper);
+    _builder.append(" {");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t");
+    CharSequence _generateModelProperties = this.generateModelProperties(model);
+    _builder.append(_generateModelProperties, "\t");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t");
+    CharSequence _generateModelConstructor = this.generateModelConstructor(model);
+    _builder.append(_generateModelConstructor, "\t");
+    _builder.newLineIfNotEmpty();
+    _builder.append("}");
+    _builder.newLine();
+    return _builder;
+  }
+  
+  public CharSequence generateModelProperties(final CustomModel model) {
+    StringConcatenation _builder = new StringConcatenation();
+    {
+      AbstractSchema _model = model.getModel();
+      EList<NamedSchema> _properties = ((Schema) _model).getProperties();
+      for(final NamedSchema property : _properties) {
+        {
+          if (((property.getSchema() instanceof Schema) && (((Schema) property.getSchema()).getType() != null))) {
+            {
+              AbstractSchema _schema = property.getSchema();
+              EList<JsonTypes> _jsonTypes = ((Schema) _schema).getType().getJsonTypes();
+              for(final JsonTypes type : _jsonTypes) {
+                {
+                  String _javaType = this.toJavaType(type, model);
+                  boolean _tripleNotEquals = (_javaType != null);
+                  if (_tripleNotEquals) {
+                    _builder.append("private ");
+                    String _javaType_1 = this.toJavaType(type, model);
+                    _builder.append(_javaType_1);
+                    _builder.append(" ");
+                    String _firstLower = StringExtensions.toFirstLower(this.realizeName(property.getName()));
+                    _builder.append(_firstLower);
+                    _builder.append(";");
+                    _builder.newLineIfNotEmpty();
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return _builder;
+  }
+  
+  public CharSequence generateModelConstructor(final CustomModel model) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("public ");
+    String _firstUpper = StringExtensions.toFirstUpper(model.getName());
+    _builder.append(_firstUpper);
+    _builder.append("(");
+    {
+      AbstractSchema _model = model.getModel();
+      EList<AnyString> _requiredProperties = ((Schema) _model).getRequiredProperties();
+      boolean _hasElements = false;
+      for(final AnyString requiredPropString : _requiredProperties) {
+        if (!_hasElements) {
+          _hasElements = true;
+        } else {
+          _builder.appendImmediate(",", "");
+        }
+        _builder.newLineIfNotEmpty();
+        {
+          Schema _requiredProperty = this.getRequiredProperty(requiredPropString, model);
+          boolean _tripleNotEquals = (_requiredProperty != null);
+          if (_tripleNotEquals) {
+            String _javaType = this.toJavaType(this.getRequiredProperty(requiredPropString, model).getType().getJsonTypes().get(0), model);
+            _builder.append(_javaType);
+            _builder.append(" ");
+            String _firstLower = StringExtensions.toFirstLower(this.realizeName(requiredPropString));
+            _builder.append(_firstLower);
+            _builder.newLineIfNotEmpty();
+            _builder.append("\t");
+          }
+        }
+      }
+    }
+    _builder.append(") {");
+    _builder.newLineIfNotEmpty();
+    {
+      AbstractSchema _model_1 = model.getModel();
+      EList<AnyString> _requiredProperties_1 = ((Schema) _model_1).getRequiredProperties();
+      for(final AnyString requiredProp : _requiredProperties_1) {
+        {
+          Schema _requiredProperty_1 = this.getRequiredProperty(requiredProp, model);
+          boolean _tripleNotEquals_1 = (_requiredProperty_1 != null);
+          if (_tripleNotEquals_1) {
+            _builder.append("\t");
+            _builder.append("this.");
+            String _firstLower_1 = StringExtensions.toFirstLower(this.realizeName(requiredProp));
+            _builder.append(_firstLower_1, "\t");
+            _builder.append(" = ");
+            String _firstLower_2 = StringExtensions.toFirstLower(this.realizeName(requiredProp));
+            _builder.append(_firstLower_2, "\t");
+            _builder.append(";");
+            _builder.newLineIfNotEmpty();
+          }
+        }
+      }
+    }
+    _builder.append("}");
+    _builder.newLine();
+    return _builder;
+  }
+  
+  public Schema getRequiredProperty(final AnyString requiredProp, final CustomModel model) {
+    boolean _isSchema = this.isSchema(model.getModel());
+    if (_isSchema) {
+      AbstractSchema _model = model.getModel();
+      int _size = ((Schema) _model).getProperties().size();
+      int _minus = (_size - 1);
+      IntegerRange _upTo = new IntegerRange(0, _minus);
+      for (final Integer i : _upTo) {
+        {
+          AbstractSchema _model_1 = model.getModel();
+          NamedSchema property = ((Schema) _model_1).getProperties().get((i).intValue());
+          boolean _isSchema_1 = this.isSchema(property.getSchema());
+          if (_isSchema_1) {
+            boolean _equals = this.realizeName(requiredProp).equals(this.realizeName(property.getName()));
+            if (_equals) {
+              AbstractSchema _schema = property.getSchema();
+              return ((Schema) _schema);
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+  
+  public String toJavaType(final JsonTypes type, final CustomModel model) {
+    if (type != null) {
+      switch (type) {
+        case BOOLEAN:
+          return "Boolean";
+        case INTEGER:
+          return "Integer";
+        case NULL:
+          return null;
+        case NUMBER:
+          return "Double";
+        case OBJECT:
+          return StringExtensions.toFirstUpper(model.getName());
+        case STRING:
+          return "String";
+        case ARRAY:
+          String _firstUpper = StringExtensions.toFirstUpper(model.getParentName());
+          String _plus = ("List<" + _firstUpper);
+          return (_plus + ">");
+        default:
+          return null;
+      }
+    } else {
+      return null;
+    }
+  }
+  
+  public boolean isSchema(final AbstractSchema schema) {
+    if ((schema instanceof Schema)) {
+      return true;
+    }
+    return false;
+  }
+  
+  public boolean isObject(final AbstractSchema schema) {
+    boolean _isSchema = this.isSchema(schema);
+    if (_isSchema) {
+      if (((((Schema) schema).getType() != null) && (IterableExtensions.<JsonTypes>findFirst(((Schema) schema).getType().getJsonTypes(), ((Function1<JsonTypes, Boolean>) (JsonTypes t) -> {
+        return Boolean.valueOf((t == JsonTypes.OBJECT));
+      })) != null))) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  public String realizeName(final AnyString anyString) {
     String _xifexpression = null;
     if (((anyString.getName() != null) && (!anyString.getName().isEmpty()))) {
       _xifexpression = anyString.getName();
     } else {
-      _xifexpression = anyString.getKeyword().name();
+      _xifexpression = anyString.getKeyword().name().toLowerCase();
     }
     return _xifexpression;
   }

@@ -76,7 +76,7 @@ Example:
 	exampleSchema=Schema | exampleString=AnyString | exampleBoolean=Boolean | exampleNumber=Number | ('[' exampleArrayItems+=Schema (',' exampleArrayItems+=Schema)* ']')
 ;
 Types:
-	('[' jsonTypes+=JsonTypes (',' jsonTypes+=JsonTypes)* ']') | jsonType=JsonTypes
+	('[' jsonTypes+=JsonTypes (',' jsonTypes+=JsonTypes)* ']') | jsonTypes+=JsonTypes
 ;
 AbstractSchema:
 	Reference | Schema
