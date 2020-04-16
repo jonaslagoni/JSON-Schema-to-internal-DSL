@@ -3,6 +3,7 @@ package org.xtext.json.schema.generator
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.xtext.json.schema.draft7.*
+import org.xtext.json.schema.generator.GeneratorUtils
 
 class RootBuilderGenerator {
 	
@@ -55,53 +56,4 @@ class RootBuilderGenerator {
 		'''
 	}
 
-
-	def String toJavaType(JsonTypes type, CustomModel model){
-		switch(type){
-			case BOOLEAN: {
-				return 'Boolean'
-			}
-			case INTEGER: {
-				return 'Integer'
-			}
-			case NULL: {
-				return null
-			}
-			case NUMBER: {
-				return 'Double'
-			}
-			case OBJECT: {
-				return model.name.toFirstUpper
-			}
-			case STRING: {
-				return 'String'
-			}
-			case ARRAY: {
-				return 'List<' + model.parentName.toFirstUpper + '>' 
-			}
-			default: {
-				return null
-			}
-		}
-	}
-	
-	def String realizeName(AnyString anyString){
-		return anyString.name !== null && !anyString.name.empty ? anyString.name : anyString.keyword.name().toLowerCase
-	}
-	
-	def boolean isSchema(AbstractSchema schema){
-		if(schema instanceof Schema){
-			return true
-		}
-		return false
-	}
-	
-	def boolean isObject(AbstractSchema schema){
-		if(schema.isSchema){
-			if((schema as Schema).type !== null && (schema as Schema).type.jsonTypes.findFirst[t | t === JsonTypes.OBJECT] !== null){
-				return true
-			}
-		}
-		return false
-	}
 }
