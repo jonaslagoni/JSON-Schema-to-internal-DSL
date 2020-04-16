@@ -1,11 +1,8 @@
-package org.xtext.example.mydsl.generator
+package org.xtext.json.schema.generator
 
-import org.xtext.example.mydsl.myDsl.Schema
-import org.xtext.example.mydsl.myDsl.JsonTypes
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.xtext.example.mydsl.myDsl.AbstractSchema
-import org.xtext.example.mydsl.myDsl.AnyString
 import org.eclipse.xtext.generator.IFileSystemAccess2
+import org.xtext.json.schema.draft7.*
 
 class RootBuilderGenerator {
 	
