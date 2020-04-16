@@ -14,10 +14,13 @@ import org.eclipse.xtext.generator.IGeneratorContext;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.xtext.json.schema.draft7.AbstractSchema;
 import org.xtext.json.schema.draft7.NamedSchema;
+import org.xtext.json.schema.draft7.Reference;
 import org.xtext.json.schema.draft7.Schema;
+import org.xtext.json.schema.generator.BuilderGenerator;
 import org.xtext.json.schema.generator.CustomModel;
 import org.xtext.json.schema.generator.GeneratorUtils;
 import org.xtext.json.schema.generator.ModelGenerator;
+import org.xtext.json.schema.generator.RootBuilderGenerator;
 
 /**
  * Generates code from your model files on save.
@@ -31,6 +34,10 @@ public class Draft7Generator extends AbstractGenerator {
   private List<CustomModel> objectList;
   
   private ModelGenerator modelGenerator;
+  
+  private RootBuilderGenerator rootBuilderGenerator;
+  
+  private BuilderGenerator builderGenerator;
   
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
@@ -52,8 +59,14 @@ public class Draft7Generator extends AbstractGenerator {
     this.recursiveObjectsFinder(this.root.getDefinitions(), rootname);
     ModelGenerator _modelGenerator = new ModelGenerator(this.objectList, this.root);
     this.modelGenerator = _modelGenerator;
+    RootBuilderGenerator _rootBuilderGenerator = new RootBuilderGenerator(this.objectList, this.root);
+    this.rootBuilderGenerator = _rootBuilderGenerator;
+    BuilderGenerator _builderGenerator = new BuilderGenerator(this.objectList, this.root);
+    this.builderGenerator = _builderGenerator;
     final Consumer<CustomModel> _function = (CustomModel model) -> {
       this.modelGenerator.generateModelFile(model, fsa);
+      this.builderGenerator.generateBuilderFile(model, fsa);
+      this.rootBuilderGenerator.generateBuilderFile(model, fsa);
     };
     this.objectList.forEach(_function);
     System.out.println(this.objectList.size());
@@ -61,11 +74,18 @@ public class Draft7Generator extends AbstractGenerator {
   
   public void recursiveObjectsFinder(final List<NamedSchema> properties, final String parentName) {
     final Consumer<NamedSchema> _function = (NamedSchema property) -> {
+      Schema _xifexpression = null;
       boolean _isSchema = GeneratorUtils.isSchema(property.getSchema());
       if (_isSchema) {
         AbstractSchema _schema = property.getSchema();
-        Schema schema = ((Schema) _schema);
-        boolean _isObject = GeneratorUtils.isObject(property.getSchema());
+        _xifexpression = ((Schema) _schema);
+      } else {
+        AbstractSchema _schema_1 = property.getSchema();
+        _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) _schema_1).getUri()), this.root);
+      }
+      Schema schema = _xifexpression;
+      if ((schema != null)) {
+        boolean _isObject = GeneratorUtils.isObject(schema);
         if (_isObject) {
           String _realizeName = GeneratorUtils.realizeName(property.getName());
           final CustomModel cm = new CustomModel(schema, _realizeName);
@@ -91,9 +111,15 @@ public class Draft7Generator extends AbstractGenerator {
   
   public void complexityObjectsFinder(final List<AbstractSchema> schemas, final String parentName) {
     final Consumer<AbstractSchema> _function = (AbstractSchema abstractSchema) -> {
+      Schema _xifexpression = null;
       boolean _isSchema = GeneratorUtils.isSchema(abstractSchema);
       if (_isSchema) {
-        Schema schema = ((Schema) abstractSchema);
+        _xifexpression = ((Schema) abstractSchema);
+      } else {
+        _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) abstractSchema).getUri()), this.root);
+      }
+      Schema schema = _xifexpression;
+      if ((schema != null)) {
         int _plusPlus = this.anonymCounter++;
         final String name = ("anonym-" + Integer.valueOf(_plusPlus));
         boolean _isObject = GeneratorUtils.isObject(schema);

@@ -6,6 +6,7 @@ import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.xtext.json.schema.draft7.AbstractSchema;
+import org.xtext.json.schema.draft7.JsonTypes;
 import org.xtext.json.schema.draft7.NamedSchema;
 import org.xtext.json.schema.draft7.Reference;
 import org.xtext.json.schema.draft7.Schema;
@@ -25,10 +26,14 @@ public class BuilderGenerator {
   
   public void generateBuilderFile(final CustomModel model, final IFileSystemAccess2 fsa) {
     System.out.println("Test");
-    String _firstUpper = StringExtensions.toFirstUpper(model.getName());
-    String _plus = ("Builder/" + _firstUpper);
-    String _plus_1 = (_plus + ".java");
-    fsa.generateFile(_plus_1, this.generateBuilder(model));
+    String _parentName = model.getParentName();
+    boolean _tripleNotEquals = (_parentName != null);
+    if (_tripleNotEquals) {
+      String _firstUpper = StringExtensions.toFirstUpper(model.getName());
+      String _plus = ("Builder/" + _firstUpper);
+      String _plus_1 = (_plus + "Builder.java");
+      fsa.generateFile(_plus_1, this.generateBuilder(model));
+    }
   }
   
   public CharSequence generateBuilder(final CustomModel model) {
@@ -60,10 +65,15 @@ public class BuilderGenerator {
     _builder.append(_generateBuilderMethod, "\t");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
+    CharSequence _generateParentMethod = this.generateParentMethod(model);
+    _builder.append(_generateParentMethod, "\t");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t");
     CharSequence _generateBuilderFinishMethod = this.generateBuilderFinishMethod(model);
     _builder.append(_generateBuilderFinishMethod, "\t");
     _builder.newLineIfNotEmpty();
     _builder.append("}");
+    _builder.newLine();
     _builder.newLine();
     return _builder;
   }
@@ -82,6 +92,7 @@ public class BuilderGenerator {
     String _firstLower = StringExtensions.toFirstLower(model.getName());
     _builder.append(_firstLower);
     _builder.newLineIfNotEmpty();
+    _builder.newLine();
     return _builder;
   }
   
@@ -139,125 +150,119 @@ public class BuilderGenerator {
         {
           if (((schema != null) && (schema.getType() != null))) {
             {
-              AbstractSchema _schema_2 = property.getSchema();
-              boolean _isObject = GeneratorUtils.isObject(((Schema) _schema_2));
+              boolean _isObject = GeneratorUtils.isObject(schema);
               if (_isObject) {
-                _builder.append("\t");
                 _builder.append("public ");
                 String _firstUpper = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstUpper, "\t");
+                _builder.append(_firstUpper);
                 _builder.append("Builder ");
                 String _realizeName = GeneratorUtils.realizeName(property.getName());
-                _builder.append(_realizeName, "\t");
+                _builder.append(_realizeName);
                 _builder.append("(){");
                 _builder.newLineIfNotEmpty();
                 _builder.append("\t");
-                _builder.append("\t");
                 String _firstUpper_1 = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstUpper_1, "\t\t");
+                _builder.append(_firstUpper_1, "\t");
                 _builder.append(" ");
                 String _firstLower = StringExtensions.toFirstLower(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstLower, "\t\t");
+                _builder.append(_firstLower, "\t");
                 _builder.append("Instance;");
                 _builder.newLineIfNotEmpty();
                 _builder.append("\t");
-                _builder.append("\t");
                 _builder.append("if(root.get");
                 String _firstUpper_2 = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstUpper_2, "\t\t");
+                _builder.append(_firstUpper_2, "\t");
                 _builder.append("() != null){");
                 _builder.newLineIfNotEmpty();
-                _builder.append("\t");
                 _builder.append("\t\t");
                 String _firstLower_1 = StringExtensions.toFirstLower(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstLower_1, "\t\t\t");
+                _builder.append(_firstLower_1, "\t\t");
                 _builder.append("Instance = root.get");
                 String _firstUpper_3 = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstUpper_3, "\t\t\t");
+                _builder.append(_firstUpper_3, "\t\t");
                 _builder.append("();");
                 _builder.newLineIfNotEmpty();
-                _builder.append("\t");
                 _builder.append("\t");
                 _builder.append("} else {");
                 _builder.newLine();
-                _builder.append("\t");
                 _builder.append("\t\t");
                 String _firstLower_2 = StringExtensions.toFirstLower(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstLower_2, "\t\t\t");
+                _builder.append(_firstLower_2, "\t\t");
                 _builder.append("Instance = new ");
                 String _firstUpper_4 = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstUpper_4, "\t\t\t");
+                _builder.append(_firstUpper_4, "\t\t");
                 _builder.append("();");
                 _builder.newLineIfNotEmpty();
-                _builder.append("\t");
                 _builder.append("\t\t");
                 _builder.append("root.set");
                 String _firstUpper_5 = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstUpper_5, "\t\t\t");
+                _builder.append(_firstUpper_5, "\t\t");
                 _builder.append("(");
                 String _firstLower_3 = StringExtensions.toFirstLower(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstLower_3, "\t\t\t");
+                _builder.append(_firstLower_3, "\t\t");
                 _builder.append("Instance);");
                 _builder.newLineIfNotEmpty();
                 _builder.append("\t");
-                _builder.append("\t");
                 _builder.append("}");
                 _builder.newLine();
-                _builder.append("\t");
                 _builder.append("\t");
                 _builder.append("return new ");
                 String _firstUpper_6 = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstUpper_6, "\t\t");
+                _builder.append(_firstUpper_6, "\t");
                 _builder.append("Builder(this, ");
                 String _firstLower_4 = StringExtensions.toFirstLower(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstLower_4, "\t\t");
+                _builder.append(_firstLower_4, "\t");
                 _builder.append("Instance);");
                 _builder.newLineIfNotEmpty();
-                _builder.append("\t");
                 _builder.append("}");
-                _builder.newLine();
-                _builder.append("\t");
                 _builder.newLine();
               } else {
-                _builder.append("\t");
-                _builder.append("public ");
-                String _firstUpper_7 = StringExtensions.toFirstUpper(model.getName());
-                String _plus = (_firstUpper_7 + "Builder");
-                _builder.append(_plus, "\t");
-                _builder.append(" set");
-                String _firstUpper_8 = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstUpper_8, "\t");
-                _builder.append("(");
-                String _firstUpper_9 = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstUpper_9, "\t");
-                _builder.append(" ");
-                String _firstLower_5 = StringExtensions.toFirstLower(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstLower_5, "\t");
-                _builder.append("){");
-                _builder.newLineIfNotEmpty();
-                _builder.append("\t");
-                _builder.append("\t");
-                _builder.append("root.set");
-                String _firstUpper_10 = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstUpper_10, "\t\t");
-                _builder.append("(");
-                String _firstLower_6 = StringExtensions.toFirstLower(GeneratorUtils.realizeName(property.getName()));
-                _builder.append(_firstLower_6, "\t\t");
-                _builder.append(");");
-                _builder.newLineIfNotEmpty();
-                _builder.append("\t");
-                _builder.append("\t");
-                _builder.append("return this;");
-                _builder.newLine();
-                _builder.append("\t");
-                _builder.append("}");
-                _builder.newLine();
-                _builder.append("\t");
-                _builder.newLine();
+                {
+                  EList<JsonTypes> _jsonTypes = schema.getType().getJsonTypes();
+                  for(final JsonTypes type : _jsonTypes) {
+                    _builder.append("\t");
+                    String schemaJsonType = GeneratorUtils.toJavaType(type, property);
+                    _builder.newLineIfNotEmpty();
+                    {
+                      if ((schemaJsonType != null)) {
+                        _builder.append("public ");
+                        String _firstUpper_7 = StringExtensions.toFirstUpper(model.getName());
+                        String _plus = (_firstUpper_7 + "Builder");
+                        _builder.append(_plus);
+                        _builder.append(" set");
+                        String _firstUpper_8 = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(property.getName()));
+                        _builder.append(_firstUpper_8);
+                        _builder.append("(");
+                        _builder.append(schemaJsonType);
+                        _builder.append(" ");
+                        String _firstLower_5 = StringExtensions.toFirstLower(GeneratorUtils.realizeName(property.getName()));
+                        _builder.append(_firstLower_5);
+                        _builder.append("){");
+                        _builder.newLineIfNotEmpty();
+                        _builder.append("\t");
+                        _builder.append("root.set");
+                        String _firstUpper_9 = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(property.getName()));
+                        _builder.append(_firstUpper_9, "\t");
+                        _builder.append("(");
+                        String _firstLower_6 = StringExtensions.toFirstLower(GeneratorUtils.realizeName(property.getName()));
+                        _builder.append(_firstLower_6, "\t");
+                        _builder.append(");");
+                        _builder.newLineIfNotEmpty();
+                        _builder.append("\t");
+                        _builder.append("return this;");
+                        _builder.newLine();
+                        _builder.append("}");
+                        _builder.newLine();
+                      }
+                    }
+                  }
+                }
               }
             }
           }
         }
+        _builder.append("\t");
+        _builder.newLine();
       }
     }
     return _builder.toString();
@@ -275,6 +280,7 @@ public class BuilderGenerator {
     _builder.newLine();
     _builder.append("}");
     _builder.newLine();
+    _builder.newLine();
     return _builder;
   }
   
@@ -289,6 +295,7 @@ public class BuilderGenerator {
     _builder.append("return parent.finish();");
     _builder.newLine();
     _builder.append("}");
+    _builder.newLine();
     _builder.newLine();
     return _builder;
   }

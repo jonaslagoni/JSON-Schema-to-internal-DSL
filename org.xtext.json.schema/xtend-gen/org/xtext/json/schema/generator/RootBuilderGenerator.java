@@ -25,10 +25,14 @@ public class RootBuilderGenerator {
   
   public void generateBuilderFile(final CustomModel model, final IFileSystemAccess2 fsa) {
     System.out.println("Test");
-    String _firstUpper = StringExtensions.toFirstUpper(model.getName());
-    String _plus = ("Builder/" + _firstUpper);
-    String _plus_1 = (_plus + ".java");
-    fsa.generateFile(_plus_1, this.generateBuilder(model));
+    String _parentName = model.getParentName();
+    boolean _tripleEquals = (_parentName == null);
+    if (_tripleEquals) {
+      String _firstUpper = StringExtensions.toFirstUpper(model.getName());
+      String _plus = ("Builder/" + _firstUpper);
+      String _plus_1 = (_plus + "Builder.java");
+      fsa.generateFile(_plus_1, this.generateBuilder(model));
+    }
   }
   
   public CharSequence generateBuilder(final CustomModel model) {
@@ -65,6 +69,7 @@ public class RootBuilderGenerator {
     _builder.newLineIfNotEmpty();
     _builder.append("}");
     _builder.newLine();
+    _builder.newLine();
     return _builder;
   }
   
@@ -75,6 +80,7 @@ public class RootBuilderGenerator {
     _builder.append(_firstUpper);
     _builder.append(" root;");
     _builder.newLineIfNotEmpty();
+    _builder.newLine();
     return _builder;
   }
   
@@ -82,9 +88,8 @@ public class RootBuilderGenerator {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("public ");
     String _firstUpper = StringExtensions.toFirstUpper(model.getName());
-    String _plus = (_firstUpper + "Builder");
-    _builder.append(_plus);
-    _builder.append("() {");
+    _builder.append(_firstUpper);
+    _builder.append("Builder() {");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
     _builder.append("root = new ");
@@ -118,8 +123,7 @@ public class RootBuilderGenerator {
         {
           if (((schema != null) && (schema.getType() != null))) {
             {
-              AbstractSchema _schema_2 = property.getSchema();
-              boolean _isObject = GeneratorUtils.isObject(((Schema) _schema_2));
+              boolean _isObject = GeneratorUtils.isObject(schema);
               if (_isObject) {
                 _builder.append("\t");
                 _builder.append("public ");
@@ -233,9 +237,10 @@ public class RootBuilderGenerator {
             }
           }
         }
+        _builder.append("\t");
+        _builder.newLine();
       }
     }
-    _builder.newLine();
     return _builder.toString();
   }
   

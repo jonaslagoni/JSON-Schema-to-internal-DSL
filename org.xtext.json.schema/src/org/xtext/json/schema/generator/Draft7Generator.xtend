@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import org.xtext.json.schema.draft7.Types
 import java.util.Map
 import java.util.HashMap
+import org.xtext.json.schema.draft7.Reference
 
 /**
  * Generates code from your model files on save.
@@ -30,6 +31,8 @@ class Draft7Generator extends AbstractGenerator {
 	Schema root
 	List<CustomModel> objectList
 	ModelGenerator modelGenerator
+	RootBuilderGenerator rootBuilderGenerator
+	BuilderGenerator builderGenerator
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		objectList = new ArrayList()
 		root = resource.allContents.filter(Schema).next
@@ -38,17 +41,21 @@ class Draft7Generator extends AbstractGenerator {
 		root.properties.recursiveObjectsFinder(rootname)
 		root.definitions.recursiveObjectsFinder(rootname)
 		modelGenerator = new ModelGenerator(objectList, root)
+		rootBuilderGenerator = new RootBuilderGenerator(objectList, root)
+		builderGenerator = new BuilderGenerator(objectList, root)
 		objectList.forEach[model | {
 			modelGenerator.generateModelFile(model, fsa)
+			builderGenerator.generateBuilderFile(model, fsa)
+			rootBuilderGenerator.generateBuilderFile(model, fsa)
 		}]
 		System.out.println(objectList.size)
 	}
 	
 	def void recursiveObjectsFinder(List<NamedSchema> properties, String parentName){
 		properties.forEach[property | {
-			if(GeneratorUtils.isSchema(property.schema)){
-				var schema = (property.schema as Schema)
-				if(GeneratorUtils.isObject(property.schema)){
+			var schema = GeneratorUtils.isSchema(property.schema) ? (property.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((property.schema as Reference).uri),root)
+			if(schema !== null){
+				if(GeneratorUtils.isObject(schema)){
 					val cm = new CustomModel(schema, GeneratorUtils.realizeName(property.name))
 					cm.parentName = parentName;
 					objectList.add(cm)
@@ -70,8 +77,8 @@ class Draft7Generator extends AbstractGenerator {
 	var anonymCounter = 1
 	def void complexityObjectsFinder(List<AbstractSchema> schemas, String parentName){
 		schemas.forEach[abstractSchema | {
-			if(GeneratorUtils.isSchema(abstractSchema)){
-				var schema = (abstractSchema as Schema)
+			var schema = GeneratorUtils.isSchema(abstractSchema) ? (abstractSchema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((abstractSchema as Reference).uri),root)
+			if(schema !== null){
 				val name = "anonym-"+(anonymCounter++)
 				if(GeneratorUtils.isObject(schema)){
 					val cm = new CustomModel(schema, name)
@@ -91,5 +98,6 @@ class Draft7Generator extends AbstractGenerator {
 			}
 		}]
 	}
+	
 	
 }

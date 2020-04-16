@@ -19,9 +19,11 @@ class RootBuilderGenerator {
 	
 	def generateBuilderFile(CustomModel model, IFileSystemAccess2 fsa) {
 		System.out.println("Test")
-		fsa.generateFile("Builder/" +model.name.toFirstUpper+".java", model.generateBuilder)
+		if(model.parentName === null){
+			fsa.generateFile("Builder/" +model.name.toFirstUpper+"Builder.java", model.generateBuilder)
+		}
 	}
-	def CharSequence generateBuilder(CustomModel model) '''
+	def CharSequence generateBuilder(CustomModel model) { '''
 	
 	import java.util.*;
 	import model.«model.name.toFirstUpper»;
@@ -32,10 +34,15 @@ class RootBuilderGenerator {
 		«model.generateRootBuilderMethod»
 		«model.generateRootBuilderFinishMethod»
 	}
+	
 	'''
+	
+	}
+	
 	def CharSequence generateRootBuilderVariables(CustomModel model) {
 		'''
 		private «model.name.toFirstUpper» root;
+		
 		'''
 		
 	}
@@ -44,7 +51,7 @@ class RootBuilderGenerator {
 		
 	//TODO Ensure when there are multiple types it should generate multiple constructors 	
 	return '''
-	public «model.name.toFirstUpper+"Builder"»() {
+	public «model.name.toFirstUpper»Builder() {
 		root = new «model.name.toFirstUpper»()
 	}
 	
@@ -56,7 +63,7 @@ class RootBuilderGenerator {
 		«FOR property:(model.model as Schema).properties»
 			«var schema = GeneratorUtils.isSchema(property.schema) ? (property.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((property.schema as Reference).uri),root)»
 				«IF schema !== null && schema.type !== null»
-					«IF GeneratorUtils.isObject(property.schema as Schema)»
+					«IF GeneratorUtils.isObject(schema)»
 						public «GeneratorUtils.realizeName(property.name).toFirstUpper»Builder «GeneratorUtils.realizeName(property.name)»(){
 							«GeneratorUtils.realizeName(property.name).toFirstUpper» «GeneratorUtils.realizeName(property.name).toFirstLower»Instance;
 							if(root.get«GeneratorUtils.realizeName(property.name).toFirstUpper»() != null){
@@ -74,8 +81,8 @@ class RootBuilderGenerator {
 						}
 					«ENDIF»
 				«ENDIF»
+				
 		«ENDFOR»
-		
 		'''
 	}
 	
