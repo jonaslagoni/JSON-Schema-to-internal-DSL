@@ -27,44 +27,41 @@ import java.util.HashMap
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#code-generation
  */
 class Draft7Generator extends AbstractGenerator {
-	@Inject extension IQualifiedNameProvider
 	Schema root
-	Map<String, CustomModel> definitionsMap
 	List<CustomModel> objectList
+	ModelGenerator modelGenerator
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		objectList = new ArrayList()
-		definitionsMap = new HashMap()
 		root = resource.allContents.filter(Schema).next
 		var rootname = root.title !== null ?  root.title.replace(" ", "").replace(".", "").toFirstUpper : "root"
 		objectList.add(new CustomModel(root, rootname))
 		root.properties.recursiveObjectsFinder(rootname)
-		root.definitions.forEach[definition | {
-			//definitionsMap.put('''«definition.name.realizeName»''', )
-		}]
+		root.definitions.recursiveObjectsFinder(rootname)
+		modelGenerator = new ModelGenerator(objectList, root)
 		objectList.forEach[model | {
-			model.generateModelFile(fsa)
+			modelGenerator.generateModelFile(model, fsa)
 		}]
 		System.out.println(objectList.size)
 	}
 	
 	def void recursiveObjectsFinder(List<NamedSchema> properties, String parentName){
 		properties.forEach[property | {
-			if(property.schema.isSchema){
+			if(GeneratorUtils.isSchema(property.schema)){
 				var schema = (property.schema as Schema)
-				if(property.schema.isObject){
-					val cm = new CustomModel(schema, property.name.realizeName)
+				if(GeneratorUtils.isObject(property.schema)){
+					val cm = new CustomModel(schema, GeneratorUtils.realizeName(property.name))
 					cm.parentName = parentName;
 					objectList.add(cm)
-					schema.properties.recursiveObjectsFinder(property.name.realizeName)
+					schema.properties.recursiveObjectsFinder(GeneratorUtils.realizeName(property.name))
 				}
 				if(schema.anyOfs !== null && !schema.anyOfs.empty){
-					schema.anyOfs.complexityObjectsFinder(property.name.realizeName)
+					schema.anyOfs.complexityObjectsFinder(GeneratorUtils.realizeName(property.name))
 				}
 				if(schema.oneOfs !== null && !schema.oneOfs.empty){
-					schema.oneOfs.complexityObjectsFinder(property.name.realizeName)
+					schema.oneOfs.complexityObjectsFinder(GeneratorUtils.realizeName(property.name))
 				}
 				if(schema.allOfs !== null && !schema.allOfs.empty){
-					schema.allOfs.complexityObjectsFinder(property.name.realizeName)
+					schema.allOfs.complexityObjectsFinder(GeneratorUtils.realizeName(property.name))
 				}
 			}
 		}]
@@ -73,10 +70,10 @@ class Draft7Generator extends AbstractGenerator {
 	var anonymCounter = 1
 	def void complexityObjectsFinder(List<AbstractSchema> schemas, String parentName){
 		schemas.forEach[abstractSchema | {
-			if(abstractSchema.isSchema){
+			if(GeneratorUtils.isSchema(abstractSchema)){
 				var schema = (abstractSchema as Schema)
 				val name = "anonym-"+(anonymCounter++)
-				if(schema.isObject){
+				if(GeneratorUtils.isObject(schema)){
 					val cm = new CustomModel(schema, name)
 					cm.parentName = parentName;
 					objectList.add(cm)
@@ -94,153 +91,5 @@ class Draft7Generator extends AbstractGenerator {
 			}
 		}]
 	}
-	def generateModelFile(CustomModel model, IFileSystemAccess2 fsa) {
-		System.out.println("Test")
-		fsa.generateFile("model/" +model.name.toFirstUpper+".java", model.generateModel)
-	}
 	
-	def CharSequence generateModel(CustomModel model) '''
-	import java.util.*;
-	public class «model.name.toFirstUpper» {
-		«model.generateModelProperties»
-		«model.generateModelConstructor»
-	}
-	'''
-	
-	def CharSequence generateModelProperties(CustomModel model){		
-		return '''
-		«FOR property:(model.model as Schema).properties»
-			«IF property.schema instanceof Schema && (property.schema as Schema).type !== null»
-				«FOR type:(property.schema as Schema).type.jsonTypes»
-					«IF type.toJavaType(model) !== null»
-					private «type.toJavaType(model)» «property.name.realizeName.toFirstLower»;
-					«ENDIF»
-				«ENDFOR»
-			«ENDIF»
-		«ENDFOR»
-		'''
-	
-	}
-	
-	def CharSequence generateModelConstructor(CustomModel model) {
-		
-	//TODO Ensure when there are multiple types it should generate multiple constructors 	
-	return '''
-	public «model.name.toFirstUpper»(«FOR requiredPropString:(model.model as Schema).requiredProperties SEPARATOR ","»
-	«IF requiredPropString.getRequiredProperty(model) !== null»
-		«requiredPropString.getRequiredProperty(model).type.jsonTypes.get(0).toJavaType(model)» «requiredPropString.realizeName.toFirstLower»
-	«ENDIF»«ENDFOR») {
-		«FOR requiredProp:(model.model as Schema).requiredProperties»
-		«IF requiredProp.getRequiredProperty(model) !== null»
-		this.«requiredProp.realizeName.toFirstLower» = «requiredProp.realizeName.toFirstLower»;
-		«ENDIF»
-		«ENDFOR»
-	}
-	'''
-	}
-	
-	def Schema getRequiredProperty(AnyString requiredProp, CustomModel model){
-		if(model.model.isSchema){
-			for(i : 0 .. (model.model as Schema).properties.size-1){
-				var property = (model.model as Schema).properties.get(i)
-				if(property.schema.isSchema){
-					if(requiredProp.realizeName.equals(property.name.realizeName)){
-						return property.schema as Schema
-					}
-					
-				}
-			}
-		}
-		return null
-	}
-	
-	
-	def String toJavaType(JsonTypes type, CustomModel model){
-		switch(type){
-			case BOOLEAN: {
-				return 'Boolean'
-			}
-			case INTEGER: {
-				return 'Integer'
-			}
-			case NULL: {
-				return null
-			}
-			case NUMBER: {
-				return 'Double'
-			}
-			case OBJECT: {
-				return model.name.toFirstUpper
-			}
-			case STRING: {
-				return 'String'
-			}
-			case ARRAY: {
-				return 'List<' + model.parentName.toFirstUpper + '>' 
-			}
-			default: {
-				return null
-			}
-		}
-	}
-	
-	def boolean isSchema(AbstractSchema schema){
-		if(schema instanceof Schema){
-			return true
-		}
-		return false
-	}
-	
-	def boolean isObject(AbstractSchema schema){
-		if(schema.isSchema){
-			if((schema as Schema).type !== null && (schema as Schema).type.jsonTypes.findFirst[t | t === JsonTypes.OBJECT] !== null){
-				return true
-			}
-		}
-		return false
-	}
-	
-	def String realizeName(AnyString anyString){
-		return anyString.name !== null && !anyString.name.empty ? anyString.name : anyString.keyword.name().toLowerCase
-	}
-	
-//	def generateBuilderFile(CustomModel model, IFileSystemAccess2 fsa) {
-//		fsa.generateFile(model.name.toFirstUpper+".java",model.generateBuilder)
-//	}
-//	def CharSequence generateBuilder(CustomModel model) '''
-//	import java.util.*;
-//	public class «model.name»Builder {
-//		private «model.name.toFirstUpper» «model.name.toFirstLower»;
-//		«model.generateBuilderConstructor()»
-//	}
-//	'''
-//
-//	
-//	def CharSequence generateBuilderConstructor(CustomModel model) '''
-//	public «model.name»Builder(«FOR a:model.model.jsonSchemaProperties.findFirst([JsonSchemaProperty e | e.objectProps !== null]).objectProps.objectRequiredProperties.requiredProperties SEPARATOR ","»«a.name.string.toFirstUpper» «a.name.string.toFirstLower»«ENDFOR») {
-//		«FOR a:model.model.jsonSchemaProperties.findFirst([JsonSchemaProperty e | e.objectProps !== null]).objectProps.objectRequiredProperties.requiredProperties»
-//		this.«a.name.string.toFirstLower» = «a.name.string.toFirstLower»
-//		«ENDFOR»
-//	}
-//	'''
-//
-//	def CharSequence generateBuilderFluentInterface(CustomModel model) '''
-//	«FOR a:model.model.jsonSchemaProperties.findFirst([JsonSchemaProperty e | e.objectProps !== null]).objectProps.objectProperties.properties»
-//	public «a.name.string»Builder «a.name.string.toFirstLower»() {
-//		«model.name.toFirstLower».get«a.name.string.toFirstUpper»();
-//		return this;
-//	}
-//	«ENDFOR»
-//	'''
-	
-}
-
-class CustomModel {
-	@Accessors String parentName;
-	@Accessors AbstractSchema model;
-	@Accessors String name;
-	new(AbstractSchema model, String name){
-		this.model = model
-		this.name = name
-	}
 }
