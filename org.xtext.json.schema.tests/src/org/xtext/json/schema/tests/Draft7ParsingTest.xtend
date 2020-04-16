@@ -10,13 +10,13 @@ import org.eclipse.xtext.testing.util.ParseHelper
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
-import org.xtext.json.schema.draft7.Model
+import org.xtext.json.schema.draft7.Schema
 
 @ExtendWith(InjectionExtension)
 @InjectWith(Draft7InjectorProvider)
 class Draft7ParsingTest {
 	@Inject
-	ParseHelper<Model> parseHelper
+	ParseHelper<Schema> parseHelper
 	
 	@Test
 	def void type() {
