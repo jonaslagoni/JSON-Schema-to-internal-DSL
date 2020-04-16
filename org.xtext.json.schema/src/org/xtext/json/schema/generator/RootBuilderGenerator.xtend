@@ -34,21 +34,21 @@ class RootBuilderGenerator {
 		return '''
 		«FOR property:(model.model as Schema).properties»
 			«IF property.schema instanceof Schema && (property.schema as Schema).type !== null»
-				«IF isObject(property.schema as Schema)»
-					public «property.name.realizeName.toFirstUpper»Builder «property.name.realizeName»(){
-						«property.name.realizeName.toFirstUpper» «property.name.realizeName.toFirstLower»Instance;
-						if(root.get«property.name.realizeName.toFirstUpper»() != null){
-							«property.name.realizeName.toFirstLower»Instance = root.get«property.name.realizeName.toFirstUpper»();
+				«IF GeneratorUtils.isObject(property.schema as Schema)»
+					public «GeneratorUtils.realizeName(property.name).toFirstUpper»Builder «GeneratorUtils.realizeName(property.name)»(){
+						«GeneratorUtils.realizeName(property.name).toFirstUpper» «GeneratorUtils.realizeName(property.name).toFirstLower»Instance;
+						if(root.get«GeneratorUtils.realizeName(property.name).toFirstUpper»() != null){
+							«GeneratorUtils.realizeName(property.name).toFirstLower»Instance = root.get«GeneratorUtils.realizeName(property.name).toFirstUpper»();
 						} else {
-							«property.name.realizeName.toFirstLower»Instance = new «property.name.realizeName.toFirstUpper»();
-							root.set«property.name.realizeName.toFirstUpper»(«property.name.realizeName.toFirstLower»Instance);
+							«GeneratorUtils.realizeName(property.name).toFirstLower»Instance = new «GeneratorUtils.realizeName(property.name).toFirstUpper»();
+							root.set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstLower»Instance);
 						}
-						return new «property.name.realizeName.toFirstUpper»Builder(this, «property.name.realizeName.toFirstLower»Instance);
+						return new «GeneratorUtils.realizeName(property.name).toFirstUpper»Builder(this, «GeneratorUtils.realizeName(property.name).toFirstLower»Instance);
 					}
 				«ENDIF»
-				«IF !isObject(property.schema as Schema)»
-					public «model.name.toFirstUpper+"Builder"» set«property.name.realizeName.toFirstUpper»(«property.name.realizeName.toFirstUpper» «property.name.realizeName.toFirstLower»){
-						root.set«property.name.realizeName.toFirstUpper»(«property.name.realizeName.toFirstLower»);
+				«IF !GeneratorUtils.isObject(property.schema as Schema)»
+					public «model.name.toFirstUpper+"Builder"» set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstUpper» «GeneratorUtils.realizeName(property.name).toFirstLower»){
+						root.set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstLower»);
 					}
 				«ENDIF»
 			«ENDIF»
