@@ -6,7 +6,7 @@ import org.xtext.json.schema.draft7.*
 import org.xtext.json.schema.generator.GeneratorUtils
 import java.util.List
 
-class RootBuilderGenerator {
+class BuilderGenerator {
 	
 	
 	List<CustomModel> objectList
@@ -27,31 +27,33 @@ class RootBuilderGenerator {
 	import model.«model.name.toFirstUpper»;
 	
 	public class «model.name.toFirstUpper»Builder {
-		«model.generateRootBuilderVariables»
-		«model.generateRootBuilderConstructor»
-		«model.generateRootBuilderMethod»
-		«model.generateRootBuilderFinishMethod»
+		«model.generateBuilderVariables»
+		«model.generateBuilderConstructor»
+		«model.generateBuilderMethod»
+		«model.generateBuilderFinishMethod»
 	}
 	'''
-	def CharSequence generateRootBuilderVariables(CustomModel model) {
+	def CharSequence generateBuilderVariables(CustomModel model) {
 		'''
-		private «model.name.toFirstUpper» root;
+		private «model.parentName.toFirstUpper»Builder parent;
+		private «model.name.toFirstUpper» «model.name.toFirstLower»
 		'''
 		
 	}
 	
-	def CharSequence generateRootBuilderConstructor(CustomModel model) {
+	def CharSequence generateBuilderConstructor(CustomModel model) {
 		
 	//TODO Ensure when there are multiple types it should generate multiple constructors 	
 	return '''
-	public «model.name.toFirstUpper+"Builder"»() {
-		root = new «model.name.toFirstUpper»()
+	public «model.name.toFirstUpper»Builder(«model.parentName.toFirstUpper»Builder parent, «model.name.toFirstUpper» «model.name.toFirstLower») {
+		this.parent = parent;
+		this.«model.name.toFirstLower» = «model.name.toFirstLower»;
 	}
 	
 	'''
 	}
 	
-	def generateRootBuilderMethod(CustomModel model){
+	def generateBuilderMethod(CustomModel model){
 		return '''
 		«FOR property:(model.model as Schema).properties»
 			«var schema = GeneratorUtils.isSchema(property.schema) ? (property.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((property.schema as Reference).uri),root)»
@@ -67,24 +69,32 @@ class RootBuilderGenerator {
 							}
 							return new «GeneratorUtils.realizeName(property.name).toFirstUpper»Builder(this, «GeneratorUtils.realizeName(property.name).toFirstLower»Instance);
 						}
+						
 					«ELSE»
 						public «model.name.toFirstUpper+"Builder"» set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstUpper» «GeneratorUtils.realizeName(property.name).toFirstLower»){
 							root.set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstLower»);
 							return this;
 						}
+						
 					«ENDIF»
 				«ENDIF»
 		«ENDFOR»
-		
 		'''
 	}
 	
-	def generateRootBuilderFinishMethod(CustomModel model){
+	def generateParentMethod(CustomModel model){
 		'''
-			public «model.name.toFirstUpper» finish() {
-				return root;
+			public «model.parentName.toFirstUpper»Builder parent() {
+				return parent;
 			}
-			
+		'''
+	}
+	
+	def generateBuilderFinishMethod(CustomModel model){
+		'''
+			public «model.parentName.toFirstUpper» finish() {
+				return parent.finish();
+			}
 		'''
 	}
 

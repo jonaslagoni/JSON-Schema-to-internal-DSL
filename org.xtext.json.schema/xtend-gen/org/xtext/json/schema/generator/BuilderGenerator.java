@@ -13,12 +13,12 @@ import org.xtext.json.schema.generator.CustomModel;
 import org.xtext.json.schema.generator.GeneratorUtils;
 
 @SuppressWarnings("all")
-public class RootBuilderGenerator {
+public class BuilderGenerator {
   private List<CustomModel> objectList;
   
   private Schema root;
   
-  public RootBuilderGenerator(final List<CustomModel> objectList, final Schema root) {
+  public BuilderGenerator(final List<CustomModel> objectList, final Schema root) {
     this.objectList = objectList;
     this.root = root;
   }
@@ -48,49 +48,70 @@ public class RootBuilderGenerator {
     _builder.append("Builder {");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
-    CharSequence _generateRootBuilderVariables = this.generateRootBuilderVariables(model);
-    _builder.append(_generateRootBuilderVariables, "\t");
+    CharSequence _generateBuilderVariables = this.generateBuilderVariables(model);
+    _builder.append(_generateBuilderVariables, "\t");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
-    CharSequence _generateRootBuilderConstructor = this.generateRootBuilderConstructor(model);
-    _builder.append(_generateRootBuilderConstructor, "\t");
+    CharSequence _generateBuilderConstructor = this.generateBuilderConstructor(model);
+    _builder.append(_generateBuilderConstructor, "\t");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
-    String _generateRootBuilderMethod = this.generateRootBuilderMethod(model);
-    _builder.append(_generateRootBuilderMethod, "\t");
+    String _generateBuilderMethod = this.generateBuilderMethod(model);
+    _builder.append(_generateBuilderMethod, "\t");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
-    CharSequence _generateRootBuilderFinishMethod = this.generateRootBuilderFinishMethod(model);
-    _builder.append(_generateRootBuilderFinishMethod, "\t");
+    CharSequence _generateBuilderFinishMethod = this.generateBuilderFinishMethod(model);
+    _builder.append(_generateBuilderFinishMethod, "\t");
     _builder.newLineIfNotEmpty();
     _builder.append("}");
     _builder.newLine();
     return _builder;
   }
   
-  public CharSequence generateRootBuilderVariables(final CustomModel model) {
+  public CharSequence generateBuilderVariables(final CustomModel model) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("private ");
-    String _firstUpper = StringExtensions.toFirstUpper(model.getName());
+    String _firstUpper = StringExtensions.toFirstUpper(model.getParentName());
     _builder.append(_firstUpper);
-    _builder.append(" root;");
+    _builder.append("Builder parent;");
+    _builder.newLineIfNotEmpty();
+    _builder.append("private ");
+    String _firstUpper_1 = StringExtensions.toFirstUpper(model.getName());
+    _builder.append(_firstUpper_1);
+    _builder.append(" ");
+    String _firstLower = StringExtensions.toFirstLower(model.getName());
+    _builder.append(_firstLower);
     _builder.newLineIfNotEmpty();
     return _builder;
   }
   
-  public CharSequence generateRootBuilderConstructor(final CustomModel model) {
+  public CharSequence generateBuilderConstructor(final CustomModel model) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("public ");
     String _firstUpper = StringExtensions.toFirstUpper(model.getName());
-    String _plus = (_firstUpper + "Builder");
-    _builder.append(_plus);
-    _builder.append("() {");
+    _builder.append(_firstUpper);
+    _builder.append("Builder(");
+    String _firstUpper_1 = StringExtensions.toFirstUpper(model.getParentName());
+    _builder.append(_firstUpper_1);
+    _builder.append("Builder parent, ");
+    String _firstUpper_2 = StringExtensions.toFirstUpper(model.getName());
+    _builder.append(_firstUpper_2);
+    _builder.append(" ");
+    String _firstLower = StringExtensions.toFirstLower(model.getName());
+    _builder.append(_firstLower);
+    _builder.append(") {");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
-    _builder.append("root = new ");
-    String _firstUpper_1 = StringExtensions.toFirstUpper(model.getName());
-    _builder.append(_firstUpper_1, "\t");
-    _builder.append("()");
+    _builder.append("this.parent = parent;");
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("this.");
+    String _firstLower_1 = StringExtensions.toFirstLower(model.getName());
+    _builder.append(_firstLower_1, "\t");
+    _builder.append(" = ");
+    String _firstLower_2 = StringExtensions.toFirstLower(model.getName());
+    _builder.append(_firstLower_2, "\t");
+    _builder.append(";");
     _builder.newLineIfNotEmpty();
     _builder.append("}");
     _builder.newLine();
@@ -98,7 +119,7 @@ public class RootBuilderGenerator {
     return _builder;
   }
   
-  public String generateRootBuilderMethod(final CustomModel model) {
+  public String generateBuilderMethod(final CustomModel model) {
     StringConcatenation _builder = new StringConcatenation();
     {
       AbstractSchema _model = model.getModel();
@@ -195,6 +216,8 @@ public class RootBuilderGenerator {
                 _builder.append("\t");
                 _builder.append("}");
                 _builder.newLine();
+                _builder.append("\t");
+                _builder.newLine();
               } else {
                 _builder.append("\t");
                 _builder.append("public ");
@@ -229,28 +252,43 @@ public class RootBuilderGenerator {
                 _builder.append("\t");
                 _builder.append("}");
                 _builder.newLine();
+                _builder.append("\t");
+                _builder.newLine();
               }
             }
           }
         }
       }
     }
-    _builder.newLine();
     return _builder.toString();
   }
   
-  public CharSequence generateRootBuilderFinishMethod(final CustomModel model) {
+  public CharSequence generateParentMethod(final CustomModel model) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("public ");
-    String _firstUpper = StringExtensions.toFirstUpper(model.getName());
+    String _firstUpper = StringExtensions.toFirstUpper(model.getParentName());
+    _builder.append(_firstUpper);
+    _builder.append("Builder parent() {");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t");
+    _builder.append("return parent;");
+    _builder.newLine();
+    _builder.append("}");
+    _builder.newLine();
+    return _builder;
+  }
+  
+  public CharSequence generateBuilderFinishMethod(final CustomModel model) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("public ");
+    String _firstUpper = StringExtensions.toFirstUpper(model.getParentName());
     _builder.append(_firstUpper);
     _builder.append(" finish() {");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
-    _builder.append("return root;");
+    _builder.append("return parent.finish();");
     _builder.newLine();
     _builder.append("}");
-    _builder.newLine();
     _builder.newLine();
     return _builder;
   }
