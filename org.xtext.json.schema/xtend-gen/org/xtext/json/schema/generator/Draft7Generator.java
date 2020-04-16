@@ -84,9 +84,10 @@ public class Draft7Generator extends AbstractGenerator {
         _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) _schema_1).getUri()), this.root);
       }
       Schema schema = _xifexpression;
-      if ((schema != null)) {
+      if (((schema != null) && (!GeneratorUtils.realizeName(property.getName()).toLowerCase().equals(parentName.toLowerCase())))) {
         boolean _isObject = GeneratorUtils.isObject(schema);
         if (_isObject) {
+          this.depthCounter = 0;
           String _realizeName = GeneratorUtils.realizeName(property.getName());
           final CustomModel cm = new CustomModel(schema, _realizeName);
           cm.setParentName(parentName);
@@ -109,6 +110,8 @@ public class Draft7Generator extends AbstractGenerator {
   
   private int anonymCounter = 1;
   
+  private int depthCounter = 0;
+  
   public void complexityObjectsFinder(final List<AbstractSchema> schemas, final String parentName) {
     final Consumer<AbstractSchema> _function = (AbstractSchema abstractSchema) -> {
       Schema _xifexpression = null;
@@ -119,23 +122,27 @@ public class Draft7Generator extends AbstractGenerator {
         _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) abstractSchema).getUri()), this.root);
       }
       Schema schema = _xifexpression;
-      if ((schema != null)) {
+      if (((schema != null) && (this.depthCounter < 1))) {
         int _plusPlus = this.anonymCounter++;
         final String name = ("anonym-" + Integer.valueOf(_plusPlus));
         boolean _isObject = GeneratorUtils.isObject(schema);
         if (_isObject) {
+          this.depthCounter = 0;
           final CustomModel cm = new CustomModel(schema, name);
           cm.setParentName(parentName);
           this.objectList.add(cm);
           this.recursiveObjectsFinder(schema.getProperties(), name);
         }
         if (((schema.getAnyOfs() != null) && (!schema.getAnyOfs().isEmpty()))) {
+          this.depthCounter++;
           this.complexityObjectsFinder(schema.getAnyOfs(), name);
         }
         if (((schema.getOneOfs() != null) && (!schema.getOneOfs().isEmpty()))) {
+          this.depthCounter++;
           this.complexityObjectsFinder(schema.getOneOfs(), name);
         }
         if (((schema.getAllOfs() != null) && (!schema.getAllOfs().isEmpty()))) {
+          this.depthCounter++;
           this.complexityObjectsFinder(schema.getAllOfs(), name);
         }
       }

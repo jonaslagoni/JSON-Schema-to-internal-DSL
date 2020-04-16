@@ -54,8 +54,9 @@ class Draft7Generator extends AbstractGenerator {
 	def void recursiveObjectsFinder(List<NamedSchema> properties, String parentName){
 		properties.forEach[property | {
 			var schema = GeneratorUtils.isSchema(property.schema) ? (property.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((property.schema as Reference).uri),root)
-			if(schema !== null){
+			if(schema !== null && !GeneratorUtils.realizeName(property.name).toLowerCase.equals(parentName.toLowerCase)){
 				if(GeneratorUtils.isObject(schema)){
+					depthCounter = 0
 					val cm = new CustomModel(schema, GeneratorUtils.realizeName(property.name))
 					cm.parentName = parentName;
 					objectList.add(cm)
@@ -75,24 +76,29 @@ class Draft7Generator extends AbstractGenerator {
 	}
 	
 	var anonymCounter = 1
+	var depthCounter = 0
 	def void complexityObjectsFinder(List<AbstractSchema> schemas, String parentName){
 		schemas.forEach[abstractSchema | {
 			var schema = GeneratorUtils.isSchema(abstractSchema) ? (abstractSchema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((abstractSchema as Reference).uri),root)
-			if(schema !== null){
+			if(schema !== null && depthCounter < 1){
 				val name = "anonym-"+(anonymCounter++)
 				if(GeneratorUtils.isObject(schema)){
+					depthCounter = 0
 					val cm = new CustomModel(schema, name)
 					cm.parentName = parentName;
 					objectList.add(cm)
 					schema.properties.recursiveObjectsFinder(name)
 				}
 				if(schema.anyOfs !== null && !schema.anyOfs.empty){
+					depthCounter++
 					schema.anyOfs.complexityObjectsFinder(name)
 				}
 				if(schema.oneOfs !== null && !schema.oneOfs.empty){
+					depthCounter++
 					schema.oneOfs.complexityObjectsFinder(name)
 				}
 				if(schema.allOfs !== null && !schema.allOfs.empty){
+					depthCounter++
 					schema.allOfs.complexityObjectsFinder(name)
 				}
 			}
