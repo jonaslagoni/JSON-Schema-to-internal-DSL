@@ -13,7 +13,11 @@ import org.xtext.json.schema.draft7.Schema;
 
 @SuppressWarnings("all")
 public class GeneratorUtils {
-  public static String toJavaType(final JsonTypes type, final NamedSchema model) {
+  public static String toJavaType(final JsonTypes type, final AnyString objectName) {
+    return GeneratorUtils.toJavaType(type, GeneratorUtils.realizeName(objectName));
+  }
+  
+  public static String toJavaType(final JsonTypes type, final String objectName) {
     if (type != null) {
       switch (type) {
         case BOOLEAN:
@@ -25,11 +29,11 @@ public class GeneratorUtils {
         case NUMBER:
           return "Double";
         case OBJECT:
-          return StringExtensions.toFirstUpper(GeneratorUtils.realizeName(model.getName()));
+          return StringExtensions.toFirstUpper(objectName);
         case STRING:
           return "String";
         case ARRAY:
-          String _firstUpper = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(model.getName()));
+          String _firstUpper = StringExtensions.toFirstUpper(objectName);
           String _plus = ("List<" + _firstUpper);
           return (_plus + ">");
         default:
@@ -83,12 +87,13 @@ public class GeneratorUtils {
     String propName = GeneratorUtils.getReferenceName(ref);
     if ((propName != null)) {
       EList<NamedSchema> definitions = root.getDefinitions();
-      return GeneratorUtils.recursiveFindLocalRef(propName, definitions);
+      AbstractSchema _schema = GeneratorUtils.recursiveFindLocalRef(propName, definitions).getSchema();
+      return ((Schema) _schema);
     }
     return null;
   }
   
-  private static String getReferenceName(final String fullRef) {
+  public static String getReferenceName(final String fullRef) {
     String _xblockexpression = null;
     {
       String isLocal = fullRef.substring(0, 2);
@@ -110,7 +115,7 @@ public class GeneratorUtils {
     return _xblockexpression;
   }
   
-  private static Schema recursiveFindLocalRef(final String propNameToFind, final EList<NamedSchema> definitions) {
+  private static NamedSchema recursiveFindLocalRef(final String propNameToFind, final EList<NamedSchema> definitions) {
     final Function1<NamedSchema, Boolean> _function = (NamedSchema prop) -> {
       return Boolean.valueOf(GeneratorUtils.realizeName(prop.getName()).toLowerCase().equals(propNameToFind.toLowerCase()));
     };
@@ -118,11 +123,10 @@ public class GeneratorUtils {
     if ((foundSchema != null)) {
       boolean _isSchema = GeneratorUtils.isSchema(foundSchema.getSchema());
       if (_isSchema) {
-        AbstractSchema _schema = foundSchema.getSchema();
-        return ((Schema) _schema);
+        return foundSchema;
       } else {
-        AbstractSchema _schema_1 = foundSchema.getSchema();
-        String newRefToFind = GeneratorUtils.realizeName(((Reference) _schema_1).getUri());
+        AbstractSchema _schema = foundSchema.getSchema();
+        String newRefToFind = GeneratorUtils.realizeName(((Reference) _schema).getUri());
         String _referenceName = GeneratorUtils.getReferenceName(newRefToFind);
         boolean _tripleNotEquals = (_referenceName != null);
         if (_tripleNotEquals) {

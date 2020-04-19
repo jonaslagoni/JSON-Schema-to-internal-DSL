@@ -52,7 +52,7 @@ class RootBuilderGenerator {
 	//TODO Ensure when there are multiple types it should generate multiple constructors 	
 	return '''
 	public «model.name.toFirstUpper»Builder() {
-		root = new «model.name.toFirstUpper»()
+		root = new «model.name.toFirstUpper»();
 	}
 	
 	'''
@@ -63,20 +63,21 @@ class RootBuilderGenerator {
 		«FOR property:(model.model as Schema).properties»
 			«var schema = GeneratorUtils.isSchema(property.schema) ? (property.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((property.schema as Reference).uri),root)»
 				«IF schema !== null && schema.type !== null»
+					«var propertyName = GeneratorUtils.realizeName(property.name)»
 					«IF GeneratorUtils.isObject(schema)»
-						public «GeneratorUtils.realizeName(property.name).toFirstUpper»Builder «GeneratorUtils.realizeName(property.name)»(){
-							«GeneratorUtils.realizeName(property.name).toFirstUpper» «GeneratorUtils.realizeName(property.name).toFirstLower»Instance;
-							if(root.get«GeneratorUtils.realizeName(property.name).toFirstUpper»() != null){
-								«GeneratorUtils.realizeName(property.name).toFirstLower»Instance = root.get«GeneratorUtils.realizeName(property.name).toFirstUpper»();
+						public «propertyName.toFirstUpper»Builder «propertyName»(){
+							«propertyName.toFirstUpper» «propertyName.toFirstLower»Instance;
+							if(root.get«propertyName.toFirstUpper»() != null){
+								«propertyName.toFirstLower»Instance = root.get«propertyName.toFirstUpper»();
 							} else {
-								«GeneratorUtils.realizeName(property.name).toFirstLower»Instance = new «GeneratorUtils.realizeName(property.name).toFirstUpper»();
-								root.set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstLower»Instance);
+								«propertyName.toFirstLower»Instance = new «propertyName.toFirstUpper»();
+								root.set«propertyName.toFirstUpper»(«propertyName.toFirstLower»Instance);
 							}
-							return new «GeneratorUtils.realizeName(property.name).toFirstUpper»Builder(this, «GeneratorUtils.realizeName(property.name).toFirstLower»Instance);
+							return new «propertyName.toFirstUpper»Builder(this, «propertyName.toFirstLower»Instance);
 						}
 					«ELSE»
-						public «model.name.toFirstUpper+"Builder"» set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstUpper» «GeneratorUtils.realizeName(property.name).toFirstLower»){
-							root.set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstLower»);
+						public «model.name.toFirstUpper+"Builder"» set«propertyName.toFirstUpper»(«model.name.toFirstUpper» «model.name.toFirstLower»){
+							root.set«propertyName.toFirstUpper»(«model.name.toFirstLower»);
 							return this;
 						}
 					«ENDIF»

@@ -30,6 +30,8 @@
         eType="#//NamedSchema" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="enumValues" upperBound="-1"
         eType="#//AnyString" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="id" eType="#//AnyString"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="ifSchema" eType="#//Schema"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="thenSchema" eType="#//Schema"
@@ -38,6 +40,7 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="const" eType="#//AnyString"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="constBoolean" eType="#//Boolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="anyOfs" upperBound="-1"
         eType="#//AbstractSchema" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="oneOfs" upperBound="-1"
@@ -91,6 +94,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="Items">
     <eStructuralFeatures xsi:type="ecore:EReference" name="items" upperBound="-1"
         eType="#//AbstractSchema" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="selfReference" eType="#//Boolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AdditionalProperties">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="allowedBoolean" eType="#//Boolean"/>
@@ -186,62 +190,67 @@
     <eLiterals name="description" value="4" literal="&quot;description&quot;"/>
     <eLiterals name="comment" value="5" literal="&quot;$comment&quot;"/>
     <eLiterals name="id" value="6" literal="&quot;$id&quot;"/>
-    <eLiterals name="default" value="7" literal="&quot;default&quot;"/>
-    <eLiterals name="examples" value="8" literal="&quot;examples&quot;"/>
-    <eLiterals name="schema" value="9" literal="&quot;$schema&quot;"/>
-    <eLiterals name="ref" value="10" literal="&quot;$ref&quot;"/>
-    <eLiterals name="enumKeyword" value="11" literal="&quot;enum&quot;"/>
-    <eLiterals name="const" value="12" literal="&quot;const&quot;"/>
-    <eLiterals name="type" value="13" literal="&quot;type&quot;"/>
-    <eLiterals name="string" value="14" literal="&quot;string&quot;"/>
-    <eLiterals name="integer" value="15" literal="&quot;integer&quot;"/>
-    <eLiterals name="number" value="16" literal="&quot;number&quot;"/>
-    <eLiterals name="object" value="17" literal="&quot;object&quot;"/>
-    <eLiterals name="array" value="18" literal="&quot;array&quot;"/>
-    <eLiterals name="boolean" value="19" literal="&quot;boolean&quot;"/>
-    <eLiterals name="null" value="20" literal="&quot;null&quot;"/>
-    <eLiterals name="date_time" value="21" literal="&quot;date-time&quot;"/>
-    <eLiterals name="time" value="22" literal="&quot;time&quot;"/>
-    <eLiterals name="date" value="23" literal="&quot;date&quot;"/>
-    <eLiterals name="email" value="24" literal="&quot;email&quot;"/>
-    <eLiterals name="idn_email" value="25" literal="&quot;idn-email&quot;"/>
-    <eLiterals name="hostname" value="26" literal="&quot;hostname&quot;"/>
-    <eLiterals name="ipv4" value="27" literal="&quot;ipv4&quot;"/>
-    <eLiterals name="ipv6" value="28" literal="&quot;ipv6&quot;"/>
-    <eLiterals name="uri" value="29" literal="&quot;uri&quot;"/>
-    <eLiterals name="uri_reference" value="30" literal="&quot;uri-reference&quot;"/>
-    <eLiterals name="iri" value="31" literal="&quot;iri&quot;"/>
-    <eLiterals name="iri_reference" value="32" literal="&quot;iri-reference&quot;"/>
-    <eLiterals name="uri_template" value="33" literal="&quot;uri-template&quot;"/>
-    <eLiterals name="json_pointer" value="34" literal="&quot;json-pointer&quot;"/>
-    <eLiterals name="relative_json_pointer" value="35" literal="&quot;relative-json-pointer&quot;"/>
-    <eLiterals name="regex" value="36" literal="&quot;regex&quot;"/>
-    <eLiterals name="contains" value="37" literal="&quot;contains&quot;"/>
-    <eLiterals name="uniqueItems" value="38" literal="&quot;uniqueItems&quot;"/>
-    <eLiterals name="propertyNames" value="39" literal="&quot;propertyNames&quot;"/>
-    <eLiterals name="length" value="40" literal="&quot;length&quot;"/>
-    <eLiterals name="pattern" value="41" literal="&quot;pattern&quot;"/>
-    <eLiterals name="format" value="42" literal="&quot;format&quot;"/>
-    <eLiterals name="minProperties" value="43" literal="&quot;minProperties&quot;"/>
-    <eLiterals name="maxProperties" value="44" literal="&quot;maxProperties&quot;"/>
-    <eLiterals name="dependencies" value="45" literal="&quot;dependencies&quot;"/>
-    <eLiterals name="patternProperties" value="46" literal="&quot;patternProperties&quot;"/>
-    <eLiterals name="required" value="47" literal="&quot;required&quot;"/>
-    <eLiterals name="properties" value="48" literal="&quot;properties&quot;"/>
-    <eLiterals name="if" value="49" literal="&quot;if&quot;"/>
-    <eLiterals name="then" value="50" literal="&quot;then&quot;"/>
-    <eLiterals name="else" value="51" literal="&quot;else&quot;"/>
-    <eLiterals name="anyOf" value="52" literal="&quot;anyOf&quot;"/>
-    <eLiterals name="oneOf" value="53" literal="&quot;oneOf&quot;"/>
-    <eLiterals name="allOf" value="54" literal="&quot;allOf&quot;"/>
-    <eLiterals name="not" value="55" literal="&quot;not&quot;"/>
-    <eLiterals name="items" value="56" literal="&quot;items&quot;"/>
-    <eLiterals name="contentMediaType" value="57" literal="&quot;contentMediaType&quot;"/>
-    <eLiterals name="contentEncoding" value="58" literal="&quot;contentEncoding&quot;"/>
-    <eLiterals name="multiples" value="59" literal="&quot;multiples&quot;"/>
-    <eLiterals name="minimum" value="60" literal="&quot;minimum&quot;"/>
-    <eLiterals name="exclusiveMinimum" value="61" literal="&quot;exclusiveMinimum&quot;"/>
-    <eLiterals name="maximum" value="62" literal="&quot;maximum&quot;"/>
-    <eLiterals name="exclusiveMaximum" value="63" literal="&quot;exclusiveMaximum&quot;"/>
+    <eLiterals name="definitions" value="7" literal="&quot;definitions&quot;"/>
+    <eLiterals name="default" value="8" literal="&quot;default&quot;"/>
+    <eLiterals name="examples" value="9" literal="&quot;examples&quot;"/>
+    <eLiterals name="schema" value="10" literal="&quot;$schema&quot;"/>
+    <eLiterals name="ref" value="11" literal="&quot;$ref&quot;"/>
+    <eLiterals name="enumKeyword" value="12" literal="&quot;enum&quot;"/>
+    <eLiterals name="const" value="13" literal="&quot;const&quot;"/>
+    <eLiterals name="type" value="14" literal="&quot;type&quot;"/>
+    <eLiterals name="string" value="15" literal="&quot;string&quot;"/>
+    <eLiterals name="integer" value="16" literal="&quot;integer&quot;"/>
+    <eLiterals name="number" value="17" literal="&quot;number&quot;"/>
+    <eLiterals name="object" value="18" literal="&quot;object&quot;"/>
+    <eLiterals name="array" value="19" literal="&quot;array&quot;"/>
+    <eLiterals name="boolean" value="20" literal="&quot;boolean&quot;"/>
+    <eLiterals name="null" value="21" literal="&quot;null&quot;"/>
+    <eLiterals name="date_time" value="22" literal="&quot;date-time&quot;"/>
+    <eLiterals name="time" value="23" literal="&quot;time&quot;"/>
+    <eLiterals name="date" value="24" literal="&quot;date&quot;"/>
+    <eLiterals name="email" value="25" literal="&quot;email&quot;"/>
+    <eLiterals name="idn_email" value="26" literal="&quot;idn-email&quot;"/>
+    <eLiterals name="hostname" value="27" literal="&quot;hostname&quot;"/>
+    <eLiterals name="ipv4" value="28" literal="&quot;ipv4&quot;"/>
+    <eLiterals name="ipv6" value="29" literal="&quot;ipv6&quot;"/>
+    <eLiterals name="uri" value="30" literal="&quot;uri&quot;"/>
+    <eLiterals name="uri_reference" value="31" literal="&quot;uri-reference&quot;"/>
+    <eLiterals name="iri" value="32" literal="&quot;iri&quot;"/>
+    <eLiterals name="iri_reference" value="33" literal="&quot;iri-reference&quot;"/>
+    <eLiterals name="uri_template" value="34" literal="&quot;uri-template&quot;"/>
+    <eLiterals name="json_pointer" value="35" literal="&quot;json-pointer&quot;"/>
+    <eLiterals name="relative_json_pointer" value="36" literal="&quot;relative-json-pointer&quot;"/>
+    <eLiterals name="regex" value="37" literal="&quot;regex&quot;"/>
+    <eLiterals name="contains" value="38" literal="&quot;contains&quot;"/>
+    <eLiterals name="uniqueItems" value="39" literal="&quot;uniqueItems&quot;"/>
+    <eLiterals name="propertyNames" value="40" literal="&quot;propertyNames&quot;"/>
+    <eLiterals name="length" value="41" literal="&quot;length&quot;"/>
+    <eLiterals name="minLength" value="42" literal="&quot;minLength&quot;"/>
+    <eLiterals name="maxLength" value="43" literal="&quot;maxLength&quot;"/>
+    <eLiterals name="minItems" value="44" literal="&quot;minItems&quot;"/>
+    <eLiterals name="maxItems" value="45" literal="&quot;maxItems&quot;"/>
+    <eLiterals name="pattern" value="46" literal="&quot;pattern&quot;"/>
+    <eLiterals name="format" value="47" literal="&quot;format&quot;"/>
+    <eLiterals name="minProperties" value="48" literal="&quot;minProperties&quot;"/>
+    <eLiterals name="maxProperties" value="49" literal="&quot;maxProperties&quot;"/>
+    <eLiterals name="dependencies" value="50" literal="&quot;dependencies&quot;"/>
+    <eLiterals name="patternProperties" value="51" literal="&quot;patternProperties&quot;"/>
+    <eLiterals name="required" value="52" literal="&quot;required&quot;"/>
+    <eLiterals name="properties" value="53" literal="&quot;properties&quot;"/>
+    <eLiterals name="if" value="54" literal="&quot;if&quot;"/>
+    <eLiterals name="then" value="55" literal="&quot;then&quot;"/>
+    <eLiterals name="else" value="56" literal="&quot;else&quot;"/>
+    <eLiterals name="anyOf" value="57" literal="&quot;anyOf&quot;"/>
+    <eLiterals name="oneOf" value="58" literal="&quot;oneOf&quot;"/>
+    <eLiterals name="allOf" value="59" literal="&quot;allOf&quot;"/>
+    <eLiterals name="not" value="60" literal="&quot;not&quot;"/>
+    <eLiterals name="items" value="61" literal="&quot;items&quot;"/>
+    <eLiterals name="contentMediaType" value="62" literal="&quot;contentMediaType&quot;"/>
+    <eLiterals name="contentEncoding" value="63" literal="&quot;contentEncoding&quot;"/>
+    <eLiterals name="multiples" value="64" literal="&quot;multiples&quot;"/>
+    <eLiterals name="minimum" value="65" literal="&quot;minimum&quot;"/>
+    <eLiterals name="exclusiveMinimum" value="66" literal="&quot;exclusiveMinimum&quot;"/>
+    <eLiterals name="maximum" value="67" literal="&quot;maximum&quot;"/>
+    <eLiterals name="exclusiveMaximum" value="68" literal="&quot;exclusiveMaximum&quot;"/>
   </eClassifiers>
 </ecore:EPackage>

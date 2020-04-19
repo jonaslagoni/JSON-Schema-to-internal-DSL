@@ -21,11 +21,12 @@ Schema:
 			&('"properties"' ':' '{' properties+=NamedSchema (',' properties+=NamedSchema)* '}' ','?)?
 			&('"enum"' ':'  '[' enumValues+=AnyString (',' enumValues+=AnyString)* ']' ','?)?
 			&('"$schema"' ':' '"http://json-schema.org/draft-07/schema#"' ','?)?
+			&('"$id"' ':' id=AnyString ','?)?
 			&('"if"' ':' ifSchema=Schema ','?)?
 			&('"then"' ':' thenSchema=Schema ','?)?
 			&('"else"' ':' elseSchema=Schema ','?)?
 			&('"enum"' ':'  '[' enumValues+=AnyString (',' enumValues+=AnyString)* ']' ','?)?
-			&('"const"' ':' const=AnyString ','?)?
+			&('"const"' ':' (const=AnyString | constBoolean=Boolean) ','?)?
 			&('"anyOf"' ':' '[' anyOfs+=AbstractSchema (',' anyOfs+=AbstractSchema)* ']' ','?)?
 			&('"oneOf"' ':' '[' oneOfs+=AbstractSchema (',' oneOfs+=AbstractSchema)* ']' ','?)?
 			&('"allOf"' ':' '[' allOfs+=AbstractSchema (',' allOfs+=AbstractSchema)* ']' ','?)?
@@ -61,7 +62,7 @@ Contains:
 	('[' containSchemas+=Schema (',' containSchemas+=Schema)* ']') | ('{' containSchemas+=Schema '}')
 ;
 Items:
-	('[' items+=AbstractSchema (','items+=AbstractSchema)* ']') | items+=AbstractSchema
+	('[' items+=AbstractSchema (','items+=AbstractSchema)* ']') | items+=AbstractSchema | selfReference=Boolean
 ;
 AdditionalProperties:
 	allowedBoolean=Boolean | schema=AbstractSchema
@@ -70,7 +71,7 @@ AdditionalItems:
 	allowedBoolean=Boolean | schema=AbstractSchema
 ;
 Default:
-	defaultSchema=AbstractSchema | defaultString=AnyString | defaultBoolean=Boolean | defaultNumber=Number | ('[' defaultArrayItems+=AbstractSchema (',' defaultArrayItems+=AbstractSchema)* ']')
+	 defaultSchema=AbstractSchema | defaultString=AnyString | defaultBoolean=Boolean | defaultNumber=Number | {Default} ('[' (defaultArrayItems+=AbstractSchema (',' defaultArrayItems+=AbstractSchema)*)? ']')
 ;
 Example:
 	exampleSchema=Schema | exampleString=AnyString | exampleBoolean=Boolean | exampleNumber=Number | ('[' exampleArrayItems+=Schema (',' exampleArrayItems+=Schema)* ']')
@@ -141,6 +142,7 @@ enum JsonSchemaKeyword:
 	| description='"description"'
 	| comment='"$comment"'
 	| id='"$id"'
+	| definitions='"definitions"'
 	| default='"default"'
 	| examples='"examples"'
 	| schema='"$schema"'
@@ -175,6 +177,10 @@ enum JsonSchemaKeyword:
 	| uniqueItems='"uniqueItems"'
 	| propertyNames='"propertyNames"'
 	| length='"length"'
+	| minLength='"minLength"'
+	| maxLength='"maxLength"'
+	| minItems='"minItems"'
+	| maxItems='"maxItems"'
 	| pattern='"pattern"'
 	| format='"format"'
 	| minProperties='"minProperties"'

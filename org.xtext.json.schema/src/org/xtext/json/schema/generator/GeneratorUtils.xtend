@@ -5,7 +5,10 @@ import org.xtext.json.schema.draft7.NamedSchema
 import org.eclipse.emf.common.util.EList
 
 class GeneratorUtils {
-	def static String toJavaType(JsonTypes type, NamedSchema model){
+	def static String toJavaType(JsonTypes type, AnyString objectName){
+		return toJavaType(type, GeneratorUtils.realizeName(objectName))
+	}
+	def static String toJavaType(JsonTypes type, String objectName){
 		switch(type){
 			case BOOLEAN: {
 				return 'Boolean'
@@ -20,13 +23,13 @@ class GeneratorUtils {
 				return 'Double'
 			}
 			case OBJECT: {
-				return model.name.realizeName.toFirstUpper
+				return objectName.toFirstUpper
 			}
 			case STRING: {
 				return 'String'
 			}
 			case ARRAY: {
-				return 'List<' + model.name.realizeName.toFirstUpper + '>' 
+				return 'List<' + objectName.toFirstUpper + '>' 
 			}
 			default: {
 				return null
@@ -70,11 +73,12 @@ class GeneratorUtils {
 		var propName = ref.getReferenceName
 		if(propName !== null){
 			var definitions = root.definitions
-			return recursiveFindLocalRef(propName, definitions)
+			return recursiveFindLocalRef(propName, definitions).schema as Schema
 		}
 		return null
 	}
-	def private static String getReferenceName(String fullRef){
+	
+	def static String getReferenceName(String fullRef){
 		var isLocal = fullRef.substring(0, 2)
 		if(isLocal.equals("#/")){
 			var pathsToSchema = fullRef.replace('#/definitions/', '').split("/")
@@ -84,11 +88,12 @@ class GeneratorUtils {
 			return null
 		}
 	}
-	def private static Schema recursiveFindLocalRef(String propNameToFind, EList<NamedSchema> definitions){
+	
+	def private static NamedSchema recursiveFindLocalRef(String propNameToFind, EList<NamedSchema> definitions){
 		var foundSchema = definitions.findFirst[prop | prop.name.realizeName.toLowerCase.equals(propNameToFind.toLowerCase)]
 		if(foundSchema !== null){
 			if(foundSchema.schema.isSchema){
-				return foundSchema.schema as Schema
+				return foundSchema
 			}else{
 				var newRefToFind = (foundSchema.schema as Reference).uri.realizeName
 				if(newRefToFind.getReferenceName !== null){

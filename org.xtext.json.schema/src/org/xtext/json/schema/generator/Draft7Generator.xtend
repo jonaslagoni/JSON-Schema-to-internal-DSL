@@ -53,53 +53,67 @@ class Draft7Generator extends AbstractGenerator {
 	
 	def void recursiveObjectsFinder(List<NamedSchema> properties, String parentName){
 		properties.forEach[property | {
-			var schema = GeneratorUtils.isSchema(property.schema) ? (property.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((property.schema as Reference).uri),root)
-			if(schema !== null && !GeneratorUtils.realizeName(property.name).toLowerCase.equals(parentName.toLowerCase)){
+			var propSchema = property.schema;
+			var schema = GeneratorUtils.isSchema(propSchema) ? (propSchema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((propSchema as Reference).uri),root)
+			var propName = GeneratorUtils.realizeName(property.name)
+			if(propName.equals("schema")){
+				System.out.println(objectList.size)
+			}
+			if(schema !== null 
+				&& !GeneratorUtils.realizeName(property.name).toLowerCase.equals(parentName.toLowerCase)
+				&& !walkedThroughDefinition.contains(propName)
+			){
 				if(GeneratorUtils.isObject(schema)){
-					depthCounter = 0
-					val cm = new CustomModel(schema, GeneratorUtils.realizeName(property.name))
+					val cm = new CustomModel(schema, propName)
 					cm.parentName = parentName;
 					objectList.add(cm)
-					schema.properties.recursiveObjectsFinder(GeneratorUtils.realizeName(property.name))
+					walkedThroughDefinition.add(GeneratorUtils.realizeName(property.name))
+					schema.properties.recursiveObjectsFinder(propName)
 				}
 				if(schema.anyOfs !== null && !schema.anyOfs.empty){
-					schema.anyOfs.complexityObjectsFinder(GeneratorUtils.realizeName(property.name))
+					val cm = new CustomModel(schema, propName)
+					cm.parentName = parentName;
+					objectList.add(cm)
+					walkedThroughDefinition.add(GeneratorUtils.realizeName(property.name))
+					schema.anyOfs.complexityObjectsFinder(propName)
 				}
 				if(schema.oneOfs !== null && !schema.oneOfs.empty){
-					schema.oneOfs.complexityObjectsFinder(GeneratorUtils.realizeName(property.name))
+					val cm = new CustomModel(schema, propName)
+					cm.parentName = parentName;
+					objectList.add(cm)
+					walkedThroughDefinition.add(GeneratorUtils.realizeName(property.name))
+					schema.oneOfs.complexityObjectsFinder(propName)
 				}
 				if(schema.allOfs !== null && !schema.allOfs.empty){
-					schema.allOfs.complexityObjectsFinder(GeneratorUtils.realizeName(property.name))
+					val cm = new CustomModel(schema, propName)
+					cm.parentName = parentName;
+					objectList.add(cm)
+					walkedThroughDefinition.add(GeneratorUtils.realizeName(property.name))
+					schema.allOfs.complexityObjectsFinder(propName)
 				}
 			}
 		}]
 	}
-	
-	var anonymCounter = 1
-	var depthCounter = 0
+	List<String> walkedThroughDefinition = new ArrayList()
+	List<AbstractSchema> currentNestedSchemas = new ArrayList()
 	def void complexityObjectsFinder(List<AbstractSchema> schemas, String parentName){
 		schemas.forEach[abstractSchema | {
 			var schema = GeneratorUtils.isSchema(abstractSchema) ? (abstractSchema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((abstractSchema as Reference).uri),root)
-			if(schema !== null && depthCounter < 1){
-				val name = "anonym-"+(anonymCounter++)
+			if(schema !== null 
+				&& !currentNestedSchemas.contains(abstractSchema)
+			){
+				currentNestedSchemas.add(abstractSchema)
 				if(GeneratorUtils.isObject(schema)){
-					depthCounter = 0
-					val cm = new CustomModel(schema, name)
-					cm.parentName = parentName;
-					objectList.add(cm)
-					schema.properties.recursiveObjectsFinder(name)
+					schema.properties.recursiveObjectsFinder(parentName)
 				}
 				if(schema.anyOfs !== null && !schema.anyOfs.empty){
-					depthCounter++
-					schema.anyOfs.complexityObjectsFinder(name)
+					schema.anyOfs.complexityObjectsFinder(parentName)
 				}
 				if(schema.oneOfs !== null && !schema.oneOfs.empty){
-					depthCounter++
-					schema.oneOfs.complexityObjectsFinder(name)
+					schema.oneOfs.complexityObjectsFinder(parentName)
 				}
 				if(schema.allOfs !== null && !schema.allOfs.empty){
-					depthCounter++
-					schema.allOfs.complexityObjectsFinder(name)
+					schema.allOfs.complexityObjectsFinder(parentName)
 				}
 			}
 		}]

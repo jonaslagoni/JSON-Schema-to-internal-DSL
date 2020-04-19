@@ -40,8 +40,6 @@ public class ModelGenerator {
     _builder.newLine();
     _builder.append("import java.util.*;");
     _builder.newLine();
-    _builder.append("import com.fasterxml.jackson.annotation.JsonInclude;\t");
-    _builder.newLine();
     CharSequence _generateModelImports = this.generateModelImports(model);
     _builder.append(_generateModelImports);
     _builder.newLineIfNotEmpty();
@@ -55,8 +53,6 @@ public class ModelGenerator {
     _builder.newLine();
     _builder.append(" ");
     _builder.append("*/");
-    _builder.newLine();
-    _builder.append("@JsonInclude(JsonInclude.Include.NON_NULL)");
     _builder.newLine();
     _builder.append("public class ");
     String _firstUpper = StringExtensions.toFirstUpper(model.getName());
@@ -135,7 +131,7 @@ public class ModelGenerator {
               EList<JsonTypes> _jsonTypes = schema.getType().getJsonTypes();
               for(final JsonTypes type : _jsonTypes) {
                 {
-                  String _javaType = GeneratorUtils.toJavaType(type, property);
+                  String _javaType = GeneratorUtils.toJavaType(type, property.getName());
                   boolean _tripleNotEquals = (_javaType != null);
                   if (_tripleNotEquals) {
                     _builder.append("/**");
@@ -151,7 +147,7 @@ public class ModelGenerator {
                     String _firstUpper = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(property.getName()));
                     _builder.append(_firstUpper);
                     _builder.append("(");
-                    String _javaType_1 = GeneratorUtils.toJavaType(type, property);
+                    String _javaType_1 = GeneratorUtils.toJavaType(type, property.getName());
                     _builder.append(_javaType_1);
                     _builder.append(" ");
                     String _firstLower_1 = StringExtensions.toFirstLower(GeneratorUtils.realizeName(property.getName()));
@@ -179,7 +175,7 @@ public class ModelGenerator {
                     _builder.append("*/");
                     _builder.newLine();
                     _builder.append("public ");
-                    String _javaType_2 = GeneratorUtils.toJavaType(type, property);
+                    String _javaType_2 = GeneratorUtils.toJavaType(type, property.getName());
                     _builder.append(_javaType_2);
                     _builder.append(" get");
                     String _firstUpper_1 = StringExtensions.toFirstUpper(GeneratorUtils.realizeName(property.getName()));
@@ -228,11 +224,11 @@ public class ModelGenerator {
               EList<JsonTypes> _jsonTypes = schema.getType().getJsonTypes();
               for(final JsonTypes type : _jsonTypes) {
                 {
-                  String _javaType = GeneratorUtils.toJavaType(type, property);
+                  String _javaType = GeneratorUtils.toJavaType(type, property.getName());
                   boolean _tripleNotEquals = (_javaType != null);
                   if (_tripleNotEquals) {
                     _builder.append("private ");
-                    String _javaType_1 = GeneratorUtils.toJavaType(type, property);
+                    String _javaType_1 = GeneratorUtils.toJavaType(type, property.getName());
                     _builder.append(_javaType_1);
                     _builder.append(" ");
                     String _firstLower = StringExtensions.toFirstLower(GeneratorUtils.realizeName(property.getName()));
@@ -284,7 +280,7 @@ public class ModelGenerator {
             _builder.newLineIfNotEmpty();
             {
               if ((requiredPropertySchema != null)) {
-                String _javaType = GeneratorUtils.toJavaType(requiredPropertySchema.getType().getJsonTypes().get(0), requiredProperty);
+                String _javaType = GeneratorUtils.toJavaType(requiredPropertySchema.getType().getJsonTypes().get(0), requiredProperty.getName());
                 _builder.append(_javaType);
                 _builder.append(" ");
                 String _firstLower = StringExtensions.toFirstLower(GeneratorUtils.realizeName(requiredPropString));

@@ -21,13 +21,11 @@ class ModelGenerator {
 	def CharSequence generateModel(CustomModel model) '''
 	package model;
 	import java.util.*;
-	import com.fasterxml.jackson.annotation.JsonInclude;	
 	«model.generateModelImports»
 	/**
 	 *
 	 * @author Generated
 	 */
-	@JsonInclude(JsonInclude.Include.NON_NULL)
 	public class «model.name.toFirstUpper» {
 		«model.generateModelProperties»
 		«model.generateModelConstructor»
@@ -53,18 +51,18 @@ class ModelGenerator {
 			«var schema = GeneratorUtils.isSchema(property.schema) ? (property.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((property.schema as Reference).uri),root)»
 			«IF schema !== null && schema.type !== null»
 				«FOR type:schema.type.jsonTypes»
-					«IF GeneratorUtils.toJavaType(type, property) !== null»
+					«IF GeneratorUtils.toJavaType(type, property.name) !== null»
 					/**
 					* @param «GeneratorUtils.realizeName(property.name).toFirstLower» to set
 					*/
-					public void set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.toJavaType(type, property)» «GeneratorUtils.realizeName(property.name).toFirstLower»){
+					public void set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.toJavaType(type, property.name)» «GeneratorUtils.realizeName(property.name).toFirstLower»){
 						this.«GeneratorUtils.realizeName(property.name).toFirstLower» = «GeneratorUtils.realizeName(property.name).toFirstLower»;
 					}
 					
 					/**
 					* @return the «GeneratorUtils.realizeName(property.name).toFirstLower»
 					*/
-					public «GeneratorUtils.toJavaType(type, property)» get«GeneratorUtils.realizeName(property.name).toFirstUpper»(){
+					public «GeneratorUtils.toJavaType(type, property.name)» get«GeneratorUtils.realizeName(property.name).toFirstUpper»(){
 						return «GeneratorUtils.realizeName(property.name).toFirstLower»;
 					}
 					«ENDIF»
@@ -72,7 +70,6 @@ class ModelGenerator {
 			«ENDIF»
 		«ENDFOR»
 		'''
-	
 	}
 	def CharSequence generateModelProperties(CustomModel model){
 		
@@ -81,8 +78,8 @@ class ModelGenerator {
 			«var schema = GeneratorUtils.isSchema(property.schema) ? (property.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((property.schema as Reference).uri),root)»
 			«IF schema !== null && schema.type !== null»
 				«FOR type:schema.type.jsonTypes»
-					«IF GeneratorUtils.toJavaType(type, property) !== null»
-					private «GeneratorUtils.toJavaType(type, property)» «GeneratorUtils.realizeName(property.name).toFirstLower»;
+					«IF GeneratorUtils.toJavaType(type, property.name) !== null»
+					private «GeneratorUtils.toJavaType(type, property.name)» «GeneratorUtils.realizeName(property.name).toFirstLower»;
 					«ENDIF»
 				«ENDFOR»
 			«ENDIF»
@@ -100,7 +97,7 @@ class ModelGenerator {
 		«IF requiredProperty !== null»
 			«var requiredPropertySchema = GeneratorUtils.isSchema(requiredProperty.schema) ? (requiredProperty.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((requiredProperty.schema as Reference).uri),root)»
 			«IF requiredPropertySchema !== null»
-			«GeneratorUtils.toJavaType(requiredPropertySchema.type.jsonTypes.get(0), requiredProperty)» «GeneratorUtils.realizeName(requiredPropString).toFirstLower»
+			«GeneratorUtils.toJavaType(requiredPropertySchema.type.jsonTypes.get(0), requiredProperty.name)» «GeneratorUtils.realizeName(requiredPropString).toFirstLower»
 			«ENDIF»
 		«ENDIF»«ENDFOR») {
 		«FOR requiredProp:(model.model as Schema).requiredProperties»

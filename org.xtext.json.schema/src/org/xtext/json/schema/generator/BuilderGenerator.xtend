@@ -27,6 +27,8 @@ class BuilderGenerator {
 	
 	import java.util.*;
 	import model.«model.name.toFirstUpper»;
+	import model.«model.parentName.toFirstUpper»;
+	import builder.«model.parentName.toFirstUpper»Builder;
 	
 	public class «model.name.toFirstUpper»Builder {
 		«model.generateBuilderVariables»
@@ -40,7 +42,7 @@ class BuilderGenerator {
 	def CharSequence generateBuilderVariables(CustomModel model) {
 		'''
 		private «model.parentName.toFirstUpper»Builder parent;
-		private «model.name.toFirstUpper» «model.name.toFirstLower»
+		private «model.name.toFirstUpper» «model.name.toFirstLower»;
 		
 		'''
 		
@@ -67,19 +69,19 @@ class BuilderGenerator {
 				public «GeneratorUtils.realizeName(property.name).toFirstUpper»Builder «GeneratorUtils.realizeName(property.name)»(){
 					«GeneratorUtils.realizeName(property.name).toFirstUpper» «GeneratorUtils.realizeName(property.name).toFirstLower»Instance;
 					if(root.get«GeneratorUtils.realizeName(property.name).toFirstUpper»() != null){
-						«GeneratorUtils.realizeName(property.name).toFirstLower»Instance = root.get«GeneratorUtils.realizeName(property.name).toFirstUpper»();
+						«GeneratorUtils.realizeName(property.name).toFirstLower»Instance = «model.name.toFirstLower».get«GeneratorUtils.realizeName(property.name).toFirstUpper»();
 					} else {
 						«GeneratorUtils.realizeName(property.name).toFirstLower»Instance = new «GeneratorUtils.realizeName(property.name).toFirstUpper»();
-						root.set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstLower»Instance);
+						«model.name.toFirstLower».set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstLower»Instance);
 					}
 					return new «GeneratorUtils.realizeName(property.name).toFirstUpper»Builder(this, «GeneratorUtils.realizeName(property.name).toFirstLower»Instance);
 				}
 				«ELSE»
 					«FOR type:schema.type.jsonTypes»
-					«var schemaJsonType = GeneratorUtils.toJavaType(type, property)»
+					«var schemaJsonType = GeneratorUtils.toJavaType(type, property.name)»
 						«IF schemaJsonType !== null»
 				public «model.name.toFirstUpper+"Builder"» set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«schemaJsonType» «GeneratorUtils.realizeName(property.name).toFirstLower»){
-					root.set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstLower»);
+					«model.name.toFirstLower».set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstLower»);
 					return this;
 				}
 						«ENDIF»

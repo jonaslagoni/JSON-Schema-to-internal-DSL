@@ -74,43 +74,58 @@ public class Draft7Generator extends AbstractGenerator {
   
   public void recursiveObjectsFinder(final List<NamedSchema> properties, final String parentName) {
     final Consumer<NamedSchema> _function = (NamedSchema property) -> {
+      AbstractSchema propSchema = property.getSchema();
       Schema _xifexpression = null;
-      boolean _isSchema = GeneratorUtils.isSchema(property.getSchema());
+      boolean _isSchema = GeneratorUtils.isSchema(propSchema);
       if (_isSchema) {
-        AbstractSchema _schema = property.getSchema();
-        _xifexpression = ((Schema) _schema);
+        _xifexpression = ((Schema) propSchema);
       } else {
-        AbstractSchema _schema_1 = property.getSchema();
-        _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) _schema_1).getUri()), this.root);
+        _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) propSchema).getUri()), this.root);
       }
       Schema schema = _xifexpression;
-      if (((schema != null) && (!GeneratorUtils.realizeName(property.getName()).toLowerCase().equals(parentName.toLowerCase())))) {
+      String propName = GeneratorUtils.realizeName(property.getName());
+      boolean _equals = propName.equals("schema");
+      if (_equals) {
+        System.out.println(this.objectList.size());
+      }
+      if ((((schema != null) && (!GeneratorUtils.realizeName(property.getName()).toLowerCase().equals(parentName.toLowerCase()))) && (!this.walkedThroughDefinition.contains(propName)))) {
         boolean _isObject = GeneratorUtils.isObject(schema);
         if (_isObject) {
-          this.depthCounter = 0;
-          String _realizeName = GeneratorUtils.realizeName(property.getName());
-          final CustomModel cm = new CustomModel(schema, _realizeName);
+          final CustomModel cm = new CustomModel(schema, propName);
           cm.setParentName(parentName);
           this.objectList.add(cm);
-          this.recursiveObjectsFinder(schema.getProperties(), GeneratorUtils.realizeName(property.getName()));
+          this.walkedThroughDefinition.add(GeneratorUtils.realizeName(property.getName()));
+          this.recursiveObjectsFinder(schema.getProperties(), propName);
         }
         if (((schema.getAnyOfs() != null) && (!schema.getAnyOfs().isEmpty()))) {
-          this.complexityObjectsFinder(schema.getAnyOfs(), GeneratorUtils.realizeName(property.getName()));
+          final CustomModel cm_1 = new CustomModel(schema, propName);
+          cm_1.setParentName(parentName);
+          this.objectList.add(cm_1);
+          this.walkedThroughDefinition.add(GeneratorUtils.realizeName(property.getName()));
+          this.complexityObjectsFinder(schema.getAnyOfs(), propName);
         }
         if (((schema.getOneOfs() != null) && (!schema.getOneOfs().isEmpty()))) {
-          this.complexityObjectsFinder(schema.getOneOfs(), GeneratorUtils.realizeName(property.getName()));
+          final CustomModel cm_2 = new CustomModel(schema, propName);
+          cm_2.setParentName(parentName);
+          this.objectList.add(cm_2);
+          this.walkedThroughDefinition.add(GeneratorUtils.realizeName(property.getName()));
+          this.complexityObjectsFinder(schema.getOneOfs(), propName);
         }
         if (((schema.getAllOfs() != null) && (!schema.getAllOfs().isEmpty()))) {
-          this.complexityObjectsFinder(schema.getAllOfs(), GeneratorUtils.realizeName(property.getName()));
+          final CustomModel cm_3 = new CustomModel(schema, propName);
+          cm_3.setParentName(parentName);
+          this.objectList.add(cm_3);
+          this.walkedThroughDefinition.add(GeneratorUtils.realizeName(property.getName()));
+          this.complexityObjectsFinder(schema.getAllOfs(), propName);
         }
       }
     };
     properties.forEach(_function);
   }
   
-  private int anonymCounter = 1;
+  private List<String> walkedThroughDefinition = new ArrayList<String>();
   
-  private int depthCounter = 0;
+  private List<AbstractSchema> currentNestedSchemas = new ArrayList<AbstractSchema>();
   
   public void complexityObjectsFinder(final List<AbstractSchema> schemas, final String parentName) {
     final Consumer<AbstractSchema> _function = (AbstractSchema abstractSchema) -> {
@@ -122,28 +137,20 @@ public class Draft7Generator extends AbstractGenerator {
         _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) abstractSchema).getUri()), this.root);
       }
       Schema schema = _xifexpression;
-      if (((schema != null) && (this.depthCounter < 1))) {
-        int _plusPlus = this.anonymCounter++;
-        final String name = ("anonym-" + Integer.valueOf(_plusPlus));
+      if (((schema != null) && (!this.currentNestedSchemas.contains(abstractSchema)))) {
+        this.currentNestedSchemas.add(abstractSchema);
         boolean _isObject = GeneratorUtils.isObject(schema);
         if (_isObject) {
-          this.depthCounter = 0;
-          final CustomModel cm = new CustomModel(schema, name);
-          cm.setParentName(parentName);
-          this.objectList.add(cm);
-          this.recursiveObjectsFinder(schema.getProperties(), name);
+          this.recursiveObjectsFinder(schema.getProperties(), parentName);
         }
         if (((schema.getAnyOfs() != null) && (!schema.getAnyOfs().isEmpty()))) {
-          this.depthCounter++;
-          this.complexityObjectsFinder(schema.getAnyOfs(), name);
+          this.complexityObjectsFinder(schema.getAnyOfs(), parentName);
         }
         if (((schema.getOneOfs() != null) && (!schema.getOneOfs().isEmpty()))) {
-          this.depthCounter++;
-          this.complexityObjectsFinder(schema.getOneOfs(), name);
+          this.complexityObjectsFinder(schema.getOneOfs(), parentName);
         }
         if (((schema.getAllOfs() != null) && (!schema.getAllOfs().isEmpty()))) {
-          this.depthCounter++;
-          this.complexityObjectsFinder(schema.getAllOfs(), name);
+          this.complexityObjectsFinder(schema.getAllOfs(), parentName);
         }
       }
     };
