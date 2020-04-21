@@ -1,6 +1,6 @@
 grammar org.xtext.json.schema.Draft7 with org.eclipse.xtext.common.Terminals
 generate draft7 "http://www.xtext.org/json/schema/Draft7"
-
+// inspired by github.com/SOM-Research/asyncapi-toolkit
 Schema:
 	{Schema}
 	'{'

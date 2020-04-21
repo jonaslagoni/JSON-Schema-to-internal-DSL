@@ -30,7 +30,7 @@ public class BuilderGenerator {
     boolean _tripleNotEquals = (_parentName != null);
     if (_tripleNotEquals) {
       String _firstUpper = StringExtensions.toFirstUpper(model.getName());
-      String _plus = ("Builder/" + _firstUpper);
+      String _plus = ("builder/" + _firstUpper);
       String _plus_1 = (_plus + "Builder.java");
       fsa.generateFile(_plus_1, this.generateBuilder(model));
     }
@@ -38,6 +38,7 @@ public class BuilderGenerator {
   
   public CharSequence generateBuilder(final CustomModel model) {
     StringConcatenation _builder = new StringConcatenation();
+    _builder.append("package builder;");
     _builder.newLine();
     _builder.append("import java.util.*;");
     _builder.newLine();
@@ -237,7 +238,7 @@ public class BuilderGenerator {
                   EList<JsonTypes> _jsonTypes = schema.getType().getJsonTypes();
                   for(final JsonTypes type : _jsonTypes) {
                     _builder.append("\t");
-                    String schemaJsonType = GeneratorUtils.toJavaType(type, property.getName());
+                    String schemaJsonType = GeneratorUtils.toJavaType(schema, type, property.getName());
                     _builder.newLineIfNotEmpty();
                     {
                       if ((schemaJsonType != null)) {

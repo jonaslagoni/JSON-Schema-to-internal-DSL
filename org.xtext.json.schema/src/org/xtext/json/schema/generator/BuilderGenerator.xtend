@@ -20,11 +20,11 @@ class BuilderGenerator {
 	def generateBuilderFile(CustomModel model, IFileSystemAccess2 fsa) {
 		System.out.println("Test")
 		if(model.parentName !== null){
-			fsa.generateFile("Builder/" +model.name.toFirstUpper+"Builder.java", model.generateBuilder)
+			fsa.generateFile("builder/" +model.name.toFirstUpper+"Builder.java", model.generateBuilder)
 		}
 	}
 	def CharSequence generateBuilder(CustomModel model) '''
-	
+	package builder;
 	import java.util.*;
 	import model.«model.name.toFirstUpper»;
 	import model.«model.parentName.toFirstUpper»;
@@ -78,7 +78,7 @@ class BuilderGenerator {
 				}
 				«ELSE»
 					«FOR type:schema.type.jsonTypes»
-					«var schemaJsonType = GeneratorUtils.toJavaType(type, property.name)»
+					«var schemaJsonType = GeneratorUtils.toJavaType(schema, type, property.name)»
 						«IF schemaJsonType !== null»
 				public «model.name.toFirstUpper+"Builder"» set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«schemaJsonType» «GeneratorUtils.realizeName(property.name).toFirstLower»){
 					«model.name.toFirstLower».set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstLower»);

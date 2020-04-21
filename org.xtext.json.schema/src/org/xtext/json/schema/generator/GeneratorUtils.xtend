@@ -5,36 +5,50 @@ import org.xtext.json.schema.draft7.NamedSchema
 import org.eclipse.emf.common.util.EList
 
 class GeneratorUtils {
-	def static String toJavaType(JsonTypes type, AnyString objectName){
-		return toJavaType(type, GeneratorUtils.realizeName(objectName))
+	def static String toJavaType(Schema schema, JsonTypes type, AnyString objectName){
+		return toJavaType(schema, type, GeneratorUtils.realizeName(objectName))
 	}
-	def static String toJavaType(JsonTypes type, String objectName){
-		switch(type){
-			case BOOLEAN: {
-				return 'Boolean'
-			}
-			case INTEGER: {
-				return 'Integer'
-			}
-			case NULL: {
-				return null
-			}
-			case NUMBER: {
-				return 'Double'
-			}
-			case OBJECT: {
-				return objectName.toFirstUpper
-			}
-			case STRING: {
-				return 'String'
-			}
-			case ARRAY: {
-				return 'List<' + objectName.toFirstUpper + '>' 
-			}
-			default: {
-				return null
+	def static String toJavaType(Schema schema, JsonTypes type, String objectName){
+		if(schema !== null){
+			if(type !== null){
+				switch(type){
+					case BOOLEAN: {
+						return 'Boolean'
+					}
+					case INTEGER: {
+						return 'Integer'
+					}
+					case NULL: {
+						return null
+					}
+					case NUMBER: {
+						return 'Double'
+					}
+					case OBJECT: {
+						if(schema.propertyNames !== null){
+							var propertyNamesAbstractSchema = schema.propertyNames
+							if(propertyNamesAbstractSchema.isSchema){
+								var propertyNamesSchema = propertyNamesAbstractSchema as Schema
+								return 'Map<' + propertyNamesSchema.type.jsonTypes.get(0).name().toLowerCase.toFirstUpper +  ',' + objectName.toFirstUpper + '>'
+							} 
+						}else{
+							return objectName.toFirstUpper
+						}
+					}
+					case STRING: {
+						return 'String'
+					}
+					case ARRAY: {
+						return 'List<' + objectName.toFirstUpper + '>' 
+					}
+					default: {
+						return null
+					}
+				}
 			}
 		}
+		return null 
+
 	}
 	
 	def static boolean isSchema(AbstractSchema schema){
@@ -73,11 +87,21 @@ class GeneratorUtils {
 		var propName = ref.getReferenceName
 		if(propName !== null){
 			var definitions = root.definitions
-			return recursiveFindLocalRef(propName, definitions).schema as Schema
+			var localRef = recursiveFindLocalRef(propName, definitions)
+			if(localRef !== null)
+				return localRef.schema as Schema
 		}
 		return null
 	}
 	
+	
+	def static String getReferenceName(AbstractSchema schema){
+		if(schema instanceof Reference){
+			var ref = schema as Reference
+			return getReferenceName(ref.uri.realizeName)
+		}
+		return null
+	}
 	def static String getReferenceName(String fullRef){
 		var isLocal = fullRef.substring(0, 2)
 		if(isLocal.equals("#/")){

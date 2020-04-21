@@ -20,7 +20,7 @@ class RootBuilderGenerator {
 	def generateBuilderFile(CustomModel model, IFileSystemAccess2 fsa) {
 		System.out.println("Test")
 		if(model.parentName === null){
-			fsa.generateFile("Builder/" +model.name.toFirstUpper+"Builder.java", model.generateBuilder)
+			fsa.generateFile("builder/" +model.name.toFirstUpper+"Builder.java", model.generateBuilder)
 		}
 	}
 	def CharSequence generateBuilder(CustomModel model) { '''

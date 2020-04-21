@@ -39,10 +39,18 @@ public class Draft7Generator extends AbstractGenerator {
   
   private BuilderGenerator builderGenerator;
   
+  private List<String> walkedThroughDefinition;
+  
+  private List<AbstractSchema> currentNestedSchemas;
+  
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
     ArrayList<CustomModel> _arrayList = new ArrayList<CustomModel>();
     this.objectList = _arrayList;
+    ArrayList<String> _arrayList_1 = new ArrayList<String>();
+    this.walkedThroughDefinition = _arrayList_1;
+    ArrayList<AbstractSchema> _arrayList_2 = new ArrayList<AbstractSchema>();
+    this.currentNestedSchemas = _arrayList_2;
     this.root = Iterators.<Schema>filter(resource.getAllContents(), Schema.class).next();
     String _xifexpression = null;
     String _title = this.root.getTitle();
@@ -74,6 +82,10 @@ public class Draft7Generator extends AbstractGenerator {
   
   public void recursiveObjectsFinder(final List<NamedSchema> properties, final String parentName) {
     final Consumer<NamedSchema> _function = (NamedSchema property) -> {
+      boolean _equals = GeneratorUtils.realizeName(property.getName()).equals("channels");
+      if (_equals) {
+        System.out.println("rip");
+      }
       AbstractSchema propSchema = property.getSchema();
       Schema _xifexpression = null;
       boolean _isSchema = GeneratorUtils.isSchema(propSchema);
@@ -83,38 +95,54 @@ public class Draft7Generator extends AbstractGenerator {
         _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) propSchema).getUri()), this.root);
       }
       Schema schema = _xifexpression;
-      String propName = GeneratorUtils.realizeName(property.getName());
-      boolean _equals = propName.equals("schema");
-      if (_equals) {
-        System.out.println(this.objectList.size());
+      boolean _isReference = GeneratorUtils.isReference(propSchema);
+      if (_isReference) {
+        String referenceeName = GeneratorUtils.getReferenceName(propSchema);
+        boolean _contains = this.walkedThroughDefinition.contains(referenceeName);
+        if (_contains) {
+          return;
+        }
       }
+      String propName = GeneratorUtils.realizeName(property.getName());
       if ((((schema != null) && (!GeneratorUtils.realizeName(property.getName()).toLowerCase().equals(parentName.toLowerCase()))) && (!this.walkedThroughDefinition.contains(propName)))) {
-        boolean _isObject = GeneratorUtils.isObject(schema);
-        if (_isObject) {
-          final CustomModel cm = new CustomModel(schema, propName);
+        boolean _isReference_1 = GeneratorUtils.isReference(propSchema);
+        if (_isReference_1) {
+          String _referenceName = GeneratorUtils.getReferenceName(propSchema);
+          final CustomModel cm = new CustomModel(schema, _referenceName);
           cm.setParentName(parentName);
           this.objectList.add(cm);
-          this.walkedThroughDefinition.add(GeneratorUtils.realizeName(property.getName()));
-          this.recursiveObjectsFinder(schema.getProperties(), propName);
+          this.walkedThroughDefinition.add(GeneratorUtils.getReferenceName(propSchema));
+          boolean _isObject = GeneratorUtils.isObject(schema);
+          if (_isObject) {
+            this.recursiveObjectsFinder(schema.getProperties(), GeneratorUtils.getReferenceName(propSchema));
+          }
+        } else {
+          if ((GeneratorUtils.isObject(schema) && (schema.getPropertyNames() == null))) {
+            final CustomModel cm_1 = new CustomModel(schema, propName);
+            cm_1.setParentName(parentName);
+            this.objectList.add(cm_1);
+            this.walkedThroughDefinition.add(propName);
+            this.recursiveObjectsFinder(schema.getProperties(), propName);
+          }
         }
         if (((schema.getAnyOfs() != null) && (!schema.getAnyOfs().isEmpty()))) {
-          final CustomModel cm_1 = new CustomModel(schema, propName);
-          cm_1.setParentName(parentName);
-          this.objectList.add(cm_1);
-          this.walkedThroughDefinition.add(GeneratorUtils.realizeName(property.getName()));
-          this.complexityObjectsFinder(schema.getAnyOfs(), propName);
-        }
-        if (((schema.getOneOfs() != null) && (!schema.getOneOfs().isEmpty()))) {
           final CustomModel cm_2 = new CustomModel(schema, propName);
           cm_2.setParentName(parentName);
           this.objectList.add(cm_2);
           this.walkedThroughDefinition.add(GeneratorUtils.realizeName(property.getName()));
-          this.complexityObjectsFinder(schema.getOneOfs(), propName);
+          this.complexityObjectsFinder(schema.getAnyOfs(), propName);
         }
-        if (((schema.getAllOfs() != null) && (!schema.getAllOfs().isEmpty()))) {
+        if (((schema.getOneOfs() != null) && (!schema.getOneOfs().isEmpty()))) {
           final CustomModel cm_3 = new CustomModel(schema, propName);
           cm_3.setParentName(parentName);
           this.objectList.add(cm_3);
+          this.walkedThroughDefinition.add(GeneratorUtils.realizeName(property.getName()));
+          this.complexityObjectsFinder(schema.getOneOfs(), propName);
+        }
+        if (((schema.getAllOfs() != null) && (!schema.getAllOfs().isEmpty()))) {
+          final CustomModel cm_4 = new CustomModel(schema, propName);
+          cm_4.setParentName(parentName);
+          this.objectList.add(cm_4);
           this.walkedThroughDefinition.add(GeneratorUtils.realizeName(property.getName()));
           this.complexityObjectsFinder(schema.getAllOfs(), propName);
         }
@@ -122,10 +150,6 @@ public class Draft7Generator extends AbstractGenerator {
     };
     properties.forEach(_function);
   }
-  
-  private List<String> walkedThroughDefinition = new ArrayList<String>();
-  
-  private List<AbstractSchema> currentNestedSchemas = new ArrayList<AbstractSchema>();
   
   public void complexityObjectsFinder(final List<AbstractSchema> schemas, final String parentName) {
     final Consumer<AbstractSchema> _function = (AbstractSchema abstractSchema) -> {

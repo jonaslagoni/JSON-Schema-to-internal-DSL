@@ -29,7 +29,7 @@ public class RootBuilderGenerator {
     boolean _tripleEquals = (_parentName == null);
     if (_tripleEquals) {
       String _firstUpper = StringExtensions.toFirstUpper(model.getName());
-      String _plus = ("Builder/" + _firstUpper);
+      String _plus = ("builder/" + _firstUpper);
       String _plus_1 = (_plus + "Builder.java");
       fsa.generateFile(_plus_1, this.generateBuilder(model));
     }

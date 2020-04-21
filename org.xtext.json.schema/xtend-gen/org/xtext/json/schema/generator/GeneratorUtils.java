@@ -13,35 +13,57 @@ import org.xtext.json.schema.draft7.Schema;
 
 @SuppressWarnings("all")
 public class GeneratorUtils {
-  public static String toJavaType(final JsonTypes type, final AnyString objectName) {
-    return GeneratorUtils.toJavaType(type, GeneratorUtils.realizeName(objectName));
+  public static String toJavaType(final Schema schema, final JsonTypes type, final AnyString objectName) {
+    return GeneratorUtils.toJavaType(schema, type, GeneratorUtils.realizeName(objectName));
   }
   
-  public static String toJavaType(final JsonTypes type, final String objectName) {
-    if (type != null) {
-      switch (type) {
-        case BOOLEAN:
-          return "Boolean";
-        case INTEGER:
-          return "Integer";
-        case NULL:
+  public static String toJavaType(final Schema schema, final JsonTypes type, final String objectName) {
+    if ((schema != null)) {
+      if ((type != null)) {
+        if (type != null) {
+          switch (type) {
+            case BOOLEAN:
+              return "Boolean";
+            case INTEGER:
+              return "Integer";
+            case NULL:
+              return null;
+            case NUMBER:
+              return "Double";
+            case OBJECT:
+              AbstractSchema _propertyNames = schema.getPropertyNames();
+              boolean _tripleNotEquals = (_propertyNames != null);
+              if (_tripleNotEquals) {
+                AbstractSchema propertyNamesAbstractSchema = schema.getPropertyNames();
+                boolean _isSchema = GeneratorUtils.isSchema(propertyNamesAbstractSchema);
+                if (_isSchema) {
+                  Schema propertyNamesSchema = ((Schema) propertyNamesAbstractSchema);
+                  String _firstUpper = StringExtensions.toFirstUpper(propertyNamesSchema.getType().getJsonTypes().get(0).name().toLowerCase());
+                  String _plus = ("Map<" + _firstUpper);
+                  String _plus_1 = (_plus + ",");
+                  String _firstUpper_1 = StringExtensions.toFirstUpper(objectName);
+                  String _plus_2 = (_plus_1 + _firstUpper_1);
+                  return (_plus_2 + ">");
+                }
+              } else {
+                return StringExtensions.toFirstUpper(objectName);
+              }
+              break;
+            case STRING:
+              return "String";
+            case ARRAY:
+              String _firstUpper_2 = StringExtensions.toFirstUpper(objectName);
+              String _plus_3 = ("List<" + _firstUpper_2);
+              return (_plus_3 + ">");
+            default:
+              return null;
+          }
+        } else {
           return null;
-        case NUMBER:
-          return "Double";
-        case OBJECT:
-          return StringExtensions.toFirstUpper(objectName);
-        case STRING:
-          return "String";
-        case ARRAY:
-          String _firstUpper = StringExtensions.toFirstUpper(objectName);
-          String _plus = ("List<" + _firstUpper);
-          return (_plus + ">");
-        default:
-          return null;
+        }
       }
-    } else {
-      return null;
     }
+    return null;
   }
   
   public static boolean isSchema(final AbstractSchema schema) {
@@ -87,8 +109,19 @@ public class GeneratorUtils {
     String propName = GeneratorUtils.getReferenceName(ref);
     if ((propName != null)) {
       EList<NamedSchema> definitions = root.getDefinitions();
-      AbstractSchema _schema = GeneratorUtils.recursiveFindLocalRef(propName, definitions).getSchema();
-      return ((Schema) _schema);
+      NamedSchema localRef = GeneratorUtils.recursiveFindLocalRef(propName, definitions);
+      if ((localRef != null)) {
+        AbstractSchema _schema = localRef.getSchema();
+        return ((Schema) _schema);
+      }
+    }
+    return null;
+  }
+  
+  public static String getReferenceName(final AbstractSchema schema) {
+    if ((schema instanceof Reference)) {
+      Reference ref = ((Reference) schema);
+      return GeneratorUtils.getReferenceName(GeneratorUtils.realizeName(ref.getUri()));
     }
     return null;
   }

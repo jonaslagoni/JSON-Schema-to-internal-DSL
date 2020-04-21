@@ -33,8 +33,12 @@ class Draft7Generator extends AbstractGenerator {
 	ModelGenerator modelGenerator
 	RootBuilderGenerator rootBuilderGenerator
 	BuilderGenerator builderGenerator
+	List<String> walkedThroughDefinition
+	List<AbstractSchema> currentNestedSchemas
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		objectList = new ArrayList()
+		walkedThroughDefinition = new ArrayList()
+		currentNestedSchemas = new ArrayList()
 		root = resource.allContents.filter(Schema).next
 		var rootname = root.title !== null ?  root.title.replace(" ", "").replace(".", "").toFirstUpper : "root"
 		objectList.add(new CustomModel(root, rootname))
@@ -53,21 +57,36 @@ class Draft7Generator extends AbstractGenerator {
 	
 	def void recursiveObjectsFinder(List<NamedSchema> properties, String parentName){
 		properties.forEach[property | {
+			if(GeneratorUtils.realizeName(property.name).equals("channels")){
+				System.out.println("rip")
+			}
 			var propSchema = property.schema;
 			var schema = GeneratorUtils.isSchema(propSchema) ? (propSchema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((propSchema as Reference).uri),root)
-			var propName = GeneratorUtils.realizeName(property.name)
-			if(propName.equals("schema")){
-				System.out.println(objectList.size)
+			if(GeneratorUtils.isReference(propSchema)){
+				var referenceeName = GeneratorUtils.getReferenceName(propSchema)
+				if(walkedThroughDefinition.contains(referenceeName)){
+					return
+				}
 			}
+			
+			var propName = GeneratorUtils.realizeName(property.name)
 			if(schema !== null 
 				&& !GeneratorUtils.realizeName(property.name).toLowerCase.equals(parentName.toLowerCase)
 				&& !walkedThroughDefinition.contains(propName)
 			){
-				if(GeneratorUtils.isObject(schema)){
+				if(GeneratorUtils.isReference(propSchema)){
+					val cm = new CustomModel(schema, GeneratorUtils.getReferenceName(propSchema))
+					cm.parentName = parentName;
+					objectList.add(cm)
+					walkedThroughDefinition.add(GeneratorUtils.getReferenceName(propSchema))
+					if(GeneratorUtils.isObject(schema)){
+						schema.properties.recursiveObjectsFinder(GeneratorUtils.getReferenceName(propSchema))
+					}
+				}else if(GeneratorUtils.isObject(schema) && schema.propertyNames === null){
 					val cm = new CustomModel(schema, propName)
 					cm.parentName = parentName;
 					objectList.add(cm)
-					walkedThroughDefinition.add(GeneratorUtils.realizeName(property.name))
+					walkedThroughDefinition.add(propName)
 					schema.properties.recursiveObjectsFinder(propName)
 				}
 				if(schema.anyOfs !== null && !schema.anyOfs.empty){
@@ -94,8 +113,6 @@ class Draft7Generator extends AbstractGenerator {
 			}
 		}]
 	}
-	List<String> walkedThroughDefinition = new ArrayList()
-	List<AbstractSchema> currentNestedSchemas = new ArrayList()
 	def void complexityObjectsFinder(List<AbstractSchema> schemas, String parentName){
 		schemas.forEach[abstractSchema | {
 			var schema = GeneratorUtils.isSchema(abstractSchema) ? (abstractSchema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((abstractSchema as Reference).uri),root)
