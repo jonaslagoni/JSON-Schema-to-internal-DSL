@@ -36,16 +36,16 @@ class ModelGenerator {
 		 * @author Generated
 		 */
 		public class «model.name.toFirstUpper» {
-			«model.generateModelProperties(allProperties)»
-			«model.generateModelConstructor()»
-			«model.generateModelGetSet(allProperties)»
+			«allProperties.generateModelProperties»
+			«model.generateModelConstructor»
+			«allProperties.generateModelGetSet»
 		}
 		'''
 	}
 	
 
 	
-	def CharSequence generateModelGetSet(CustomModel model, List<CustomProperty> allProperties){
+	def CharSequence generateModelGetSet(List<CustomProperty> allProperties){
 		return '''
 		«FOR property:allProperties»
 			/**
@@ -64,7 +64,7 @@ class ModelGenerator {
 		«ENDFOR»
 		'''
 	}
-	def CharSequence generateModelProperties(CustomModel model, List<CustomProperty> allProperties){
+	def CharSequence generateModelProperties(List<CustomProperty> allProperties){
 		return '''
 		«FOR property:allProperties»
 			private «property.typeName» «property.propertyName»;

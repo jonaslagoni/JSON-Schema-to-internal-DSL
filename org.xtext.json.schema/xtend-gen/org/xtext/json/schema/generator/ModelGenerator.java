@@ -61,7 +61,7 @@ public class ModelGenerator {
     _builder.append(" {");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
-    CharSequence _generateModelProperties = this.generateModelProperties(model, allProperties);
+    CharSequence _generateModelProperties = this.generateModelProperties(allProperties);
     _builder.append(_generateModelProperties, "\t");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
@@ -69,7 +69,7 @@ public class ModelGenerator {
     _builder.append(_generateModelConstructor, "\t");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
-    CharSequence _generateModelGetSet = this.generateModelGetSet(model, allProperties);
+    CharSequence _generateModelGetSet = this.generateModelGetSet(allProperties);
     _builder.append(_generateModelGetSet, "\t");
     _builder.newLineIfNotEmpty();
     _builder.append("}");
@@ -77,7 +77,7 @@ public class ModelGenerator {
     return _builder;
   }
   
-  public CharSequence generateModelGetSet(final CustomModel model, final List<CustomProperty> allProperties) {
+  public CharSequence generateModelGetSet(final List<CustomProperty> allProperties) {
     StringConcatenation _builder = new StringConcatenation();
     {
       for(final CustomProperty property : allProperties) {
@@ -142,7 +142,7 @@ public class ModelGenerator {
     return _builder;
   }
   
-  public CharSequence generateModelProperties(final CustomModel model, final List<CustomProperty> allProperties) {
+  public CharSequence generateModelProperties(final List<CustomProperty> allProperties) {
     StringConcatenation _builder = new StringConcatenation();
     {
       for(final CustomProperty property : allProperties) {

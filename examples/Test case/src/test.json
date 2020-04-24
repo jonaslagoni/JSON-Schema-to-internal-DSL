@@ -1,0 +1,47 @@
+{	
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Human",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+	"personObject": {
+		"$ref": "#/definitions/personDefinition"
+	},
+	"clothes": {
+		"type": "array",
+		"items": {
+  			"title": "Clothes",
+			"type": "string",
+			"enum": ["pants", "shoes", "hoodie", "shirt"]
+		}
+	}
+  },
+  "definitions": {
+  	"personDefinition" : {
+		  "type": "object",
+		  "additionalProperties": false,
+		  "properties": {
+		    "firstName": {
+		      "type": "string",
+		      "description": "The person's first name."
+		    },
+		    "allParents": {
+				"$ref": "#/definitions/parents"
+		    },
+		    "age": {
+		      "description": "Age in years which must be equal to or greater than zero.",
+		      "type": "integer",
+		      "minimum": 0
+		    },
+		    "weight": {
+		      "type": "number",
+		      "minimum": 0
+		    }
+		  }
+  	},
+  	"parents" : {
+        "type": "object",
+        "additionalProperties": { "$ref": "#/definitions/personDefinition" },
+  	}
+  }
+}

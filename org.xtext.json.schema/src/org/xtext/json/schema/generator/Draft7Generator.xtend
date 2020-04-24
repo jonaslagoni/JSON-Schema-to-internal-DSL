@@ -73,7 +73,7 @@ class Draft7Generator extends AbstractGenerator {
 			objectList.add(cm)
 			walkedThroughSchemas.add(objectName)
 			
-			if(schema.additionalProperties !== null){
+			if(schema.additionalProperties !== null && schema.additionalProperties.schema !== null){
 				schema.additionalProperties.schema.recursiveObjectFinder(objectName)
 			}
 			if(schema.properties !== null){
@@ -82,7 +82,7 @@ class Draft7Generator extends AbstractGenerator {
 				}
 			}
 		}else if(GeneratorUtils.isArray(schema)){
-			if(schema.additionalItems !== null && schema.additionalItems.allowedBoolean === null){
+			if(schema.additionalItems !== null && schema.additionalItems.schema !== null){
 				schema.additionalItems.schema.recursiveObjectFinder(parentName)
 			}
 			
@@ -109,95 +109,6 @@ class Draft7Generator extends AbstractGenerator {
 			}
 		}
 	}
-//	
-//	def void recursiveObjectsFinder(List<NamedSchema> properties, String parentName){
-//		properties.forEach[property | {
-//			if(GeneratorUtils.realizeName(property.name).equals("channels")){
-//				System.out.println("rip")
-//			}
-//			var propSchema = property.schema;
-//			var schema = GeneratorUtils.isSchema(propSchema) ? (propSchema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((propSchema as Reference).uri),root)
-//			if(GeneratorUtils.isReference(propSchema)){
-//				var referenceeName = GeneratorUtils.getReferenceName(propSchema)
-//				if(walkedThroughDefinition.contains(referenceeName)){
-//					return
-//				}
-//			}
-//			
-//			var propName = GeneratorUtils.realizeName(property.name)
-//			if(schema !== null 
-//				&& !GeneratorUtils.realizeName(property.name).toLowerCase.equals(parentName.toLowerCase)
-//				&& !walkedThroughDefinition.contains(propName)
-//			){
-//				if(GeneratorUtils.isReference(propSchema)){
-//					val cm = new CustomModel(schema, GeneratorUtils.getReferenceName(propSchema))
-//					cm.parentName = parentName;
-//					objectList.add(cm)
-//					walkedThroughDefinition.add(GeneratorUtils.getReferenceName(propSchema))
-//					if(GeneratorUtils.isObject(schema)){
-//						schema.properties.recursiveObjectsFinder(GeneratorUtils.getReferenceName(propSchema))
-//					}
-//				}else if(GeneratorUtils.isObject(schema) && schema.propertyNames === null){
-//					val cm = new CustomModel(schema, propName)
-//					cm.parentName = parentName;
-//					objectList.add(cm)
-//					walkedThroughDefinition.add(propName)
-//					schema.properties.recursiveObjectsFinder(propName)
-//				}else if(GeneratorUtils.isArray(schema) && schema.propertyNames === null){
-//					if(schema.items !== null && schema.items.items.size > 0 && GeneratorUtils.isObject(schema.items.items.get(0))){
-//						var arrayItemSchema = schema.items.items.get(0)
-//						val cm = new CustomModel(arrayItemSchema, propName)
-//						cm.parentName = parentName;
-//						objectList.add(cm)
-//						arrayItemSchema.recursiveObjectsFinder(propName)
-//					}
-//				}
-//				if(schema.anyOfs !== null && !schema.anyOfs.empty){
-//					val cm = new CustomModel(schema, propName)
-//					cm.parentName = parentName;
-//					objectList.add(cm)
-//					walkedThroughDefinition.add(GeneratorUtils.realizeName(property.name))
-//					schema.anyOfs.complexityObjectsFinder(propName)
-//				}
-//				if(schema.oneOfs !== null && !schema.oneOfs.empty){
-//					val cm = new CustomModel(schema, propName)
-//					cm.parentName = parentName;
-//					objectList.add(cm)
-//					walkedThroughDefinition.add(GeneratorUtils.realizeName(property.name))
-//					schema.oneOfs.complexityObjectsFinder(propName)
-//				}
-//				if(schema.allOfs !== null && !schema.allOfs.empty){
-//					val cm = new CustomModel(schema, propName)
-//					cm.parentName = parentName;
-//					objectList.add(cm)
-//					walkedThroughDefinition.add(GeneratorUtils.realizeName(property.name))
-//					schema.allOfs.complexityObjectsFinder(propName)
-//				}
-//			}
-//		}]
-//	}
-//	def void complexityObjectsFinder(List<AbstractSchema> schemas, String parentName){
-//		schemas.forEach[abstractSchema | {
-//			var schema = GeneratorUtils.isSchema(abstractSchema) ? (abstractSchema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((abstractSchema as Reference).uri),root)
-//			if(schema !== null 
-//				&& !currentNestedSchemas.contains(abstractSchema)
-//			){
-//				currentNestedSchemas.add(abstractSchema)
-//				if(GeneratorUtils.isObject(schema)){
-//					schema.properties.recursiveObjectsFinder(parentName)
-//				}
-//				if(schema.anyOfs !== null && !schema.anyOfs.empty){
-//					schema.anyOfs.complexityObjectsFinder(parentName)
-//				}
-//				if(schema.oneOfs !== null && !schema.oneOfs.empty){
-//					schema.oneOfs.complexityObjectsFinder(parentName)
-//				}
-//				if(schema.allOfs !== null && !schema.allOfs.empty){
-//					schema.allOfs.complexityObjectsFinder(parentName)
-//				}
-//			}
-//		}]
-//	}
 	
 	
 }

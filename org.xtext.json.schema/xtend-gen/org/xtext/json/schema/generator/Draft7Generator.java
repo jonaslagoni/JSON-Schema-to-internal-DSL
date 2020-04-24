@@ -14,7 +14,6 @@ import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGeneratorContext;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.xtext.json.schema.draft7.AbstractSchema;
-import org.xtext.json.schema.draft7.AdditionalProperties;
 import org.xtext.json.schema.draft7.NamedSchema;
 import org.xtext.json.schema.draft7.Reference;
 import org.xtext.json.schema.draft7.Schema;
@@ -104,14 +103,12 @@ public class Draft7Generator extends AbstractGenerator {
       cm.setParentName(parentName);
       this.objectList.add(cm);
       this.walkedThroughSchemas.add(objectName);
-      AdditionalProperties _additionalProperties = schema.getAdditionalProperties();
-      boolean _tripleNotEquals_1 = (_additionalProperties != null);
-      if (_tripleNotEquals_1) {
+      if (((schema.getAdditionalProperties() != null) && (schema.getAdditionalProperties().getSchema() != null))) {
         this.recursiveObjectFinder(schema.getAdditionalProperties().getSchema(), objectName);
       }
       EList<NamedSchema> _properties = schema.getProperties();
-      boolean _tripleNotEquals_2 = (_properties != null);
-      if (_tripleNotEquals_2) {
+      boolean _tripleNotEquals_1 = (_properties != null);
+      if (_tripleNotEquals_1) {
         EList<NamedSchema> _properties_1 = schema.getProperties();
         for (final NamedSchema property : _properties_1) {
           this.recursiveObjectFinder(property.getSchema(), objectName);
@@ -120,7 +117,7 @@ public class Draft7Generator extends AbstractGenerator {
     } else {
       boolean _isArray = GeneratorUtils.isArray(schema);
       if (_isArray) {
-        if (((schema.getAdditionalItems() != null) && (schema.getAdditionalItems().getAllowedBoolean() == null))) {
+        if (((schema.getAdditionalItems() != null) && (schema.getAdditionalItems().getSchema() != null))) {
           this.recursiveObjectFinder(schema.getAdditionalItems().getSchema(), parentName);
         }
         if (((schema.getItems() != null) && (schema.getItems().getItems().size() > 0))) {
@@ -132,24 +129,24 @@ public class Draft7Generator extends AbstractGenerator {
       }
     }
     EList<AbstractSchema> _allOfs = schema.getAllOfs();
-    boolean _tripleNotEquals_3 = (_allOfs != null);
-    if (_tripleNotEquals_3) {
+    boolean _tripleNotEquals_2 = (_allOfs != null);
+    if (_tripleNotEquals_2) {
       EList<AbstractSchema> _allOfs_1 = schema.getAllOfs();
       for (final AbstractSchema allOf : _allOfs_1) {
         this.recursiveObjectFinder(allOf, parentName);
       }
     }
     EList<AbstractSchema> _anyOfs = schema.getAnyOfs();
-    boolean _tripleNotEquals_4 = (_anyOfs != null);
-    if (_tripleNotEquals_4) {
+    boolean _tripleNotEquals_3 = (_anyOfs != null);
+    if (_tripleNotEquals_3) {
       EList<AbstractSchema> _anyOfs_1 = schema.getAnyOfs();
       for (final AbstractSchema anyOf : _anyOfs_1) {
         this.recursiveObjectFinder(anyOf, parentName);
       }
     }
     EList<AbstractSchema> _oneOfs = schema.getOneOfs();
-    boolean _tripleNotEquals_5 = (_oneOfs != null);
-    if (_tripleNotEquals_5) {
+    boolean _tripleNotEquals_4 = (_oneOfs != null);
+    if (_tripleNotEquals_4) {
       EList<AbstractSchema> _oneOfs_1 = schema.getOneOfs();
       for (final AbstractSchema oneOf : _oneOfs_1) {
         this.recursiveObjectFinder(oneOf, parentName);
