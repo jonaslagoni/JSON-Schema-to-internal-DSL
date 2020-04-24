@@ -152,7 +152,32 @@ class GeneratorUtils {
 										propType = 'List<' + GeneratorUtils.getReferenceName(propSchema.items.items.get(0)).toFirstUpper + '>'
 									}else{
 										var arraySchema = arrayAbstractSchema as Schema
-										if(arraySchema.title !== null){
+										if(arraySchema.type !== null){
+											var arrayType = arraySchema.type.jsonTypes.get(0)
+											switch(arrayType){
+												case BOOLEAN: {
+													propType = 'List<Boolean>'
+												}
+												case INTEGER: {
+													propType = 'List<Integer>'
+												}
+												case NUMBER: {
+													propType = 'List<Double>'
+												}
+												case OBJECT: {
+													if(GeneratorUtils.isReference(prop.schema)){
+														propType = GeneratorUtils.getReferenceName(prop.schema).toFirstUpper
+													}else{
+														propType = propName.toFirstUpper
+													}
+												}
+												case STRING: {
+													propType = 'List<String>'
+												}
+												default: {
+												}
+											}
+										}else if(arraySchema.title !== null){
 											propType = "List<" + arraySchema.title.replace(' ', '').toFirstUpper + ">"
 										}else{
 											//TODO what if it is a schema with no title?

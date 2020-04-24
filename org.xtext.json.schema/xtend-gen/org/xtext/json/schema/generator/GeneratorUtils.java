@@ -12,6 +12,7 @@ import org.xtext.json.schema.draft7.JsonTypes;
 import org.xtext.json.schema.draft7.NamedSchema;
 import org.xtext.json.schema.draft7.Reference;
 import org.xtext.json.schema.draft7.Schema;
+import org.xtext.json.schema.draft7.Types;
 import org.xtext.json.schema.generator.CustomProperty;
 
 @SuppressWarnings("all")
@@ -237,15 +238,48 @@ public class GeneratorUtils {
                         propType = _plus_15;
                       } else {
                         Schema arraySchema = ((Schema) arrayAbstractSchema);
-                        String _title_4 = arraySchema.getTitle();
-                        boolean _tripleNotEquals_6 = (_title_4 != null);
+                        Types _type = arraySchema.getType();
+                        boolean _tripleNotEquals_6 = (_type != null);
                         if (_tripleNotEquals_6) {
-                          String _firstUpper_8 = StringExtensions.toFirstUpper(arraySchema.getTitle().replace(" ", ""));
-                          String _plus_16 = ("List<" + _firstUpper_8);
-                          String _plus_17 = (_plus_16 + ">");
-                          propType = _plus_17;
+                          JsonTypes arrayType = arraySchema.getType().getJsonTypes().get(0);
+                          if (arrayType != null) {
+                            switch (arrayType) {
+                              case BOOLEAN:
+                                propType = "List<Boolean>";
+                                break;
+                              case INTEGER:
+                                propType = "List<Integer>";
+                                break;
+                              case NUMBER:
+                                propType = "List<Double>";
+                                break;
+                              case OBJECT:
+                                boolean _isReference_5 = GeneratorUtils.isReference(prop.getSchema());
+                                if (_isReference_5) {
+                                  propType = StringExtensions.toFirstUpper(GeneratorUtils.getReferenceName(prop.getSchema()));
+                                } else {
+                                  propType = StringExtensions.toFirstUpper(propName);
+                                }
+                                break;
+                              case STRING:
+                                propType = "List<String>";
+                                break;
+                              default:
+                                break;
+                            }
+                          } else {
+                          }
                         } else {
-                          propType = null;
+                          String _title_4 = arraySchema.getTitle();
+                          boolean _tripleNotEquals_7 = (_title_4 != null);
+                          if (_tripleNotEquals_7) {
+                            String _firstUpper_8 = StringExtensions.toFirstUpper(arraySchema.getTitle().replace(" ", ""));
+                            String _plus_16 = ("List<" + _firstUpper_8);
+                            String _plus_17 = (_plus_16 + ">");
+                            propType = _plus_17;
+                          } else {
+                            propType = null;
+                          }
                         }
                       }
                     } else {
