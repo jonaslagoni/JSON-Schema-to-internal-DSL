@@ -8,37 +8,68 @@ import java.util.List
 
 class BuilderGenerator {
 	
-	
 	List<CustomModel> objectList
 	Schema root
+	CustomModel rootObject
 	new(List<CustomModel> objectList, Schema root){
 		this.objectList = objectList
 		this.root = root
+		
+		for(model: objectList){
+			if(model.parentName === null){
+				rootObject = model
+			}
+		}
 	}
 	
 	
 	def generateBuilderFile(CustomModel model, IFileSystemAccess2 fsa) {
-		System.out.println("Test")
-		if(model.parentName !== null){
-			fsa.generateFile("builder/" +model.name.toFirstUpper+"Builder.java", model.generateBuilder)
+		fsa.generateFile("builder/" +model.name.toFirstUpper+"Builder.java", model.parentName !== null ? model.generateBuilder : model.generateRootBuilder)
+
+	}
+	
+	def CharSequence generateRootBuilderVariables(CustomModel model) {
+		'''
+		private «model.name.toFirstUpper» «model.name.toFirstLower»;
+		'''
+		
+	}
+	def CharSequence generateRootBuilder(CustomModel model) {
+		var allProperties = GeneratorUtils.allProperties((model.model as Schema), root)
+		return '''
+		package builder;
+		import java.util.*;
+		import model.*;
+		import builder.*;
+		
+		public class «model.name.toFirstUpper»Builder {
+			«model.generateRootBuilderVariables»
+			«model.generateRootBuilderConstructor»
+			«model.generateBuilderMethod(allProperties)»
+			«model.generateBuilderRootFinishMethod»
 		}
+		
+		'''
 	}
-	def CharSequence generateBuilder(CustomModel model) '''
-	package builder;
-	import java.util.*;
-	import model.«model.name.toFirstUpper»;
-	import model.«model.parentName.toFirstUpper»;
-	import builder.«model.parentName.toFirstUpper»Builder;
-	
-	public class «model.name.toFirstUpper»Builder {
-		«model.generateBuilderVariables»
-		«model.generateBuilderConstructor»
-		«model.generateBuilderMethod»
-		«model.generateParentMethod»
-		«model.generateBuilderFinishMethod»
+	def CharSequence generateBuilder(CustomModel model) {
+		var allProperties = GeneratorUtils.allProperties((model.model as Schema), root)
+		return '''
+		package builder;
+		import java.util.*;
+		import model.*;
+		import builder.*;
+		
+		public class «model.name.toFirstUpper»Builder {
+			«model.generateBuilderVariables»
+			«model.generateBuilderConstructor»
+			«model.generateBuilderMethod(allProperties)»
+			«model.generateParentMethod»
+			«model.generateBuilderFinishMethod»
+		}
+		
+		'''
 	}
 	
-	'''
 	def CharSequence generateBuilderVariables(CustomModel model) {
 		'''
 		private «model.parentName.toFirstUpper»Builder parent;
@@ -47,7 +78,13 @@ class BuilderGenerator {
 		'''
 		
 	}
-	
+	def CharSequence generateRootBuilderConstructor(CustomModel model) {
+		'''
+		public «model.name.toFirstUpper»Builder() {
+			«model.name.toFirstLower» = new «model.name.toFirstUpper»();
+		}
+		'''
+	}
 	def CharSequence generateBuilderConstructor(CustomModel model) {
 		
 	//TODO Ensure when there are multiple types it should generate multiple constructors 	
@@ -60,35 +97,26 @@ class BuilderGenerator {
 		'''
 	}
 	
-	def generateBuilderMethod(CustomModel model){
+	def generateBuilderMethod(CustomModel model, List<CustomProperty> allProperties){
 		return '''
-		«FOR property:(model.model as Schema).properties»
-			«var schema = GeneratorUtils.isSchema(property.schema) ? (property.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((property.schema as Reference).uri),root)»
-				«IF schema !== null && schema.type !== null»
-					«IF GeneratorUtils.isObject(schema)»
-				public «GeneratorUtils.realizeName(property.name).toFirstUpper»Builder «GeneratorUtils.realizeName(property.name)»(){
-					«GeneratorUtils.realizeName(property.name).toFirstUpper» «GeneratorUtils.realizeName(property.name).toFirstLower»Instance;
-					if(root.get«GeneratorUtils.realizeName(property.name).toFirstUpper»() != null){
-						«GeneratorUtils.realizeName(property.name).toFirstLower»Instance = «model.name.toFirstLower».get«GeneratorUtils.realizeName(property.name).toFirstUpper»();
-					} else {
-						«GeneratorUtils.realizeName(property.name).toFirstLower»Instance = new «GeneratorUtils.realizeName(property.name).toFirstUpper»();
-						«model.name.toFirstLower».set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstLower»Instance);
-					}
-					return new «GeneratorUtils.realizeName(property.name).toFirstUpper»Builder(this, «GeneratorUtils.realizeName(property.name).toFirstLower»Instance);
+		«FOR property:allProperties»
+			«IF property.type === JsonTypes.OBJECT»
+			public «property.typeName.toFirstUpper»Builder «property.propertyName»(){
+				«property.typeName.toFirstUpper» «property.propertyName.toFirstLower»Instance;
+				if(«model.name.toFirstLower».get«property.propertyName.toFirstUpper»() != null){
+					«property.propertyName.toFirstLower»Instance = «model.name.toFirstLower».get«property.propertyName.toFirstUpper»();
+				} else {
+					«property.propertyName.toFirstLower»Instance = new «property.typeName.toFirstUpper»();
+					«model.name.toFirstLower».set«property.propertyName.toFirstUpper»(«property.propertyName.toFirstLower»Instance);
 				}
-				«ELSE»
-					«FOR type:schema.type.jsonTypes»
-					«var schemaJsonType = GeneratorUtils.toJavaType(schema, type, property.name)»
-						«IF schemaJsonType !== null»
-				public «model.name.toFirstUpper+"Builder"» set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«schemaJsonType» «GeneratorUtils.realizeName(property.name).toFirstLower»){
-					«model.name.toFirstLower».set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.realizeName(property.name).toFirstLower»);
-					return this;
-				}
-						«ENDIF»
-					«ENDFOR»
-				«ENDIF»
-				«ENDIF»
-				
+				return new «property.typeName.toFirstUpper»Builder(this, «property.propertyName.toFirstLower»Instance);
+			}
+			«ELSE»
+			public «model.name.toFirstUpper+"Builder"» set«property.propertyName.toFirstUpper»(«property.typeName.toFirstUpper» «property.propertyName.toFirstLower»){
+				«model.name.toFirstLower».set«property.propertyName.toFirstUpper»(«property.propertyName.toFirstLower»);
+				return this;
+			}
+			«ENDIF»
 		«ENDFOR»
 		'''
 	}
@@ -102,9 +130,17 @@ class BuilderGenerator {
 		'''
 	}
 	
+	def generateBuilderRootFinishMethod(CustomModel model){
+		'''
+		public «model.name.toFirstUpper» finish() {
+			return «model.name.toFirstLower»;
+		}
+		
+		'''
+	}
 	def generateBuilderFinishMethod(CustomModel model){
 		'''
-		public «model.parentName.toFirstUpper» finish() {
+		public «rootObject.name.toFirstUpper» finish() {
 			return parent.finish();
 		}
 		

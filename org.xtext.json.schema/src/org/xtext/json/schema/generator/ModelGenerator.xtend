@@ -26,144 +26,54 @@ class ModelGenerator {
 	}
 	
 	def CharSequence generateModel(CustomModel model) {
-		if(model.name.equals("channels")){
-			System.out.println("rip")
-		}
-		var allProperties = (model.model as Schema).allProperties
+		var allProperties = GeneratorUtils.allProperties((model.model as Schema), root)
 		return '''
 		package model;
 		import java.util.*;
-		«model.generateModelImports(allProperties)»
+		import model.*;
 		/**
 		 *
 		 * @author Generated
 		 */
 		public class «model.name.toFirstUpper» {
 			«model.generateModelProperties(allProperties)»
-			«model.generateModelConstructor(allProperties)»
+			«model.generateModelConstructor()»
 			«model.generateModelGetSet(allProperties)»
 		}
 		'''
 	}
 	
-	var anonymCounter = 0
-	def List<NamedSchema> allProperties(Schema schema){
-		var list = new ArrayList<NamedSchema>()
-		if(schema !== null){
-			if(schema.properties !== null && !schema.properties.isEmpty){
-				list.addAll(schema.properties)
-			}
-			if(schema.additionalProperties !== null){
-				var additionalPropertiesSchema = schema.additionalProperties.schema
-				if(additionalPropertiesSchema !== null){
-					if(GeneratorUtils.isReference(additionalPropertiesSchema)){
-						var newNamedSchema = new CustomNamedSchema()
-						newNamedSchema.schema = additionalPropertiesSchema
-						newNamedSchema.name = new CustomAnyString(GeneratorUtils.getReferenceName(additionalPropertiesSchema))
-						list.add(newNamedSchema as NamedSchema)
-					}else if(GeneratorUtils.isSchema(additionalPropertiesSchema)){
-						list.addAll(allProperties(additionalPropertiesSchema as Schema))
-					}
-				}
-			}
-			
-			if(schema.anyOfs !== null && !schema.anyOfs.isEmpty){
-				list.addAll(schema.anyOfs.allComplexityProperties)
-			}
-			if(schema.allOfs !== null && !schema.allOfs.isEmpty){
-				list.addAll(schema.allOfs.allComplexityProperties)
-			}
-			if(schema.oneOfs !== null && !schema.oneOfs.isEmpty){
-				list.addAll(schema.oneOfs.allComplexityProperties)
-			}
-			
-			
-		}
-		return list
-	}
+
 	
-	def List<NamedSchema> allComplexityProperties(List<AbstractSchema> complex){
-		var newComplexList = complex.clone()
-		var list = new ArrayList<NamedSchema>()
-		for(AbstractSchema anyOfAbstractSchema: newComplexList){
-			var newNamedSchema = new CustomNamedSchema()
-			newNamedSchema.schema = anyOfAbstractSchema
-			if(GeneratorUtils.isReference(anyOfAbstractSchema)){
-				newNamedSchema.name = new CustomAnyString(GeneratorUtils.getReferenceName(anyOfAbstractSchema))
-			}else if(GeneratorUtils.isSchema(anyOfAbstractSchema)){
-				var anyOfSchema = anyOfAbstractSchema as Schema
-				if(anyOfSchema.title !== null){
-					newNamedSchema.name = new CustomAnyString(anyOfSchema.title.replace(" ", ""))
-				}else if(anyOfSchema.id !== null){
-					newNamedSchema.name = new CustomAnyString(GeneratorUtils.realizeName(anyOfSchema.id).replace(" ", ""))
-				}else{
-					newNamedSchema.name = new CustomAnyString("anonym" + (anonymCounter++))
-				}
-			}
-			list.add(newNamedSchema)
-		}
-		list
-	}
-	
-	def CharSequence generateModelImports(CustomModel model, List<NamedSchema> allProperties){
+	def CharSequence generateModelGetSet(CustomModel model, List<CustomProperty> allProperties){
 		return '''
 		«FOR property:allProperties»
-			«var schema = GeneratorUtils.isSchema(property.schema) ? (property.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((property.schema as Reference).uri),root)»
-			«IF GeneratorUtils.isObject(schema)»
-			import model.«GeneratorUtils.realizeName(property.name).toFirstUpper»;
-			«ELSE»
-			import model.«GeneratorUtils.getReferenceName(property.schema).toFirstUpper»;
-			«ENDIF»
+			/**
+			* @param «property.propertyName» to set
+			*/
+			public void set«property.propertyName.toFirstUpper»(«property.typeName» «property.propertyName»){
+				this.«property.propertyName» = «property.propertyName»;
+			}
+			
+			/**
+			* @return the «property.propertyName»
+			*/
+			public «property.typeName» get«property.propertyName.toFirstUpper»(){
+				return «property.propertyName»;
+			}
+		«ENDFOR»
+		'''
+	}
+	def CharSequence generateModelProperties(CustomModel model, List<CustomProperty> allProperties){
+		return '''
+		«FOR property:allProperties»
+			private «property.typeName» «property.propertyName»;
 		«ENDFOR»
 		'''
 	
 	}
 	
-	def CharSequence generateModelGetSet(CustomModel model, List<NamedSchema> allProperties){
-		return '''
-		«FOR property:allProperties»
-			«var schema = GeneratorUtils.isSchema(property.schema) ? (property.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((property.schema as Reference).uri),root)»
-			«IF schema !== null && schema.type !== null»
-				«FOR type:schema.type.jsonTypes»
-					«IF GeneratorUtils.toJavaType(schema, type, property.name) !== null»
-					/**
-					* @param «GeneratorUtils.realizeName(property.name).toFirstLower» to set
-					*/
-					public void set«GeneratorUtils.realizeName(property.name).toFirstUpper»(«GeneratorUtils.toJavaType(schema, type, property.name)» «GeneratorUtils.realizeName(property.name).toFirstLower»){
-						this.«GeneratorUtils.realizeName(property.name).toFirstLower» = «GeneratorUtils.realizeName(property.name).toFirstLower»;
-					}
-					
-					/**
-					* @return the «GeneratorUtils.realizeName(property.name).toFirstLower»
-					*/
-					public «GeneratorUtils.toJavaType(schema, type, property.name)» get«GeneratorUtils.realizeName(property.name).toFirstUpper»(){
-						return «GeneratorUtils.realizeName(property.name).toFirstLower»;
-					}
-					«ENDIF»
-				«ENDFOR»
-			«ENDIF»
-		«ENDFOR»
-		'''
-	}
-	def CharSequence generateModelProperties(CustomModel model, List<NamedSchema> allProperties){
-		return '''
-		«FOR property:allProperties»
-			«var schema = GeneratorUtils.isSchema(property.schema) ? (property.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((property.schema as Reference).uri),root)»
-			«IF schema !== null»
-				«IF schema.type !== null»
-					«FOR type:schema.type.jsonTypes»
-						«IF GeneratorUtils.toJavaType(schema, type, property.name) !== null»
-						private «GeneratorUtils.toJavaType(schema, type, property.name)» «GeneratorUtils.realizeName(property.name).toFirstLower»;
-						«ENDIF»
-					«ENDFOR»
-				«ENDIF»
-			«ENDIF»
-		«ENDFOR»
-		'''
-	
-	}
-	
-	def CharSequence generateModelConstructor(CustomModel model, List<NamedSchema> allProperties) {
+	def CharSequence generateModelConstructor(CustomModel model) {
 		
 		//TODO Ensure when there are multiple types it should generate multiple constructors 	
 		return '''

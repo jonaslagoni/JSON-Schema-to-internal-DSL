@@ -7,12 +7,14 @@ import com.google.common.collect.Iterators;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.generator.AbstractGenerator;
 import org.eclipse.xtext.generator.IFileSystemAccess2;
 import org.eclipse.xtext.generator.IGeneratorContext;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.xtext.json.schema.draft7.AbstractSchema;
+import org.xtext.json.schema.draft7.AdditionalProperties;
 import org.xtext.json.schema.draft7.NamedSchema;
 import org.xtext.json.schema.draft7.Reference;
 import org.xtext.json.schema.draft7.Schema;
@@ -20,7 +22,6 @@ import org.xtext.json.schema.generator.BuilderGenerator;
 import org.xtext.json.schema.generator.CustomModel;
 import org.xtext.json.schema.generator.GeneratorUtils;
 import org.xtext.json.schema.generator.ModelGenerator;
-import org.xtext.json.schema.generator.RootBuilderGenerator;
 
 /**
  * Generates code from your model files on save.
@@ -35,149 +36,124 @@ public class Draft7Generator extends AbstractGenerator {
   
   private ModelGenerator modelGenerator;
   
-  private RootBuilderGenerator rootBuilderGenerator;
-  
   private BuilderGenerator builderGenerator;
-  
-  private List<String> walkedThroughDefinition;
-  
-  private List<AbstractSchema> currentNestedSchemas;
   
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
     ArrayList<CustomModel> _arrayList = new ArrayList<CustomModel>();
     this.objectList = _arrayList;
     ArrayList<String> _arrayList_1 = new ArrayList<String>();
-    this.walkedThroughDefinition = _arrayList_1;
-    ArrayList<AbstractSchema> _arrayList_2 = new ArrayList<AbstractSchema>();
-    this.currentNestedSchemas = _arrayList_2;
+    this.walkedThroughSchemas = _arrayList_1;
     this.root = Iterators.<Schema>filter(resource.getAllContents(), Schema.class).next();
-    String _xifexpression = null;
-    String _title = this.root.getTitle();
-    boolean _tripleNotEquals = (_title != null);
-    if (_tripleNotEquals) {
-      _xifexpression = StringExtensions.toFirstUpper(this.root.getTitle().replace(" ", "").replace(".", ""));
-    } else {
-      _xifexpression = "root";
-    }
-    String rootname = _xifexpression;
-    CustomModel _customModel = new CustomModel(this.root, rootname);
-    this.objectList.add(_customModel);
-    this.recursiveObjectsFinder(this.root.getProperties(), rootname);
-    this.recursiveObjectsFinder(this.root.getDefinitions(), rootname);
+    this.recursiveObjectFinder(this.root, null);
     ModelGenerator _modelGenerator = new ModelGenerator(this.objectList, this.root);
     this.modelGenerator = _modelGenerator;
-    RootBuilderGenerator _rootBuilderGenerator = new RootBuilderGenerator(this.objectList, this.root);
-    this.rootBuilderGenerator = _rootBuilderGenerator;
     BuilderGenerator _builderGenerator = new BuilderGenerator(this.objectList, this.root);
     this.builderGenerator = _builderGenerator;
     final Consumer<CustomModel> _function = (CustomModel model) -> {
       this.modelGenerator.generateModelFile(model, fsa);
       this.builderGenerator.generateBuilderFile(model, fsa);
-      this.rootBuilderGenerator.generateBuilderFile(model, fsa);
     };
     this.objectList.forEach(_function);
     System.out.println(this.objectList.size());
   }
   
-  public void recursiveObjectsFinder(final List<NamedSchema> properties, final String parentName) {
-    final Consumer<NamedSchema> _function = (NamedSchema property) -> {
-      boolean _equals = GeneratorUtils.realizeName(property.getName()).equals("channels");
-      if (_equals) {
-        System.out.println("rip");
-      }
-      AbstractSchema propSchema = property.getSchema();
-      Schema _xifexpression = null;
-      boolean _isSchema = GeneratorUtils.isSchema(propSchema);
-      if (_isSchema) {
-        _xifexpression = ((Schema) propSchema);
-      } else {
-        _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) propSchema).getUri()), this.root);
-      }
-      Schema schema = _xifexpression;
-      boolean _isReference = GeneratorUtils.isReference(propSchema);
-      if (_isReference) {
-        String referenceeName = GeneratorUtils.getReferenceName(propSchema);
-        boolean _contains = this.walkedThroughDefinition.contains(referenceeName);
-        if (_contains) {
-          return;
-        }
-      }
-      String propName = GeneratorUtils.realizeName(property.getName());
-      if ((((schema != null) && (!GeneratorUtils.realizeName(property.getName()).toLowerCase().equals(parentName.toLowerCase()))) && (!this.walkedThroughDefinition.contains(propName)))) {
-        boolean _isReference_1 = GeneratorUtils.isReference(propSchema);
-        if (_isReference_1) {
-          String _referenceName = GeneratorUtils.getReferenceName(propSchema);
-          final CustomModel cm = new CustomModel(schema, _referenceName);
-          cm.setParentName(parentName);
-          this.objectList.add(cm);
-          this.walkedThroughDefinition.add(GeneratorUtils.getReferenceName(propSchema));
-          boolean _isObject = GeneratorUtils.isObject(schema);
-          if (_isObject) {
-            this.recursiveObjectsFinder(schema.getProperties(), GeneratorUtils.getReferenceName(propSchema));
-          }
-        } else {
-          if ((GeneratorUtils.isObject(schema) && (schema.getPropertyNames() == null))) {
-            final CustomModel cm_1 = new CustomModel(schema, propName);
-            cm_1.setParentName(parentName);
-            this.objectList.add(cm_1);
-            this.walkedThroughDefinition.add(propName);
-            this.recursiveObjectsFinder(schema.getProperties(), propName);
-          }
-        }
-        if (((schema.getAnyOfs() != null) && (!schema.getAnyOfs().isEmpty()))) {
-          final CustomModel cm_2 = new CustomModel(schema, propName);
-          cm_2.setParentName(parentName);
-          this.objectList.add(cm_2);
-          this.walkedThroughDefinition.add(GeneratorUtils.realizeName(property.getName()));
-          this.complexityObjectsFinder(schema.getAnyOfs(), propName);
-        }
-        if (((schema.getOneOfs() != null) && (!schema.getOneOfs().isEmpty()))) {
-          final CustomModel cm_3 = new CustomModel(schema, propName);
-          cm_3.setParentName(parentName);
-          this.objectList.add(cm_3);
-          this.walkedThroughDefinition.add(GeneratorUtils.realizeName(property.getName()));
-          this.complexityObjectsFinder(schema.getOneOfs(), propName);
-        }
-        if (((schema.getAllOfs() != null) && (!schema.getAllOfs().isEmpty()))) {
-          final CustomModel cm_4 = new CustomModel(schema, propName);
-          cm_4.setParentName(parentName);
-          this.objectList.add(cm_4);
-          this.walkedThroughDefinition.add(GeneratorUtils.realizeName(property.getName()));
-          this.complexityObjectsFinder(schema.getAllOfs(), propName);
-        }
-      }
-    };
-    properties.forEach(_function);
-  }
+  private int anonymCounter = 1;
   
-  public void complexityObjectsFinder(final List<AbstractSchema> schemas, final String parentName) {
-    final Consumer<AbstractSchema> _function = (AbstractSchema abstractSchema) -> {
-      Schema _xifexpression = null;
-      boolean _isSchema = GeneratorUtils.isSchema(abstractSchema);
-      if (_isSchema) {
-        _xifexpression = ((Schema) abstractSchema);
+  private ArrayList<String> walkedThroughSchemas = new ArrayList<String>();
+  
+  public void recursiveObjectFinder(final AbstractSchema abstractSchema, final String parentName) {
+    if ((abstractSchema == null)) {
+      return;
+    }
+    Schema _xifexpression = null;
+    boolean _isSchema = GeneratorUtils.isSchema(abstractSchema);
+    if (_isSchema) {
+      _xifexpression = ((Schema) abstractSchema);
+    } else {
+      _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) abstractSchema).getUri()), this.root);
+    }
+    Schema schema = _xifexpression;
+    boolean _isObject = GeneratorUtils.isObject(schema);
+    if (_isObject) {
+      String objectName = "";
+      boolean _isReference = GeneratorUtils.isReference(abstractSchema);
+      if (_isReference) {
+        objectName = GeneratorUtils.getReferenceName(abstractSchema);
+        String _title = schema.getTitle();
+        boolean _tripleEquals = (_title == null);
+        if (_tripleEquals) {
+          schema.setTitle(objectName);
+        }
       } else {
-        _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) abstractSchema).getUri()), this.root);
-      }
-      Schema schema = _xifexpression;
-      if (((schema != null) && (!this.currentNestedSchemas.contains(abstractSchema)))) {
-        this.currentNestedSchemas.add(abstractSchema);
-        boolean _isObject = GeneratorUtils.isObject(schema);
-        if (_isObject) {
-          this.recursiveObjectsFinder(schema.getProperties(), parentName);
-        }
-        if (((schema.getAnyOfs() != null) && (!schema.getAnyOfs().isEmpty()))) {
-          this.complexityObjectsFinder(schema.getAnyOfs(), parentName);
-        }
-        if (((schema.getOneOfs() != null) && (!schema.getOneOfs().isEmpty()))) {
-          this.complexityObjectsFinder(schema.getOneOfs(), parentName);
-        }
-        if (((schema.getAllOfs() != null) && (!schema.getAllOfs().isEmpty()))) {
-          this.complexityObjectsFinder(schema.getAllOfs(), parentName);
+        String _title_1 = schema.getTitle();
+        boolean _tripleNotEquals = (_title_1 != null);
+        if (_tripleNotEquals) {
+          objectName = StringExtensions.toFirstUpper(schema.getTitle().replace(" ", ""));
+        } else {
+          int _plusPlus = this.anonymCounter++;
+          String _plus = ("AnonymSchema" + Integer.valueOf(_plusPlus));
+          objectName = _plus;
         }
       }
-    };
-    schemas.forEach(_function);
+      boolean _contains = this.walkedThroughSchemas.contains(objectName);
+      if (_contains) {
+        return;
+      }
+      final CustomModel cm = new CustomModel(schema, objectName);
+      cm.setParentName(parentName);
+      this.objectList.add(cm);
+      this.walkedThroughSchemas.add(objectName);
+      AdditionalProperties _additionalProperties = schema.getAdditionalProperties();
+      boolean _tripleNotEquals_1 = (_additionalProperties != null);
+      if (_tripleNotEquals_1) {
+        this.recursiveObjectFinder(schema.getAdditionalProperties().getSchema(), objectName);
+      }
+      EList<NamedSchema> _properties = schema.getProperties();
+      boolean _tripleNotEquals_2 = (_properties != null);
+      if (_tripleNotEquals_2) {
+        EList<NamedSchema> _properties_1 = schema.getProperties();
+        for (final NamedSchema property : _properties_1) {
+          this.recursiveObjectFinder(property.getSchema(), objectName);
+        }
+      }
+    } else {
+      boolean _isArray = GeneratorUtils.isArray(schema);
+      if (_isArray) {
+        if (((schema.getAdditionalItems() != null) && (schema.getAdditionalItems().getAllowedBoolean() == null))) {
+          this.recursiveObjectFinder(schema.getAdditionalItems().getSchema(), parentName);
+        }
+        if (((schema.getItems() != null) && (schema.getItems().getItems().size() > 0))) {
+          EList<AbstractSchema> _items = schema.getItems().getItems();
+          for (final AbstractSchema itemSchema : _items) {
+            this.recursiveObjectFinder(itemSchema, parentName);
+          }
+        }
+      }
+    }
+    EList<AbstractSchema> _allOfs = schema.getAllOfs();
+    boolean _tripleNotEquals_3 = (_allOfs != null);
+    if (_tripleNotEquals_3) {
+      EList<AbstractSchema> _allOfs_1 = schema.getAllOfs();
+      for (final AbstractSchema allOf : _allOfs_1) {
+        this.recursiveObjectFinder(allOf, parentName);
+      }
+    }
+    EList<AbstractSchema> _anyOfs = schema.getAnyOfs();
+    boolean _tripleNotEquals_4 = (_anyOfs != null);
+    if (_tripleNotEquals_4) {
+      EList<AbstractSchema> _anyOfs_1 = schema.getAnyOfs();
+      for (final AbstractSchema anyOf : _anyOfs_1) {
+        this.recursiveObjectFinder(anyOf, parentName);
+      }
+    }
+    EList<AbstractSchema> _oneOfs = schema.getOneOfs();
+    boolean _tripleNotEquals_5 = (_oneOfs != null);
+    if (_tripleNotEquals_5) {
+      EList<AbstractSchema> _oneOfs_1 = schema.getOneOfs();
+      for (final AbstractSchema oneOf : _oneOfs_1) {
+        this.recursiveObjectFinder(oneOf, parentName);
+      }
+    }
   }
 }

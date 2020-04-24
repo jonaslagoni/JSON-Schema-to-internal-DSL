@@ -3,11 +3,184 @@ package org.xtext.json.schema.generator
 import org.xtext.json.schema.draft7.*
 import org.xtext.json.schema.draft7.NamedSchema
 import org.eclipse.emf.common.util.EList
+import java.util.ArrayList
+import java.util.List
 
 class GeneratorUtils {
 	def static String toJavaType(Schema schema, JsonTypes type, AnyString objectName){
 		return toJavaType(schema, type, GeneratorUtils.realizeName(objectName))
 	}
+		/**
+	 * Returns a list of all the properties 
+	 */
+	def static List<CustomProperty> allProperties(Schema schema, Schema root){
+		var list = new ArrayList<CustomProperty>()
+		if(schema !== null){
+			if(schema.additionalProperties !== null && schema.additionalProperties.allowedBoolean !== org.xtext.json.schema.draft7.Boolean.FALSE_VALUE){
+				var additionalPropName = "additionalProps"
+				var additionalPropKeyType = "String"
+				if(schema.propertyNames !== null){
+					var propNameSchema = GeneratorUtils.isSchema(schema.propertyNames) ? (schema.propertyNames as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((schema.propertyNames as Reference).uri),root)
+					if(propNameSchema !== null){
+						var type = propNameSchema.type.jsonTypes.get(0)
+						switch(type){
+							case BOOLEAN: {
+								additionalPropKeyType = 'Boolean'
+							}
+							case INTEGER: {
+								additionalPropKeyType = 'Integer'
+							}
+							case NUMBER: {
+								additionalPropKeyType = 'Double'
+							}
+							case OBJECT: {
+								if(GeneratorUtils.isReference(schema.propertyNames)){
+									additionalPropKeyType = GeneratorUtils.getReferenceName(schema.propertyNames).toFirstUpper
+								}else{
+									if(propNameSchema.title !== null){
+										additionalPropKeyType = "List<" + propNameSchema.title.replace(' ', '').toFirstUpper + ">"
+									}else{
+										//TODO what if it is a schema with no title?
+										additionalPropKeyType = null 
+									}
+								}
+							}
+							case ARRAY: {
+								if(propNameSchema.items !== null && propNameSchema.items.items.size > 0){
+									var abstractSchemaItem = propNameSchema.items.items.get(0)
+									var schemaItem = GeneratorUtils.isSchema(abstractSchemaItem) ? (abstractSchemaItem as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((abstractSchemaItem as Reference).uri),root)
+									var itemType = schemaItem.type.jsonTypes.get(0)
+									switch(itemType){
+										case BOOLEAN: {
+											additionalPropKeyType = 'List<Boolean>'
+										}
+										case INTEGER: {
+											additionalPropKeyType = 'List<Integer>'
+										}
+										case NUMBER: {
+											additionalPropKeyType = 'List<Double>'
+										}
+										case OBJECT: {
+											if(GeneratorUtils.isReference(schema.propertyNames)){
+												additionalPropKeyType = 'List<' + GeneratorUtils.getReferenceName(abstractSchemaItem).toFirstUpper + '>'
+											}else{
+												if(schemaItem.title !== null){
+													additionalPropKeyType = "List<" + schemaItem.title.replace(' ', '').toFirstUpper + ">"
+												}else{
+													//TODO what if it is a schema with no title?
+													additionalPropKeyType = null 
+												}
+											}
+										}
+										case ARRAY: {
+											if(GeneratorUtils.isReference(abstractSchemaItem)){
+												additionalPropKeyType = 'List<' + GeneratorUtils.getReferenceName(abstractSchemaItem).toFirstUpper + '>'
+											}else{
+												if(schemaItem.title !== null){
+													additionalPropKeyType = "List<" + schemaItem.title.replace(' ', '').toFirstUpper + ">"
+												}else{
+													//TODO what if it is a schema with no title?
+													additionalPropKeyType = null 
+												}
+											}
+										}
+										default: {
+											additionalPropKeyType = null 
+										}
+									}
+								}else{
+									additionalPropKeyType = null 
+								}
+							}
+							default: {
+								additionalPropKeyType = null 
+							}
+						}
+					}
+				}
+				if(additionalPropKeyType !== null){
+					if(schema.additionalProperties.schema !== null){
+						var additionalPropAbstractSchema = schema.additionalProperties.schema
+						if(GeneratorUtils.isSchema(additionalPropAbstractSchema)){
+							var additionalPropSchema = additionalPropAbstractSchema as Schema
+							if(additionalPropSchema.title !== null){
+								var customProp = new CustomProperty(additionalPropName, "Map<" + additionalPropKeyType + ", " + additionalPropSchema.title.replace(' ', '').toFirstUpper + ">")
+								list.add(customProp)
+							}
+						}else{
+							var customProp = new CustomProperty(additionalPropName, "Map<" + additionalPropKeyType + ", " + GeneratorUtils.getReferenceName(additionalPropAbstractSchema).toFirstUpper + ">")
+							list.add(customProp)
+						}
+					}else{
+						var customProp = new CustomProperty(additionalPropName, "Map<" + additionalPropKeyType + ", Object>")
+						list.add(customProp)
+					}
+				}
+			}
+			if(schema.properties !== null && !schema.properties.isEmpty){
+				for(prop: schema.properties){
+					var propName = GeneratorUtils.realizeName(prop.name)
+					var propType = ""
+					var type = JsonTypes.NULL
+					var propSchema = GeneratorUtils.isSchema(prop.schema) ? (prop.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((prop.schema as Reference).uri),root)
+					if(propSchema !== null && propSchema.type !== null && propSchema.type.jsonTypes.size > 0){
+						type = propSchema.type.jsonTypes.get(0)
+						switch(type){
+							case BOOLEAN: {
+								propType = 'Boolean'
+							}
+							case INTEGER: {
+								propType = 'Integer'
+							}
+							case NUMBER: {
+								propType = 'Double'
+							}
+							case OBJECT: {
+								if(GeneratorUtils.isReference(prop.schema)){
+									propType = GeneratorUtils.getReferenceName(prop.schema).toFirstUpper
+								}else{
+									propType = propName.toFirstUpper
+								}
+							}
+							case STRING: {
+								propType = 'String'
+							}
+							case ARRAY: {
+								if(propSchema.items !== null && propSchema.items.items.size > 0){
+									var arrayAbstractSchema = propSchema.items.items.get(0)
+									if(GeneratorUtils.isReference(arrayAbstractSchema)){
+										propType = 'List<' + GeneratorUtils.getReferenceName(propSchema.items.items.get(0)).toFirstUpper + '>'
+									}else{
+										var arraySchema = arrayAbstractSchema as Schema
+										if(arraySchema.title !== null){
+											propType = "List<" + arraySchema.title.replace(' ', '').toFirstUpper + ">"
+										}else{
+											//TODO what if it is a schema with no title?
+											propType = null 
+										}
+									}
+								}else{
+									propType = null 
+								}
+							}
+							default: {
+								propType = null 
+							}
+						}
+					}
+					if(propType !== null){
+						var customProp = new CustomProperty(propName, propType)
+						customProp.type = type
+						list.add(customProp)
+					}
+				}
+			}			
+		}
+		return list
+	}
+	
+	
+	
 	def static String toJavaType(Schema schema, JsonTypes type, String objectName){
 		if(schema !== null){
 			if(type !== null){
@@ -66,6 +239,16 @@ class GeneratorUtils {
 		return false
 	}
 	
+	def static boolean isArray(AbstractSchema schema){
+		if(schema.isSchema){
+			if((schema as Schema).type !== null && (schema as Schema).type.jsonTypes.findFirst[t | t === JsonTypes.ARRAY] !== null){
+				return true
+			}
+		}else{
+			
+		}
+		return false
+	}
 	def static boolean isObject(AbstractSchema schema){
 		if(schema.isSchema){
 			if((schema as Schema).type !== null && (schema as Schema).type.jsonTypes.findFirst[t | t === JsonTypes.OBJECT] !== null){
