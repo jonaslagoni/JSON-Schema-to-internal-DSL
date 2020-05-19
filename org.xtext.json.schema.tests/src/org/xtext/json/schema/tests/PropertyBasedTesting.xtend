@@ -27,7 +27,7 @@ class PropertyBasedTesting {
 
 	@Test
 	def void anyValidArbitraryJsonSchemaShouldBeParsed() {
-		qt().forAll(schema()).check([ Schema s |
+		qt().forAll(Schema.fullSchema).check([ Schema s |
 			{
 				if(s !== null){
 					val charSequence = s.toCharSequence
@@ -40,35 +40,6 @@ class PropertyBasedTesting {
 		])
 	}
 
-	def private Gen<Schema> schema() {
-		return types.map([List<String> types | {
-			new Schema(types)
-		}]).
-		zip(NumberSchema.fullNumberSchema, [Schema schema, NumberSchema ns | {
-			if(schema.types.contains("\"number\"") || schema.types.contains("\"integer\"")){
-				schema.ns = ns
-			}
-			schema
-		}])
-	}
-
-	def private Gen<List<String>> types() {
-		
-		lists().of(
-			oneOf(
-				constant("\"array\""), 
-				constant("\"string\""), 
-				constant("\"integer\""), 
-				constant("\"number\""), 
-				constant("\"null\""), 
-				constant("\"object\"")
-			)
-		).ofSizeBetween(1, 6).map(List<String> types | {
-			//remove dublicates
-			new ArrayList(new HashSet(types));
-		})
-
-	}
 
 
 }

@@ -49,8 +49,8 @@ class NumberSchema {
 	}
 
 	def static Gen<NumberSchema> fullNumberSchema() {
-		NumberSchema.multipleOf().zip(NumberSchema.minimum(), NumberSchema.exclusiveMinimum(), NumberSchema.maximum(),
-			NumberSchema.exclusiveMaximum(), [ DoubleInteger multipleOf, DoubleInteger minimum, DoubleInteger exclusiveMinimum, DoubleInteger maximum, DoubleInteger exclusiveMaximum |
+		multipleOf().zip(minimum(), exclusiveMinimum(), maximum(),
+				exclusiveMaximum(), [ DoubleInteger multipleOf, DoubleInteger minimum, DoubleInteger exclusiveMinimum, DoubleInteger maximum, DoubleInteger exclusiveMaximum |
 				{
 					var ns = new NumberSchema()
 					ns.multipleOf = multipleOf
@@ -62,31 +62,32 @@ class NumberSchema {
 				}
 			])
 	}
-	
+
 	def static Gen<DoubleInteger> multipleOf() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d | new DoubleInteger(i, d)])
+		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)])
 	}
 
 	def static Gen<DoubleInteger> minimum() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d | new DoubleInteger(i, d)])
+		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)])
 	}
 
 	def static Gen<DoubleInteger> exclusiveMinimum() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d | new DoubleInteger(i, d)])
+		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)])
 	}
 
 	def static Gen<DoubleInteger> maximum() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d | new DoubleInteger(i, d)])
+		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)])
 	}
 
 	def static Gen<DoubleInteger> exclusiveMaximum() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d | new DoubleInteger(i, d)])
+		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)])
 	}
-	
-	def static Gen<Number> doubleNumber(){
-		return doubles().any().map([Double d | new Double(d)]);
+
+	def static Gen<Number> doubleNumber() {
+		return doubles().any().map([Double d|new Double(d)]);
 	}
-	def static Gen<Number> integerNumber(){
-		return integers().allPositive().map([Integer i | new Integer(i)]);
+
+	def static Gen<Number> integerNumber() {
+		return integers().allPositive().map([Integer i|new Integer(i)]);
 	}
 }

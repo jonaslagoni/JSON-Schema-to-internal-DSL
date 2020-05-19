@@ -1,9 +1,16 @@
 package org.xtext.json.schema.tests.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Pure;
+import org.quicktheories.core.Gen;
+import org.quicktheories.generators.Generate;
+import org.quicktheories.generators.SourceDSL;
 import org.xtext.json.schema.tests.model.NumberSchema;
 
 @SuppressWarnings("all")
@@ -71,6 +78,38 @@ public class Schema {
   @Override
   public String toString() {
     return this.toCharSequence().toString();
+  }
+  
+  public static Gen<List<String>> types() {
+    final Function<List<String>, List<String>> _function = (List<String> types) -> {
+      HashSet<String> _hashSet = new HashSet<String>(types);
+      return new ArrayList<String>(_hashSet);
+    };
+    return SourceDSL.lists().<String>of(
+      Generate.<String>oneOf(
+        Generate.<String>constant("\"array\""), 
+        Generate.<String>constant("\"string\""), 
+        Generate.<String>constant("\"integer\""), 
+        Generate.<String>constant("\"number\""), 
+        Generate.<String>constant("\"null\""), 
+        Generate.<String>constant("\"object\""))).ofSizeBetween(1, 6).<List<String>>map(_function);
+  }
+  
+  public static Gen<Schema> fullSchema() {
+    final Function<List<String>, Schema> _function = (List<String> types) -> {
+      return new Schema(types);
+    };
+    final BiFunction<Schema, NumberSchema, Schema> _function_1 = (Schema schema, NumberSchema ns) -> {
+      Schema _xblockexpression = null;
+      {
+        if ((schema.types.contains("\"number\"") || schema.types.contains("\"integer\""))) {
+          schema.ns = ns;
+        }
+        _xblockexpression = schema;
+      }
+      return _xblockexpression;
+    };
+    return Schema.types().<Schema>map(_function).<NumberSchema, Schema>zip(NumberSchema.fullNumberSchema(), _function_1);
   }
   
   @Pure
