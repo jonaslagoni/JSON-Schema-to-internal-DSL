@@ -8,10 +8,17 @@ import org.eclipse.xtend.lib.annotations.Data
 import java.util.ArrayList
 import java.util.HashSet
 import org.quicktheories.core.Gen
+import org.xtext.json.schema.draft7.JsonTypes
 
 class Schema {
 	@Accessors
-	var NumberSchema ns
+	var ObjectSchema objectSchema
+	@Accessors
+	var StringSchema stringSchema
+	@Accessors
+	var ListSchema listSchema
+	@Accessors
+	var NumberSchema numberSchema
 	@Accessors
 	var List<String> types
 
@@ -32,8 +39,8 @@ class Schema {
 			"type": «types.get(0)»
 			«ENDIF»
 			
-			«IF (ns !== null)»
-			«ns.toCharSequence»
+			«IF (numberSchema !== null)»
+			«numberSchema.toCharSequence»
 			«ENDIF»
 		}
 		'''
@@ -45,31 +52,47 @@ class Schema {
 	
 	
 	def static Gen<List<String>> types() {
-		
 		lists().of(
-			oneOf(
-				constant("\"array\""), 
-				constant("\"string\""), 
-				constant("\"integer\""), 
-				constant("\"number\""), 
-				constant("\"null\""), 
-				constant("\"object\"")
-			)
+			arbitrary.enumValues(JsonTypes).map(JsonTypes t | {
+				t.literal
+			})
 		).ofSizeBetween(1, 6).map(List<String> types | {
 			//remove dublicates
 			new ArrayList(new HashSet(types));
 		})
 	}
 	def static Gen<Schema> fullSchema() {
-		return types().map([List<String> types | {
+		types().map([List<String> types | {
 			new Schema(types)
 		}]).
-		zip(NumberSchema.fullNumberSchema, [Schema schema, NumberSchema ns | {
-			if(schema.types.contains("\"number\"") || schema.types.contains("\"integer\"")){
-				schema.ns = ns
-			}
-			schema
-		}])
+		zip(
+			ObjectSchema.fullObjectSchema, 
+			StringSchema.fullStringSchema, 
+			ListSchema.fullListSchema, 
+			NumberSchema.fullNumberSchema, 
+			[
+				Schema schema, 
+				ObjectSchema os, 
+				StringSchema ss, 
+				ListSchema ls, 
+				NumberSchema ns 
+				| {
+					if(schema.types.contains(JsonTypes.STRING.literal)){
+						schema.stringSchema = ss
+					}
+					if(schema.types.contains(JsonTypes.OBJECT.literal)){
+						schema.objectSchema = os
+					}
+					if(schema.types.contains(JsonTypes.ARRAY.literal)){
+						schema.listSchema = ls
+					}
+					if(schema.types.contains(JsonTypes.NUMBER.literal) || schema.types.contains(JsonTypes.INTEGER.literal)){
+						schema.numberSchema = ns
+					}
+					schema
+				}
+			]
+		)
 	}
 	
 }

@@ -6,6 +6,7 @@ import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Pure;
 import org.quicktheories.api.Function5;
+import org.quicktheories.api.Pair;
 import org.quicktheories.core.Gen;
 import org.quicktheories.generators.Generate;
 import org.quicktheories.generators.SourceDSL;
@@ -136,38 +137,60 @@ public class NumberSchema {
   }
   
   public static Gen<DoubleInteger> multipleOf() {
+    Integer _integer = new Integer(1);
     final BiFunction<Number, Number, DoubleInteger> _function = (Number i, Number d) -> {
       return new DoubleInteger(i, d);
     };
-    return Generate.<Number>oneOf(NumberSchema.integerNumber(), NumberSchema.doubleNumber()).<DoubleInteger>map(_function);
+    Pair<Integer, Gen<DoubleInteger>> doubleIntegerPair = Pair.<Integer, Gen<DoubleInteger>>of(_integer, Generate.<Number>oneOf(NumberSchema.integerNumber(), NumberSchema.doubleNumber()).<DoubleInteger>map(_function));
+    Integer _integer_1 = new Integer(1);
+    Pair<Integer, Gen<DoubleInteger>> nullPair = Pair.<Integer, Gen<DoubleInteger>>of(_integer_1, Generate.<DoubleInteger>constant(null));
+    return Generate.<DoubleInteger>frequency(doubleIntegerPair, nullPair);
   }
   
   public static Gen<DoubleInteger> minimum() {
+    Integer _integer = new Integer(1);
     final BiFunction<Number, Number, DoubleInteger> _function = (Number i, Number d) -> {
       return new DoubleInteger(i, d);
     };
-    return Generate.<Number>oneOf(NumberSchema.integerNumber(), NumberSchema.doubleNumber()).<DoubleInteger>map(_function);
+    Pair<Integer, Gen<DoubleInteger>> doubleIntegerPair = Pair.<Integer, Gen<DoubleInteger>>of(_integer, Generate.<Number>oneOf(NumberSchema.integerNumber(), NumberSchema.doubleNumber()).<DoubleInteger>map(_function));
+    Integer _integer_1 = new Integer(1);
+    Pair<Integer, Gen<DoubleInteger>> nullPair = Pair.<Integer, Gen<DoubleInteger>>of(_integer_1, Generate.<DoubleInteger>constant(null));
+    return Generate.<DoubleInteger>frequency(doubleIntegerPair, nullPair);
   }
   
   public static Gen<DoubleInteger> exclusiveMinimum() {
+    Integer _integer = new Integer(1);
     final BiFunction<Number, Number, DoubleInteger> _function = (Number i, Number d) -> {
       return new DoubleInteger(i, d);
     };
-    return Generate.<Number>oneOf(NumberSchema.integerNumber(), NumberSchema.doubleNumber()).<DoubleInteger>map(_function);
+    Pair<Integer, Gen<DoubleInteger>> doubleIntegerPair = Pair.<Integer, Gen<DoubleInteger>>of(_integer, Generate.<Number>oneOf(NumberSchema.integerNumber(), NumberSchema.doubleNumber()).<DoubleInteger>map(_function));
+    Integer _integer_1 = new Integer(1);
+    Pair<Integer, Gen<DoubleInteger>> nullPair = Pair.<Integer, Gen<DoubleInteger>>of(_integer_1, Generate.<DoubleInteger>constant(null));
+    return Generate.<DoubleInteger>frequency(doubleIntegerPair, nullPair);
   }
   
   public static Gen<DoubleInteger> maximum() {
+    Integer _integer = new Integer(1);
     final BiFunction<Number, Number, DoubleInteger> _function = (Number i, Number d) -> {
       return new DoubleInteger(i, d);
     };
-    return Generate.<Number>oneOf(NumberSchema.integerNumber(), NumberSchema.doubleNumber()).<DoubleInteger>map(_function);
+    Pair<Integer, Gen<DoubleInteger>> doubleIntegerPair = Pair.<Integer, Gen<DoubleInteger>>of(_integer, Generate.<Number>oneOf(NumberSchema.integerNumber(), NumberSchema.doubleNumber()).<DoubleInteger>map(_function));
+    Integer _integer_1 = new Integer(1);
+    Pair<Integer, Gen<DoubleInteger>> nullPair = Pair.<Integer, Gen<DoubleInteger>>of(_integer_1, Generate.<DoubleInteger>constant(null));
+    return Generate.<DoubleInteger>frequency(doubleIntegerPair, nullPair);
   }
   
   public static Gen<DoubleInteger> exclusiveMaximum() {
+    Integer _integer = new Integer(1);
     final BiFunction<Number, Number, DoubleInteger> _function = (Number i, Number d) -> {
       return new DoubleInteger(i, d);
     };
-    return Generate.<Number>oneOf(NumberSchema.integerNumber(), NumberSchema.doubleNumber()).<DoubleInteger>map(_function);
+    Pair<Integer, Gen<DoubleInteger>> doubleIntegerPair = Pair.<Integer, Gen<DoubleInteger>>of(_integer, Generate.<Number>oneOf(NumberSchema.integerNumber(), NumberSchema.doubleNumber()).<DoubleInteger>map(_function));
+    Integer _integer_1 = new Integer(1);
+    Integer _integer_2 = new Integer(null);
+    DoubleInteger _doubleInteger = new DoubleInteger(_integer_2);
+    Pair<Integer, Gen<DoubleInteger>> nullPair = Pair.<Integer, Gen<DoubleInteger>>of(_integer_1, Generate.<DoubleInteger>constant(_doubleInteger));
+    return Generate.<DoubleInteger>frequency(doubleIntegerPair, nullPair);
   }
   
   public static Gen<Number> doubleNumber() {

@@ -1,10 +1,12 @@
 package org.xtext.json.schema.tests.model
 
+import org.quicktheories.api.Pair;
 import static org.quicktheories.generators.SourceDSL.*;
-import static org.quicktheories.generators.Generate.*
+import static org.quicktheories.generators.Generate.frequency
+import static org.quicktheories.generators.Generate.constant
+import static org.quicktheories.generators.Generate.oneOf
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.quicktheories.core.Gen
-import org.quicktheories.generators.Generate
 
 class NumberSchema {
 	@Accessors
@@ -64,23 +66,33 @@ class NumberSchema {
 	}
 
 	def static Gen<DoubleInteger> multipleOf() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)])
+		var doubleIntegerPair = Pair.of(new Integer(1), oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]))
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(doubleIntegerPair, nullPair)
 	}
 
 	def static Gen<DoubleInteger> minimum() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)])
+		var doubleIntegerPair = Pair.of(new Integer(1), oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]))
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(doubleIntegerPair, nullPair)
 	}
 
 	def static Gen<DoubleInteger> exclusiveMinimum() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)])
+		var doubleIntegerPair = Pair.of(new Integer(1), oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]))
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(doubleIntegerPair, nullPair)
 	}
 
 	def static Gen<DoubleInteger> maximum() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)])
+		var doubleIntegerPair = Pair.of(new Integer(1), oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]))
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(doubleIntegerPair, nullPair)
 	}
 
 	def static Gen<DoubleInteger> exclusiveMaximum() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)])
+		var doubleIntegerPair = Pair.of(new Integer(1), oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]))
+		var nullPair = Pair.of(new Integer(1), constant(new DoubleInteger(new Integer(null))))
+		return frequency(doubleIntegerPair, nullPair)
 	}
 
 	def static Gen<Number> doubleNumber() {

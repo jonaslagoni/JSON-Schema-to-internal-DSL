@@ -1,6 +1,9 @@
 package org.xtext.json.schema.tests.model
 
+import org.quicktheories.api.Pair;
 import java.util.List
+import static org.quicktheories.generators.Generate.frequency
+import static org.quicktheories.generators.Generate.constant
 import java.util.Map
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.quicktheories.core.Gen
@@ -30,6 +33,7 @@ class ObjectSchema {
 	var Map<String, List<String>> propertyDependencies;
 	@Accessors
 	var Map<String, Schema> schemaDependencies;
+	
 	new() {
 	}
 	
@@ -57,21 +61,33 @@ class ObjectSchema {
 		)
 	}
 	def static Gen<Boolean> additionalPropertiesBoolean(){
-		return booleans.all;
+		var booleanPair = Pair.of(new Integer(1), booleans.all)
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(#[booleanPair, nullPair])
 	}
 	def static Gen<Schema> additionalPropertiesSchema(){
-		return Schema.fullSchema;
+		var schemaPair = Pair.of(new Integer(1), Schema.fullSchema)
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(#[schemaPair, nullPair])
 	}
 	def static Gen<Map<String, Schema>> properties(){
-		return maps.of(strings.allPossible.ofLengthBetween(0, Integer.MAX_VALUE), Schema.fullSchema).ofSizeBetween(0, Integer.MAX_VALUE);
+		var mapPair = Pair.of(new Integer(1), maps.of(strings.allPossible.ofLengthBetween(0, Integer.MAX_VALUE), Schema.fullSchema).ofSizeBetween(0, Integer.MAX_VALUE))
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(#[mapPair, nullPair])
 	}
 	def static Gen<List<String>> required(){
-		return lists.of(strings.allPossible.ofLengthBetween(0, Integer.MAX_VALUE)).ofSizeBetween(0, Integer.MAX_VALUE);
+		var listPair = Pair.of(new Integer(1), lists.of(strings.allPossible.ofLengthBetween(0, Integer.MAX_VALUE)).ofSizeBetween(0, Integer.MAX_VALUE))
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(#[listPair, nullPair])
 	}
 	def static Gen<Integer> maxProperties(){
-		return integers().allPositive().map([Integer i | new Integer(i)]);
+		var intPair = Pair.of(new Integer(1), integers().allPositive())
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(#[intPair, nullPair])
 	}
 	def static Gen<Integer> minProperties(){
-		return integers().allPositive().map([Integer i | new Integer(i)]);
+		var intPair = Pair.of(new Integer(1), integers().allPositive())
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(#[intPair, nullPair])
 	}
 }

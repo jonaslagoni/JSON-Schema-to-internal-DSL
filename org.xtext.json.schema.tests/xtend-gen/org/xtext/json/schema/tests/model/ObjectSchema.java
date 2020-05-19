@@ -1,12 +1,15 @@
 package org.xtext.json.schema.tests.model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import org.eclipse.xtend.lib.annotations.Accessors;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Pure;
 import org.quicktheories.api.Function5;
+import org.quicktheories.api.Pair;
 import org.quicktheories.core.Gen;
+import org.quicktheories.generators.Generate;
 import org.quicktheories.generators.SourceDSL;
 import org.xtext.json.schema.tests.model.Schema;
 
@@ -67,33 +70,51 @@ public class ObjectSchema {
   }
   
   public static Gen<Boolean> additionalPropertiesBoolean() {
-    return SourceDSL.booleans().all();
+    Integer _integer = new Integer(1);
+    Pair<Integer, Gen<Boolean>> booleanPair = Pair.<Integer, Gen<Boolean>>of(_integer, SourceDSL.booleans().all());
+    Integer _integer_1 = new Integer(1);
+    Pair<Integer, Gen<Boolean>> nullPair = Pair.<Integer, Gen<Boolean>>of(_integer_1, Generate.<Boolean>constant(null));
+    return Generate.<Boolean>frequency(Collections.<Pair<Integer, Gen<Boolean>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Boolean>>>newArrayList(booleanPair, nullPair)));
   }
   
   public static Gen<Schema> additionalPropertiesSchema() {
-    return Schema.fullSchema();
+    Integer _integer = new Integer(1);
+    Pair<Integer, Gen<Schema>> schemaPair = Pair.<Integer, Gen<Schema>>of(_integer, Schema.fullSchema());
+    Integer _integer_1 = new Integer(1);
+    Pair<Integer, Gen<Schema>> nullPair = Pair.<Integer, Gen<Schema>>of(_integer_1, Generate.<Schema>constant(null));
+    return Generate.<Schema>frequency(Collections.<Pair<Integer, Gen<Schema>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Schema>>>newArrayList(schemaPair, nullPair)));
   }
   
   public static Gen<Map<String, Schema>> properties() {
-    return SourceDSL.maps().<String, Schema>of(SourceDSL.strings().allPossible().ofLengthBetween(0, Integer.MAX_VALUE), Schema.fullSchema()).ofSizeBetween(0, Integer.MAX_VALUE);
+    Integer _integer = new Integer(1);
+    Pair<Integer, Gen<Map<String, Schema>>> mapPair = Pair.<Integer, Gen<Map<String, Schema>>>of(_integer, SourceDSL.maps().<String, Schema>of(SourceDSL.strings().allPossible().ofLengthBetween(0, Integer.MAX_VALUE), Schema.fullSchema()).ofSizeBetween(0, Integer.MAX_VALUE));
+    Integer _integer_1 = new Integer(1);
+    Pair<Integer, Gen<Map<String, Schema>>> nullPair = Pair.<Integer, Gen<Map<String, Schema>>>of(_integer_1, Generate.<Map<String, Schema>>constant(null));
+    return Generate.<Map<String, Schema>>frequency(Collections.<Pair<Integer, Gen<Map<String, Schema>>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Map<String, Schema>>>>newArrayList(mapPair, nullPair)));
   }
   
   public static Gen<List<String>> required() {
-    return SourceDSL.lists().<String>of(SourceDSL.strings().allPossible().ofLengthBetween(0, Integer.MAX_VALUE)).ofSizeBetween(0, Integer.MAX_VALUE);
+    Integer _integer = new Integer(1);
+    Pair<Integer, Gen<List<String>>> listPair = Pair.<Integer, Gen<List<String>>>of(_integer, SourceDSL.lists().<String>of(SourceDSL.strings().allPossible().ofLengthBetween(0, Integer.MAX_VALUE)).ofSizeBetween(0, Integer.MAX_VALUE));
+    Integer _integer_1 = new Integer(1);
+    Pair<Integer, Gen<List<String>>> nullPair = Pair.<Integer, Gen<List<String>>>of(_integer_1, Generate.<List<String>>constant(null));
+    return Generate.<List<String>>frequency(Collections.<Pair<Integer, Gen<List<String>>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<List<String>>>>newArrayList(listPair, nullPair)));
   }
   
   public static Gen<Integer> maxProperties() {
-    final Function<Integer, Integer> _function = (Integer i) -> {
-      return new Integer((i).intValue());
-    };
-    return SourceDSL.integers().allPositive().<Integer>map(_function);
+    Integer _integer = new Integer(1);
+    Pair<Integer, Gen<Integer>> intPair = Pair.<Integer, Gen<Integer>>of(_integer, SourceDSL.integers().allPositive());
+    Integer _integer_1 = new Integer(1);
+    Pair<Integer, Gen<Integer>> nullPair = Pair.<Integer, Gen<Integer>>of(_integer_1, Generate.<Integer>constant(null));
+    return Generate.<Integer>frequency(Collections.<Pair<Integer, Gen<Integer>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Integer>>>newArrayList(intPair, nullPair)));
   }
   
   public static Gen<Integer> minProperties() {
-    final Function<Integer, Integer> _function = (Integer i) -> {
-      return new Integer((i).intValue());
-    };
-    return SourceDSL.integers().allPositive().<Integer>map(_function);
+    Integer _integer = new Integer(1);
+    Pair<Integer, Gen<Integer>> intPair = Pair.<Integer, Gen<Integer>>of(_integer, SourceDSL.integers().allPositive());
+    Integer _integer_1 = new Integer(1);
+    Pair<Integer, Gen<Integer>> nullPair = Pair.<Integer, Gen<Integer>>of(_integer_1, Generate.<Integer>constant(null));
+    return Generate.<Integer>frequency(Collections.<Pair<Integer, Gen<Integer>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Integer>>>newArrayList(intPair, nullPair)));
   }
   
   @Pure
