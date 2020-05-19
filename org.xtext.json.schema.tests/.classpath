@@ -22,5 +22,8 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="lib" path="C:/Users/Lagoni/Downloads/quicktheories-0.26.jar" sourcepath="C:/Users/Lagoni/Downloads/quicktheories-0.26-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Lagoni/Downloads/quicktheories-0.26-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Lagoni/Downloads/quicktheories-0.26-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
