@@ -36,11 +36,30 @@ class ObjectSchema {
 	
 	new() {
 	}
-	
+	static class ObjectSchemaOptions {
+		@Accessors
+		var boolean excludeAdditionalProperties = false;
+		@Accessors
+		var boolean excludeProperties = false;
+		
+	}
 	def static Gen<ObjectSchema> fullObjectSchema() {
-		additionalPropertiesBoolean().zip(
-			additionalPropertiesSchema(), 
-			properties(), 
+		fullObjectSchema(new ObjectSchemaOptions())
+	}
+	def static Gen<ObjectSchema> fullObjectSchema(ObjectSchemaOptions options) {
+		var Gen<Schema> additionalPropertiesSchemaGen = null;
+		var Gen<Boolean> additionalPropertiesBooleanGen = null;
+		if(!options.excludeAdditionalProperties){
+			additionalPropertiesSchemaGen = additionalPropertiesSchema()
+			additionalPropertiesBooleanGen = additionalPropertiesBoolean()
+		}
+		var Gen<Map<String, Schema>> propertiesGen = null;
+		if(!options.excludeProperties){
+			propertiesGen = properties()
+		}
+		additionalPropertiesBooleanGen.zip(
+			additionalPropertiesSchemaGen, 
+			propertiesGen, 
 			maxProperties(),
 			minProperties(), 
 			[

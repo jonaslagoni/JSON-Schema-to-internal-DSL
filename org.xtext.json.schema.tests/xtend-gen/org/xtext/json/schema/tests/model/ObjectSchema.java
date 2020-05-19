@@ -15,6 +15,32 @@ import org.xtext.json.schema.tests.model.Schema;
 
 @SuppressWarnings("all")
 public class ObjectSchema {
+  public static class ObjectSchemaOptions {
+    @Accessors
+    private boolean excludeAdditionalProperties = false;
+    
+    @Accessors
+    private boolean excludeProperties = false;
+    
+    @Pure
+    public boolean isExcludeAdditionalProperties() {
+      return this.excludeAdditionalProperties;
+    }
+    
+    public void setExcludeAdditionalProperties(final boolean excludeAdditionalProperties) {
+      this.excludeAdditionalProperties = excludeAdditionalProperties;
+    }
+    
+    @Pure
+    public boolean isExcludeProperties() {
+      return this.excludeProperties;
+    }
+    
+    public void setExcludeProperties(final boolean excludeProperties) {
+      this.excludeProperties = excludeProperties;
+    }
+  }
+  
   @Accessors
   private Boolean additionalPropertiesBoolean;
   
@@ -49,24 +75,41 @@ public class ObjectSchema {
   }
   
   public static Gen<ObjectSchema> fullObjectSchema() {
-    final Function5<Boolean, Schema, Map<String, Schema>, Integer, Integer, ObjectSchema> _function = (Boolean additionalPropertiesBoolean, Schema additionalPropertiesSchema, Map<String, Schema> properties, Integer maxProperties, Integer minProperties) -> {
-      ObjectSchema _xblockexpression = null;
-      {
-        ObjectSchema os = new ObjectSchema();
-        os.additionalPropertiesBoolean = additionalPropertiesBoolean;
-        os.additionalPropertiesSchema = additionalPropertiesSchema;
-        os.properties = properties;
-        os.maxProperties = maxProperties;
-        os.minProperties = minProperties;
-        _xblockexpression = os;
+    ObjectSchema.ObjectSchemaOptions _objectSchemaOptions = new ObjectSchema.ObjectSchemaOptions();
+    return ObjectSchema.fullObjectSchema(_objectSchemaOptions);
+  }
+  
+  public static Gen<ObjectSchema> fullObjectSchema(final ObjectSchema.ObjectSchemaOptions options) {
+    Gen<ObjectSchema> _xblockexpression = null;
+    {
+      Gen<Schema> additionalPropertiesSchemaGen = null;
+      Gen<Boolean> additionalPropertiesBooleanGen = null;
+      if ((!options.excludeAdditionalProperties)) {
+        additionalPropertiesSchemaGen = ObjectSchema.additionalPropertiesSchema();
+        additionalPropertiesBooleanGen = ObjectSchema.additionalPropertiesBoolean();
       }
-      return _xblockexpression;
-    };
-    return ObjectSchema.additionalPropertiesBoolean().<Schema, Map<String, Schema>, Integer, Integer, ObjectSchema>zip(
-      ObjectSchema.additionalPropertiesSchema(), 
-      ObjectSchema.properties(), 
-      ObjectSchema.maxProperties(), 
-      ObjectSchema.minProperties(), _function);
+      Gen<Map<String, Schema>> propertiesGen = null;
+      if ((!options.excludeProperties)) {
+        propertiesGen = ObjectSchema.properties();
+      }
+      final Function5<Boolean, Schema, Map<String, Schema>, Integer, Integer, ObjectSchema> _function = (Boolean additionalPropertiesBoolean, Schema additionalPropertiesSchema, Map<String, Schema> properties, Integer maxProperties, Integer minProperties) -> {
+        ObjectSchema _xblockexpression_1 = null;
+        {
+          ObjectSchema os = new ObjectSchema();
+          os.additionalPropertiesBoolean = additionalPropertiesBoolean;
+          os.additionalPropertiesSchema = additionalPropertiesSchema;
+          os.properties = properties;
+          os.maxProperties = maxProperties;
+          os.minProperties = minProperties;
+          _xblockexpression_1 = os;
+        }
+        return _xblockexpression_1;
+      };
+      _xblockexpression = additionalPropertiesBooleanGen.<Schema, Map<String, Schema>, Integer, Integer, ObjectSchema>zip(additionalPropertiesSchemaGen, propertiesGen, 
+        ObjectSchema.maxProperties(), 
+        ObjectSchema.minProperties(), _function);
+    }
+    return _xblockexpression;
   }
   
   public static Gen<Boolean> additionalPropertiesBoolean() {

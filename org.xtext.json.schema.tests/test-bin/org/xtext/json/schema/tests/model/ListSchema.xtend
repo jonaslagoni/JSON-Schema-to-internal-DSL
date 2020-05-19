@@ -1,6 +1,9 @@
 package org.xtext.json.schema.tests.model
 
+import org.quicktheories.api.Pair;
 import org.eclipse.xtend.lib.annotations.Accessors
+import static org.quicktheories.generators.Generate.frequency
+import static org.quicktheories.generators.Generate.constant
 import static org.quicktheories.generators.SourceDSL.*
 import java.util.List
 import org.quicktheories.core.Gen
@@ -62,24 +65,38 @@ class ListSchema {
 		)
 	}
 	def static Gen<List<Schema>> items(){
-		return lists.of(Schema.fullSchema).ofSizeBetween(0, Integer.MAX_VALUE);
+		var schemaPair = Pair.of(new Integer(1), lists.of(Schema.fullSchema).ofSizeBetween(0, Integer.MAX_VALUE))
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(#[schemaPair, nullPair])
 	}
 	def static Gen<Schema> contains(){
-		return Schema.fullSchema;
+		var schemaPair = Pair.of(new Integer(1), Schema.fullSchema)
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(#[schemaPair, nullPair])
 	}
 	def static Gen<Boolean> uniqueItems(){
-		return booleans.all;
+		var booleanPair = Pair.of(new Integer(1), booleans.all)
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(#[booleanPair, nullPair])
 	}
 	def static Gen<Boolean> additionalItemsBoolean(){
-		return booleans.all;
+		var booleanPair = Pair.of(new Integer(1), booleans.all)
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(#[booleanPair, nullPair])
 	}
 	def static Gen<Schema> additionalItemsSchema(){
-		return Schema.fullSchema;
+		var schemaPair = Pair.of(new Integer(1), Schema.fullSchema)
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(#[schemaPair, nullPair])
 	}
 	def static Gen<Integer> minItems(){
-		return integers().allPositive().map([Integer i | new Integer(i)]);
+		var intPair = Pair.of(new Integer(1), integers().allPositive())
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(#[intPair, nullPair])
 	}
 	def static Gen<Integer> maxItems(){
-		return integers().allPositive().map([Integer i | new Integer(i)]);
+		var intPair = Pair.of(new Integer(1), integers().allPositive())
+		var nullPair = Pair.of(new Integer(1), constant(null))
+		return frequency(#[intPair, nullPair])
 	}
 }
