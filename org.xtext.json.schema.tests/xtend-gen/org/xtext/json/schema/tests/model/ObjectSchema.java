@@ -1,16 +1,18 @@
 package org.xtext.json.schema.tests.model;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiFunction;
 import org.eclipse.xtend.lib.annotations.Accessors;
-import org.eclipse.xtext.xbase.lib.CollectionLiterals;
+import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Pure;
-import org.quicktheories.api.Function5;
-import org.quicktheories.api.Pair;
+import org.quicktheories.api.Function3;
 import org.quicktheories.core.Gen;
 import org.quicktheories.generators.Generate;
 import org.quicktheories.generators.SourceDSL;
+import org.xtext.json.schema.tests.StaticConfig;
 import org.xtext.json.schema.tests.model.Schema;
 
 @SuppressWarnings("all")
@@ -42,13 +44,13 @@ public class ObjectSchema {
   }
   
   @Accessors
+  private Map<String, Schema> properties;
+  
+  @Accessors
   private Boolean additionalPropertiesBoolean;
   
   @Accessors
   private Schema additionalPropertiesSchema;
-  
-  @Accessors
-  private Map<String, Schema> properties;
   
   @Accessors
   private Integer maxProperties;
@@ -74,90 +76,230 @@ public class ObjectSchema {
   public ObjectSchema() {
   }
   
-  public static Gen<ObjectSchema> fullObjectSchema() {
-    ObjectSchema.ObjectSchemaOptions _objectSchemaOptions = new ObjectSchema.ObjectSchemaOptions();
-    return ObjectSchema.fullObjectSchema(_objectSchemaOptions);
-  }
-  
-  public static Gen<ObjectSchema> fullObjectSchema(final ObjectSchema.ObjectSchemaOptions options) {
-    Gen<ObjectSchema> _xblockexpression = null;
+  public CharSequence toCharSequence() {
+    boolean alreadyAdded = false;
+    StringConcatenation _builder = new StringConcatenation();
     {
-      Gen<Schema> additionalPropertiesSchemaGen = null;
-      Gen<Boolean> additionalPropertiesBooleanGen = null;
-      if ((!options.excludeAdditionalProperties)) {
-        additionalPropertiesSchemaGen = ObjectSchema.additionalPropertiesSchema();
-        additionalPropertiesBooleanGen = ObjectSchema.additionalPropertiesBoolean();
-      }
-      Gen<Map<String, Schema>> propertiesGen = null;
-      if ((!options.excludeProperties)) {
-        propertiesGen = ObjectSchema.properties();
-      }
-      final Function5<Boolean, Schema, Map<String, Schema>, Integer, Integer, ObjectSchema> _function = (Boolean additionalPropertiesBoolean, Schema additionalPropertiesSchema, Map<String, Schema> properties, Integer maxProperties, Integer minProperties) -> {
-        ObjectSchema _xblockexpression_1 = null;
+      if (((this.properties != null) && (!this.properties.isEmpty()))) {
+        _builder.append("\"properties\": {");
         {
-          ObjectSchema os = new ObjectSchema();
-          os.additionalPropertiesBoolean = additionalPropertiesBoolean;
-          os.additionalPropertiesSchema = additionalPropertiesSchema;
-          os.properties = properties;
-          os.maxProperties = maxProperties;
-          os.minProperties = minProperties;
-          _xblockexpression_1 = os;
+          Set<Map.Entry<String, Schema>> _entrySet = this.properties.entrySet();
+          boolean _hasElements = false;
+          for(final Map.Entry<String, Schema> entry : _entrySet) {
+            if (!_hasElements) {
+              _hasElements = true;
+            } else {
+              _builder.appendImmediate(",", "");
+            }
+            _builder.append("\"");
+            String _key = entry.getKey();
+            _builder.append(_key);
+            _builder.append("\": ");
+            CharSequence _charSequence = entry.getValue().toCharSequence();
+            _builder.append(_charSequence);
+          }
         }
-        return _xblockexpression_1;
-      };
-      _xblockexpression = additionalPropertiesBooleanGen.<Schema, Map<String, Schema>, Integer, Integer, ObjectSchema>zip(additionalPropertiesSchemaGen, propertiesGen, 
-        ObjectSchema.maxProperties(), 
-        ObjectSchema.minProperties(), _function);
+        _builder.append("}");
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
     }
-    return _xblockexpression;
+    {
+      if ((this.additionalPropertiesBoolean != null)) {
+        {
+          if (alreadyAdded) {
+            _builder.append(",");
+          }
+        }
+        _builder.append("\"additionalProperties\": ");
+        _builder.append(this.additionalPropertiesBoolean);
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
+    }
+    {
+      if ((this.additionalPropertiesSchema != null)) {
+        {
+          if (alreadyAdded) {
+            _builder.append(",");
+          }
+        }
+        _builder.append("\"additionalProperties\": ");
+        CharSequence _charSequence_1 = this.additionalPropertiesSchema.toCharSequence();
+        _builder.append(_charSequence_1);
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
+    }
+    {
+      if ((this.maxProperties != null)) {
+        {
+          if (alreadyAdded) {
+            _builder.append(",");
+          }
+        }
+        _builder.append("\"maxProperties\": ");
+        _builder.append(this.maxProperties);
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
+    }
+    {
+      if ((this.minProperties != null)) {
+        {
+          if (alreadyAdded) {
+            _builder.append(",");
+          }
+        }
+        _builder.append("\"minProperties\": ");
+        _builder.append(this.minProperties);
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
+    }
+    return _builder;
   }
   
-  public static Gen<Boolean> additionalPropertiesBoolean() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<Boolean>> booleanPair = Pair.<Integer, Gen<Boolean>>of(_integer, SourceDSL.booleans().all());
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<Boolean>> nullPair = Pair.<Integer, Gen<Boolean>>of(_integer_1, Generate.<Boolean>constant(null));
-    return Generate.<Boolean>frequency(Collections.<Pair<Integer, Gen<Boolean>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Boolean>>>newArrayList(booleanPair, nullPair)));
+  public static Gen<ObjectSchema> fullValidObjectSchema() {
+    ObjectSchema.ObjectSchemaOptions _objectSchemaOptions = new ObjectSchema.ObjectSchemaOptions();
+    return ObjectSchema.fullValidObjectSchema(_objectSchemaOptions);
   }
   
-  public static Gen<Schema> additionalPropertiesSchema() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<Schema>> schemaPair = Pair.<Integer, Gen<Schema>>of(_integer, Schema.fullSchema());
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<Schema>> nullPair = Pair.<Integer, Gen<Schema>>of(_integer_1, Generate.<Schema>constant(null));
-    return Generate.<Schema>frequency(Collections.<Pair<Integer, Gen<Schema>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Schema>>>newArrayList(schemaPair, nullPair)));
+  private static int usedMinProperties = 0;
+  
+  private static int usedMaxProperties = 0;
+  
+  public static Gen<ObjectSchema> fullValidObjectSchema(final ObjectSchema.ObjectSchemaOptions options) {
+    final Function3<Optional<Integer>, Optional<Schema>, Optional<Boolean>, ObjectSchema> _function = (Optional<Integer> minProperties, Optional<Schema> additionalPropertiesSchema, Optional<Boolean> additionalPropertiesBoolean) -> {
+      ObjectSchema _xblockexpression = null;
+      {
+        ObjectSchema os = new ObjectSchema();
+        if ((additionalPropertiesBoolean != null)) {
+          boolean _isPresent = additionalPropertiesBoolean.isPresent();
+          if (_isPresent) {
+            os.additionalPropertiesBoolean = additionalPropertiesBoolean.get();
+          }
+        } else {
+          if ((additionalPropertiesSchema != null)) {
+            boolean _isPresent_1 = additionalPropertiesSchema.isPresent();
+            if (_isPresent_1) {
+              os.additionalPropertiesSchema = additionalPropertiesSchema.get();
+            }
+          }
+        }
+        boolean _isPresent_2 = minProperties.isPresent();
+        if (_isPresent_2) {
+          os.minProperties = minProperties.get();
+          ObjectSchema.usedMinProperties = (minProperties.get()).intValue();
+        }
+        _xblockexpression = os;
+      }
+      return _xblockexpression;
+    };
+    final BiFunction<ObjectSchema, Optional<Integer>, ObjectSchema> _function_1 = (ObjectSchema os, Optional<Integer> maxProperties) -> {
+      ObjectSchema _xblockexpression = null;
+      {
+        boolean _isPresent = maxProperties.isPresent();
+        if (_isPresent) {
+          os.maxProperties = maxProperties.get();
+        }
+        _xblockexpression = os;
+      }
+      return _xblockexpression;
+    };
+    final BiFunction<ObjectSchema, Optional<Map<String, Schema>>, ObjectSchema> _function_2 = (ObjectSchema os, Optional<Map<String, Schema>> properties) -> {
+      ObjectSchema _xblockexpression = null;
+      {
+        boolean _isPresent = properties.isPresent();
+        if (_isPresent) {
+          os.properties = properties.get();
+        }
+        _xblockexpression = os;
+      }
+      return _xblockexpression;
+    };
+    return ObjectSchema.minProperties().<Optional<Schema>, Optional<Boolean>, ObjectSchema>zip(
+      ObjectSchema.additionalPropertiesSchema(), 
+      ObjectSchema.additionalPropertiesBoolean(), _function).<Optional<Integer>, ObjectSchema>zip(ObjectSchema.maxProperties(ObjectSchema.usedMinProperties), _function_1).<Optional<Map<String, Schema>>, ObjectSchema>zip(ObjectSchema.properties(ObjectSchema.usedMinProperties, ObjectSchema.usedMaxProperties), _function_2);
   }
   
-  public static Gen<Map<String, Schema>> properties() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<Map<String, Schema>>> mapPair = Pair.<Integer, Gen<Map<String, Schema>>>of(_integer, SourceDSL.maps().<String, Schema>of(SourceDSL.strings().allPossible().ofLengthBetween(0, Integer.MAX_VALUE), Schema.fullSchema()).ofSizeBetween(0, Integer.MAX_VALUE));
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<Map<String, Schema>>> nullPair = Pair.<Integer, Gen<Map<String, Schema>>>of(_integer_1, Generate.<Map<String, Schema>>constant(null));
-    return Generate.<Map<String, Schema>>frequency(Collections.<Pair<Integer, Gen<Map<String, Schema>>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Map<String, Schema>>>>newArrayList(mapPair, nullPair)));
+  public static Gen<Optional<Boolean>> additionalPropertiesBoolean() {
+    return SourceDSL.booleans().all().toOptionals(75);
   }
   
-  public static Gen<List<String>> required() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<List<String>>> listPair = Pair.<Integer, Gen<List<String>>>of(_integer, SourceDSL.lists().<String>of(SourceDSL.strings().allPossible().ofLengthBetween(0, Integer.MAX_VALUE)).ofSizeBetween(0, Integer.MAX_VALUE));
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<List<String>>> nullPair = Pair.<Integer, Gen<List<String>>>of(_integer_1, Generate.<List<String>>constant(null));
-    return Generate.<List<String>>frequency(Collections.<Pair<Integer, Gen<List<String>>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<List<String>>>>newArrayList(listPair, nullPair)));
+  public static Gen<Optional<Schema>> additionalPropertiesSchema() {
+    Gen<Optional<Schema>> _xifexpression = null;
+    boolean _isRecursiveSchemasReached = StaticConfig.isRecursiveSchemasReached();
+    boolean _not = (!_isRecursiveSchemasReached);
+    if (_not) {
+      Gen<Optional<Schema>> _xblockexpression = null;
+      {
+        StaticConfig.currentRecursiveSchemas++;
+        _xblockexpression = Schema.fullSchema().toOptionals(75);
+      }
+      _xifexpression = _xblockexpression;
+    } else {
+      _xifexpression = Generate.<Optional<Schema>>constant(Optional.<Schema>empty());
+    }
+    return _xifexpression;
   }
   
-  public static Gen<Integer> maxProperties() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<Integer>> intPair = Pair.<Integer, Gen<Integer>>of(_integer, SourceDSL.integers().allPositive());
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<Integer>> nullPair = Pair.<Integer, Gen<Integer>>of(_integer_1, Generate.<Integer>constant(null));
-    return Generate.<Integer>frequency(Collections.<Pair<Integer, Gen<Integer>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Integer>>>newArrayList(intPair, nullPair)));
+  public static Gen<Optional<Map<String, Schema>>> properties() {
+    return ObjectSchema.properties(Boolean.valueOf(false), 0, Integer.MAX_VALUE);
   }
   
-  public static Gen<Integer> minProperties() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<Integer>> intPair = Pair.<Integer, Gen<Integer>>of(_integer, SourceDSL.integers().allPositive());
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<Integer>> nullPair = Pair.<Integer, Gen<Integer>>of(_integer_1, Generate.<Integer>constant(null));
-    return Generate.<Integer>frequency(Collections.<Pair<Integer, Gen<Integer>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Integer>>>newArrayList(intPair, nullPair)));
+  public static Gen<Optional<Map<String, Schema>>> properties(final int minNumberOfProperties, final int maxNumberOfProperties) {
+    return ObjectSchema.properties(Boolean.valueOf(false), minNumberOfProperties, maxNumberOfProperties);
+  }
+  
+  public static Gen<Optional<Map<String, Schema>>> properties(final Boolean shouldBeNull, final int minNumberOfProperties, final int maxNumberOfProperties) {
+    Gen<Optional<Map<String, Schema>>> _xifexpression = null;
+    if (((shouldBeNull).booleanValue() || (!StaticConfig.isRecursiveSchemasReached()))) {
+      _xifexpression = SourceDSL.maps().<String, Schema>of(SourceDSL.strings().allPossible().ofLengthBetween(0, Integer.MAX_VALUE), Schema.fullSchema()).ofSizeBetween(0, 10).toOptionals(75);
+    } else {
+      _xifexpression = Generate.<Optional<Map<String, Schema>>>constant(Optional.<Map<String, Schema>>empty());
+    }
+    return _xifexpression;
+  }
+  
+  public static Gen<Optional<List<String>>> required() {
+    return SourceDSL.lists().<String>of(SourceDSL.strings().allPossible().ofLengthBetween(0, Integer.MAX_VALUE)).ofSizeBetween(0, 10).toOptionals(75);
+  }
+  
+  public static Gen<Optional<Integer>> maxProperties() {
+    return ObjectSchema.maxProperties(0);
+  }
+  
+  public static Gen<Optional<Integer>> maxProperties(final int minProperties) {
+    return SourceDSL.integers().between(minProperties, Integer.MAX_VALUE).toOptionals(75);
+  }
+  
+  public static Gen<Optional<Integer>> minProperties() {
+    return SourceDSL.integers().allPositive().toOptionals(75);
+  }
+  
+  @Pure
+  public Map<String, Schema> getProperties() {
+    return this.properties;
+  }
+  
+  public void setProperties(final Map<String, Schema> properties) {
+    this.properties = properties;
   }
   
   @Pure
@@ -176,15 +318,6 @@ public class ObjectSchema {
   
   public void setAdditionalPropertiesSchema(final Schema additionalPropertiesSchema) {
     this.additionalPropertiesSchema = additionalPropertiesSchema;
-  }
-  
-  @Pure
-  public Map<String, Schema> getProperties() {
-    return this.properties;
-  }
-  
-  public void setProperties(final Map<String, Schema> properties) {
-    this.properties = properties;
   }
   
   @Pure

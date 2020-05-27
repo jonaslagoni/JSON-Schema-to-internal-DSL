@@ -19,6 +19,11 @@ import static org.quicktheories.QuickTheory.qt
 import java.util.ArrayList
 import java.util.HashSet
 
+import org.quicktheories.api.Pair;
+import static org.quicktheories.generators.Generate.frequency
+import java.util.Optional
+import org.junit.jupiter.api.Assertions
+
 @ExtendWith(InjectionExtension)
 @InjectWith(Draft7InjectorProvider)
 class PropertyBasedTesting {
@@ -39,7 +44,23 @@ class PropertyBasedTesting {
 			}
 		])
 	}
+	@Test
+	def void test() {
 
-
+			val result = parseHelper.parse('''
+			{
+				"type": [
+				"string",
+				"integer"
+				],
+			
+					
+				"exclusiveMinimum": 0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004514564
+			}
+			''')
+		Assertions.assertNotNull(result)
+		val errors = result.eResource.errors
+		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
+	}
 
 }

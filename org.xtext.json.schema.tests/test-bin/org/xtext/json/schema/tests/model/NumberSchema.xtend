@@ -7,6 +7,7 @@ import static org.quicktheories.generators.Generate.constant
 import static org.quicktheories.generators.Generate.oneOf
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.quicktheories.core.Gen
+import java.util.Optional
 
 class NumberSchema {
 	@Accessors
@@ -27,7 +28,7 @@ class NumberSchema {
 		var alreadyAdded = false;
 		return '''
 			«IF (multipleOf !== null)»
-				«IF(alreadyAdded)»,«ENDIF»"multipleOf": «multipleOf»
+				"multipleOf": «multipleOf»
 				«IF(alreadyAdded = true)»«ENDIF»
 			«ENDIF»
 			«IF (minimum !== null)»
@@ -52,47 +53,52 @@ class NumberSchema {
 
 	def static Gen<NumberSchema> fullNumberSchema() {
 		multipleOf().zip(minimum(), exclusiveMinimum(), maximum(),
-				exclusiveMaximum(), [ DoubleInteger multipleOf, DoubleInteger minimum, DoubleInteger exclusiveMinimum, DoubleInteger maximum, DoubleInteger exclusiveMaximum |
+				exclusiveMaximum(), [ 
+					Optional<DoubleInteger> multipleOf,
+					Optional<DoubleInteger> minimum, 
+					Optional<DoubleInteger> exclusiveMinimum, 
+					Optional<DoubleInteger> maximum,
+					Optional<DoubleInteger> exclusiveMaximum |
 				{
 					var ns = new NumberSchema()
-					ns.multipleOf = multipleOf
-					ns.minimum = minimum
-					ns.exclusiveMinimum = exclusiveMinimum
-					ns.maximum = maximum
-					ns.exclusiveMaximum = exclusiveMaximum
+					if(multipleOf.isPresent){
+						ns.multipleOf = multipleOf.get()
+					}
+					if(minimum.isPresent){
+						ns.minimum = minimum.get()
+					}
+					if(exclusiveMinimum.isPresent){
+						ns.exclusiveMinimum = exclusiveMinimum.get()
+					}
+					if(maximum.isPresent){
+						ns.maximum = maximum.get()
+					}
+					if(exclusiveMaximum.isPresent){
+						ns.exclusiveMaximum = exclusiveMaximum.get()
+					}
 					ns
 				}
 			])
 	}
 
-	def static Gen<DoubleInteger> multipleOf() {
-		var doubleIntegerPair = Pair.of(new Integer(1), oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]))
-		var nullPair = Pair.of(new Integer(1), constant(null))
-		return frequency(doubleIntegerPair, nullPair)
+	def static Gen<Optional<DoubleInteger>> multipleOf() {
+		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]).toOptionals(75)
 	}
 
-	def static Gen<DoubleInteger> minimum() {
-		var doubleIntegerPair = Pair.of(new Integer(1), oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]))
-		var nullPair = Pair.of(new Integer(1), constant(null))
-		return frequency(doubleIntegerPair, nullPair)
+	def static Gen<Optional<DoubleInteger>> minimum() {
+		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]).toOptionals(75)
 	}
 
-	def static Gen<DoubleInteger> exclusiveMinimum() {
-		var doubleIntegerPair = Pair.of(new Integer(1), oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]))
-		var nullPair = Pair.of(new Integer(1), constant(null))
-		return frequency(doubleIntegerPair, nullPair)
+	def static Gen<Optional<DoubleInteger>> exclusiveMinimum() {
+		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]).toOptionals(75)
 	}
 
-	def static Gen<DoubleInteger> maximum() {
-		var doubleIntegerPair = Pair.of(new Integer(1), oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]))
-		var nullPair = Pair.of(new Integer(1), constant(null))
-		return frequency(doubleIntegerPair, nullPair)
+	def static Gen<Optional<DoubleInteger>> maximum() {
+		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]).toOptionals(75)
 	}
 
-	def static Gen<DoubleInteger> exclusiveMaximum() {
-		var doubleIntegerPair = Pair.of(new Integer(1), oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]))
-		var nullPair = Pair.of(new Integer(1), constant(new DoubleInteger(new Integer(null))))
-		return frequency(doubleIntegerPair, nullPair)
+	def static Gen<Optional<DoubleInteger>> exclusiveMaximum() {
+		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]).toOptionals(75)
 	}
 
 	def static Gen<Number> doubleNumber() {

@@ -9,6 +9,7 @@ import java.util.ArrayList
 import java.util.HashSet
 import org.quicktheories.core.Gen
 import org.xtext.json.schema.draft7.JsonTypes
+import org.xtext.json.schema.tests.StaticConfig
 
 class Schema {
 	@Accessors
@@ -34,11 +35,21 @@ class Schema {
 			«FOR type:types SEPARATOR ","»
 				«type»
 			«ENDFOR»
-			]
+			],
 			«ELSE»
-			"type": «types.get(0)»
+			"type": «types.get(0)»,
 			«ENDIF»
-			
+
+			«IF (objectSchema !== null)»
+			«objectSchema.toCharSequence»
+			«ENDIF»
+			«IF (stringSchema !== null)»
+			«stringSchema.toCharSequence»
+			«ENDIF»
+			«IF (listSchema !== null)»
+			«listSchema.toCharSequence»
+			«ENDIF»
+				
 			«IF (numberSchema !== null)»
 			«numberSchema.toCharSequence»
 			«ENDIF»
@@ -66,7 +77,7 @@ class Schema {
 			new Schema(types)
 		}]).
 		zip(
-			ObjectSchema.fullObjectSchema, 
+			ObjectSchema.fullValidObjectSchema, 
 			StringSchema.fullStringSchema, 
 			ListSchema.fullListSchema, 
 			NumberSchema.fullNumberSchema, 

@@ -7,6 +7,7 @@ import org.quicktheories.core.Gen
 import org.xtext.json.schema.draft7.FormatTypes
 import static org.quicktheories.generators.Generate.frequency
 import static org.quicktheories.generators.Generate.constant
+import java.util.Optional
 
 class StringSchema {
 	
@@ -25,41 +26,65 @@ class StringSchema {
 	new() {
 	}
 	
+	def CharSequence toCharSequence() {
+		var alreadyAdded = false;
+		return '''
+			«IF (format !== null)»
+				«IF(alreadyAdded)»,«ENDIF»"format": «format»
+				«IF(alreadyAdded = true)»«ENDIF»
+			«ENDIF»
+			«IF (minLength !== null)»
+				«IF(alreadyAdded)»,«ENDIF»"minLength": «minLength»
+				«IF(alreadyAdded = true)»«ENDIF»
+			«ENDIF»
+			«IF (maxLength !== null)»
+				«IF(alreadyAdded)»,«ENDIF»"maxLength": «maxLength»
+				«IF(alreadyAdded = true)»«ENDIF»
+			«ENDIF»
+		'''
 
+	}
+
+	static int usedMinlength = 0;
 	def static Gen<StringSchema> fullStringSchema() {
 		format().zip(
-			minLength(), 
-			maxLength(),
+			minLength(),
 			[
-				String format, 
-				Integer minLength, 
-				Integer maxLength
+				Optional<String> format, 
+				Optional<Integer> minLength
 				| {
 					var ss = new StringSchema()
-					ss.format = format
-					ss.minLength = minLength
-					ss.maxLength = maxLength
+					if(format.isPresent){
+						ss.format = format.get()
+					}
+					
+					if(minLength.isPresent){
+						ss.minLength = minLength.get()
+						usedMinlength = minLength.get()
+					}
 					ss
 				}
 			]
-		)
+		).zip(maxLength(usedMinlength), [StringSchema ss, Optional<Integer> maxLength | {
+			if(maxLength.isPresent){
+				ss.maxLength = maxLength.get()
+			}
+			ss
+		}])
 	}
-	def static Gen<String> format(){
-		var doubleIntegerPair = Pair.of(new Integer(1), arbitrary.enumValues(FormatTypes).map(FormatTypes f | {
+	def static Gen<Optional<String>> format(){
+		arbitrary.enumValues(FormatTypes).map(FormatTypes f | {
 			f.literal
-		}))
-		var nullPair = Pair.of(new Integer(1), constant(null))
-		return frequency(doubleIntegerPair, nullPair)
+		}).toOptionals(75)
 		
 	}
-	def static Gen<Integer> minLength(){
-		var intPair = Pair.of(new Integer(1), integers().allPositive())
-		var nullPair = Pair.of(new Integer(1), constant(null))
-		return frequency(#[intPair, nullPair])
+	def static Gen<Optional<Integer>> minLength(){
+		integers().allPositive().toOptionals(75)
 	}
-	def static Gen<Integer> maxLength(){
-		var intPair = Pair.of(new Integer(1), integers().allPositive())
-		var nullPair = Pair.of(new Integer(1), constant(null))
-		return frequency(#[intPair, nullPair])
+	def static Gen<Optional<Integer>> maxLength(){
+		maxLength(0)
+	}
+	def static Gen<Optional<Integer>> maxLength(int minLength){
+		integers().between(minLength, Integer.MAX_VALUE).toOptionals(75)
 	}
 }

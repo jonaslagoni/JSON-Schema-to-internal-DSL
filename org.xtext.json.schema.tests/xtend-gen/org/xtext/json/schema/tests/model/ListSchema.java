@@ -1,16 +1,16 @@
 package org.xtext.json.schema.tests.model;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.eclipse.xtend.lib.annotations.Accessors;
-import org.eclipse.xtext.xbase.lib.CollectionLiterals;
+import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Pure;
 import org.quicktheories.api.Function3;
 import org.quicktheories.api.Function5;
-import org.quicktheories.api.Pair;
 import org.quicktheories.core.Gen;
 import org.quicktheories.generators.Generate;
 import org.quicktheories.generators.SourceDSL;
+import org.xtext.json.schema.tests.StaticConfig;
 import org.xtext.json.schema.tests.model.Schema;
 
 @SuppressWarnings("all")
@@ -39,92 +39,252 @@ public class ListSchema {
   public ListSchema() {
   }
   
+  public CharSequence toCharSequence() {
+    boolean alreadyAdded = false;
+    StringConcatenation _builder = new StringConcatenation();
+    {
+      if (((this.items != null) && (!this.items.isEmpty()))) {
+        _builder.append("\"items\": [");
+        {
+          boolean _hasElements = false;
+          for(final Schema item : this.items) {
+            if (!_hasElements) {
+              _hasElements = true;
+            } else {
+              _builder.appendImmediate(",", "");
+            }
+            CharSequence _charSequence = item.toCharSequence();
+            _builder.append(_charSequence);
+          }
+        }
+        _builder.append("]");
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
+    }
+    {
+      if ((this.contains != null)) {
+        {
+          if (alreadyAdded) {
+            _builder.append(",");
+          }
+        }
+        _builder.append("\"contains\": ");
+        CharSequence _charSequence_1 = this.contains.toCharSequence();
+        _builder.append(_charSequence_1);
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
+    }
+    {
+      if ((this.uniqueItems != null)) {
+        {
+          if (alreadyAdded) {
+            _builder.append(",");
+          }
+        }
+        _builder.append("\"uniqueItems\": ");
+        _builder.append(this.uniqueItems);
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
+    }
+    {
+      if ((this.additionalItemsBoolean != null)) {
+        {
+          if (alreadyAdded) {
+            _builder.append(",");
+          }
+        }
+        _builder.append("\"additionalItems\": ");
+        _builder.append(this.additionalItemsBoolean);
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
+    }
+    {
+      if ((this.additionalItemsSchema != null)) {
+        {
+          if (alreadyAdded) {
+            _builder.append(",");
+          }
+        }
+        _builder.append("\"additionalItems\": ");
+        CharSequence _charSequence_2 = this.additionalItemsSchema.toCharSequence();
+        _builder.append(_charSequence_2);
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
+    }
+    {
+      if ((this.maxItems != null)) {
+        {
+          if (alreadyAdded) {
+            _builder.append(",");
+          }
+        }
+        _builder.append("\"maxItems\": ");
+        _builder.append(this.maxItems);
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
+    }
+    {
+      if ((this.minItems != null)) {
+        {
+          if (alreadyAdded) {
+            _builder.append(",");
+          }
+        }
+        _builder.append("\"minItems\": ");
+        _builder.append(this.minItems);
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
+    }
+    return _builder;
+  }
+  
   public static Gen<ListSchema> fullListSchema() {
-    final Function5<List<Schema>, Schema, Boolean, Boolean, Schema, ListSchema> _function = (List<Schema> items, Schema contains, Boolean uniqueItems, Boolean additionalItemsBoolean, Schema additionalItemsSchema) -> {
+    final Function5<Optional<List<Schema>>, Optional<Schema>, Optional<Boolean>, Optional<Boolean>, Optional<Schema>, ListSchema> _function = (Optional<List<Schema>> items, Optional<Schema> contains, Optional<Boolean> uniqueItems, Optional<Boolean> additionalItemsBoolean, Optional<Schema> additionalItemsSchema) -> {
       ListSchema _xblockexpression = null;
       {
         ListSchema ls = new ListSchema();
-        ls.items = items;
-        ls.contains = contains;
-        ls.uniqueItems = uniqueItems;
-        ls.additionalItemsBoolean = additionalItemsBoolean;
-        ls.additionalItemsSchema = additionalItemsSchema;
+        boolean _isPresent = items.isPresent();
+        if (_isPresent) {
+          ls.items = items.get();
+        }
+        boolean _isPresent_1 = contains.isPresent();
+        if (_isPresent_1) {
+          ls.contains = contains.get();
+        }
+        boolean _isPresent_2 = uniqueItems.isPresent();
+        if (_isPresent_2) {
+          ls.uniqueItems = uniqueItems.get();
+        }
+        boolean _isPresent_3 = additionalItemsBoolean.isPresent();
+        if (_isPresent_3) {
+          ls.additionalItemsBoolean = additionalItemsBoolean.get();
+        }
+        boolean _isPresent_4 = additionalItemsSchema.isPresent();
+        if (_isPresent_4) {
+          ls.additionalItemsSchema = additionalItemsSchema.get();
+        }
         _xblockexpression = ls;
       }
       return _xblockexpression;
     };
-    final Function3<ListSchema, Integer, Integer, ListSchema> _function_1 = (ListSchema ls, Integer minItems, Integer maxItems) -> {
+    final Function3<ListSchema, Optional<Integer>, Optional<Integer>, ListSchema> _function_1 = (ListSchema ls, Optional<Integer> minItems, Optional<Integer> maxItems) -> {
       ListSchema _xblockexpression = null;
       {
-        ls.minItems = minItems;
-        ls.maxItems = maxItems;
+        boolean _isPresent = minItems.isPresent();
+        if (_isPresent) {
+          ls.minItems = minItems.get();
+        }
+        boolean _isPresent_1 = maxItems.isPresent();
+        if (_isPresent_1) {
+          ls.maxItems = maxItems.get();
+        }
         _xblockexpression = ls;
       }
       return _xblockexpression;
     };
-    return ListSchema.items().<Schema, Boolean, Boolean, Schema, ListSchema>zip(
+    return ListSchema.items().<Optional<Schema>, Optional<Boolean>, Optional<Boolean>, Optional<Schema>, ListSchema>zip(
       ListSchema.contains(), 
       ListSchema.uniqueItems(), 
       ListSchema.additionalItemsBoolean(), 
-      ListSchema.additionalItemsSchema(), _function).<Integer, Integer, ListSchema>zip(
+      ListSchema.additionalItemsSchema(), _function).<Optional<Integer>, Optional<Integer>, ListSchema>zip(
       ListSchema.minItems(), 
       ListSchema.maxItems(), _function_1);
   }
   
-  public static Gen<List<Schema>> items() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<List<Schema>>> schemaPair = Pair.<Integer, Gen<List<Schema>>>of(_integer, SourceDSL.lists().<Schema>of(Schema.fullSchema()).ofSizeBetween(0, Integer.MAX_VALUE));
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<List<Schema>>> nullPair = Pair.<Integer, Gen<List<Schema>>>of(_integer_1, Generate.<List<Schema>>constant(null));
-    return Generate.<List<Schema>>frequency(Collections.<Pair<Integer, Gen<List<Schema>>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<List<Schema>>>>newArrayList(schemaPair, nullPair)));
+  public static Gen<Optional<List<Schema>>> items() {
+    Gen<Optional<List<Schema>>> _xifexpression = null;
+    boolean _isRecursiveSchemasReached = StaticConfig.isRecursiveSchemasReached();
+    boolean _not = (!_isRecursiveSchemasReached);
+    if (_not) {
+      Gen<Optional<List<Schema>>> _xblockexpression = null;
+      {
+        int _currentRecursiveSchemas = StaticConfig.currentRecursiveSchemas;
+        StaticConfig.currentRecursiveSchemas = (_currentRecursiveSchemas + 10);
+        _xblockexpression = SourceDSL.lists().<Schema>of(Schema.fullSchema()).ofSizeBetween(0, 10).toOptionals(75);
+      }
+      _xifexpression = _xblockexpression;
+    } else {
+      _xifexpression = Generate.<Optional<List<Schema>>>constant(Optional.<List<Schema>>empty());
+    }
+    return _xifexpression;
   }
   
-  public static Gen<Schema> contains() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<Schema>> schemaPair = Pair.<Integer, Gen<Schema>>of(_integer, Schema.fullSchema());
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<Schema>> nullPair = Pair.<Integer, Gen<Schema>>of(_integer_1, Generate.<Schema>constant(null));
-    return Generate.<Schema>frequency(Collections.<Pair<Integer, Gen<Schema>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Schema>>>newArrayList(schemaPair, nullPair)));
+  public static Gen<Optional<Schema>> contains() {
+    Gen<Optional<Schema>> _xifexpression = null;
+    boolean _isRecursiveSchemasReached = StaticConfig.isRecursiveSchemasReached();
+    boolean _not = (!_isRecursiveSchemasReached);
+    if (_not) {
+      Gen<Optional<Schema>> _xblockexpression = null;
+      {
+        StaticConfig.currentRecursiveSchemas++;
+        _xblockexpression = Schema.fullSchema().toOptionals(75);
+      }
+      _xifexpression = _xblockexpression;
+    } else {
+      _xifexpression = Generate.<Optional<Schema>>constant(Optional.<Schema>empty());
+    }
+    return _xifexpression;
   }
   
-  public static Gen<Boolean> uniqueItems() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<Boolean>> booleanPair = Pair.<Integer, Gen<Boolean>>of(_integer, SourceDSL.booleans().all());
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<Boolean>> nullPair = Pair.<Integer, Gen<Boolean>>of(_integer_1, Generate.<Boolean>constant(null));
-    return Generate.<Boolean>frequency(Collections.<Pair<Integer, Gen<Boolean>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Boolean>>>newArrayList(booleanPair, nullPair)));
+  public static Gen<Optional<Boolean>> uniqueItems() {
+    return SourceDSL.booleans().all().toOptionals(75);
   }
   
-  public static Gen<Boolean> additionalItemsBoolean() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<Boolean>> booleanPair = Pair.<Integer, Gen<Boolean>>of(_integer, SourceDSL.booleans().all());
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<Boolean>> nullPair = Pair.<Integer, Gen<Boolean>>of(_integer_1, Generate.<Boolean>constant(null));
-    return Generate.<Boolean>frequency(Collections.<Pair<Integer, Gen<Boolean>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Boolean>>>newArrayList(booleanPair, nullPair)));
+  public static Gen<Optional<Boolean>> additionalItemsBoolean() {
+    return SourceDSL.booleans().all().toOptionals(75);
   }
   
-  public static Gen<Schema> additionalItemsSchema() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<Schema>> schemaPair = Pair.<Integer, Gen<Schema>>of(_integer, Schema.fullSchema());
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<Schema>> nullPair = Pair.<Integer, Gen<Schema>>of(_integer_1, Generate.<Schema>constant(null));
-    return Generate.<Schema>frequency(Collections.<Pair<Integer, Gen<Schema>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Schema>>>newArrayList(schemaPair, nullPair)));
+  public static Gen<Optional<Schema>> additionalItemsSchema() {
+    Gen<Optional<Schema>> _xifexpression = null;
+    boolean _isRecursiveSchemasReached = StaticConfig.isRecursiveSchemasReached();
+    boolean _not = (!_isRecursiveSchemasReached);
+    if (_not) {
+      Gen<Optional<Schema>> _xblockexpression = null;
+      {
+        StaticConfig.currentRecursiveSchemas++;
+        _xblockexpression = Schema.fullSchema().toOptionals(75);
+      }
+      _xifexpression = _xblockexpression;
+    } else {
+      _xifexpression = Generate.<Optional<Schema>>constant(Optional.<Schema>empty());
+    }
+    return _xifexpression;
   }
   
-  public static Gen<Integer> minItems() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<Integer>> intPair = Pair.<Integer, Gen<Integer>>of(_integer, SourceDSL.integers().allPositive());
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<Integer>> nullPair = Pair.<Integer, Gen<Integer>>of(_integer_1, Generate.<Integer>constant(null));
-    return Generate.<Integer>frequency(Collections.<Pair<Integer, Gen<Integer>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Integer>>>newArrayList(intPair, nullPair)));
+  public static Gen<Optional<Integer>> minItems() {
+    return SourceDSL.integers().allPositive().toOptionals(75);
   }
   
-  public static Gen<Integer> maxItems() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<Integer>> intPair = Pair.<Integer, Gen<Integer>>of(_integer, SourceDSL.integers().allPositive());
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<Integer>> nullPair = Pair.<Integer, Gen<Integer>>of(_integer_1, Generate.<Integer>constant(null));
-    return Generate.<Integer>frequency(Collections.<Pair<Integer, Gen<Integer>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Integer>>>newArrayList(intPair, nullPair)));
+  public static Gen<Optional<Integer>> maxItems() {
+    return SourceDSL.integers().allPositive().toOptionals(75);
   }
   
   @Pure

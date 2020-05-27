@@ -62,23 +62,49 @@ public class Schema {
           }
         }
         _builder.append("\t");
-        _builder.append("]");
+        _builder.append("],");
         _builder.newLine();
       } else {
         _builder.append("\t");
         _builder.append("\"type\": ");
         String _get = this.types.get(0);
         _builder.append(_get, "\t");
+        _builder.append(",");
         _builder.newLineIfNotEmpty();
       }
     }
-    _builder.append("\t");
+    _builder.newLine();
+    {
+      if ((this.objectSchema != null)) {
+        _builder.append("\t");
+        CharSequence _charSequence = this.objectSchema.toCharSequence();
+        _builder.append(_charSequence, "\t");
+        _builder.newLineIfNotEmpty();
+      }
+    }
+    {
+      if ((this.stringSchema != null)) {
+        _builder.append("\t");
+        CharSequence _charSequence_1 = this.stringSchema.toCharSequence();
+        _builder.append(_charSequence_1, "\t");
+        _builder.newLineIfNotEmpty();
+      }
+    }
+    {
+      if ((this.listSchema != null)) {
+        _builder.append("\t");
+        CharSequence _charSequence_2 = this.listSchema.toCharSequence();
+        _builder.append(_charSequence_2, "\t");
+        _builder.newLineIfNotEmpty();
+      }
+    }
+    _builder.append("\t\t");
     _builder.newLine();
     {
       if ((this.numberSchema != null)) {
         _builder.append("\t");
-        CharSequence _charSequence = this.numberSchema.toCharSequence();
-        _builder.append(_charSequence, "\t");
+        CharSequence _charSequence_3 = this.numberSchema.toCharSequence();
+        _builder.append(_charSequence_3, "\t");
         _builder.newLineIfNotEmpty();
       }
     }
@@ -131,7 +157,7 @@ public class Schema {
       return _xblockexpression;
     };
     return Schema.types().<Schema>map(_function).<ObjectSchema, StringSchema, ListSchema, NumberSchema, Schema>zip(
-      ObjectSchema.fullObjectSchema(), 
+      ObjectSchema.fullValidObjectSchema(), 
       StringSchema.fullStringSchema(), 
       ListSchema.fullListSchema(), 
       NumberSchema.fullNumberSchema(), _function_1);

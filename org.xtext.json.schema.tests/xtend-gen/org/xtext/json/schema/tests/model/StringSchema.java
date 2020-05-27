@@ -1,14 +1,12 @@
 package org.xtext.json.schema.tests.model;
 
-import java.util.Collections;
+import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.eclipse.xtend.lib.annotations.Accessors;
-import org.eclipse.xtext.xbase.lib.CollectionLiterals;
+import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Pure;
-import org.quicktheories.api.Function3;
-import org.quicktheories.api.Pair;
 import org.quicktheories.core.Gen;
-import org.quicktheories.generators.Generate;
 import org.quicktheories.generators.SourceDSL;
 import org.xtext.json.schema.draft7.FormatTypes;
 
@@ -29,48 +27,112 @@ public class StringSchema {
   public StringSchema() {
   }
   
+  public CharSequence toCharSequence() {
+    boolean alreadyAdded = false;
+    StringConcatenation _builder = new StringConcatenation();
+    {
+      if ((this.format != null)) {
+        {
+          if (alreadyAdded) {
+            _builder.append(",");
+          }
+        }
+        _builder.append("\"format\": ");
+        _builder.append(this.format);
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
+    }
+    {
+      if ((this.minLength != null)) {
+        {
+          if (alreadyAdded) {
+            _builder.append(",");
+          }
+        }
+        _builder.append("\"minLength\": ");
+        _builder.append(this.minLength);
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
+    }
+    {
+      if ((this.maxLength != null)) {
+        {
+          if (alreadyAdded) {
+            _builder.append(",");
+          }
+        }
+        _builder.append("\"maxLength\": ");
+        _builder.append(this.maxLength);
+        _builder.newLineIfNotEmpty();
+        {
+          if (alreadyAdded = true) {
+          }
+        }
+      }
+    }
+    return _builder;
+  }
+  
+  private static int usedMinlength = 0;
+  
   public static Gen<StringSchema> fullStringSchema() {
-    final Function3<String, Integer, Integer, StringSchema> _function = (String format, Integer minLength, Integer maxLength) -> {
+    final BiFunction<Optional<String>, Optional<Integer>, StringSchema> _function = (Optional<String> format, Optional<Integer> minLength) -> {
       StringSchema _xblockexpression = null;
       {
         StringSchema ss = new StringSchema();
-        ss.format = format;
-        ss.minLength = minLength;
-        ss.maxLength = maxLength;
+        boolean _isPresent = format.isPresent();
+        if (_isPresent) {
+          ss.format = format.get();
+        }
+        boolean _isPresent_1 = minLength.isPresent();
+        if (_isPresent_1) {
+          ss.minLength = minLength.get();
+          StringSchema.usedMinlength = (minLength.get()).intValue();
+        }
         _xblockexpression = ss;
       }
       return _xblockexpression;
     };
-    return StringSchema.format().<Integer, Integer, StringSchema>zip(
-      StringSchema.minLength(), 
-      StringSchema.maxLength(), _function);
+    final BiFunction<StringSchema, Optional<Integer>, StringSchema> _function_1 = (StringSchema ss, Optional<Integer> maxLength) -> {
+      StringSchema _xblockexpression = null;
+      {
+        boolean _isPresent = maxLength.isPresent();
+        if (_isPresent) {
+          ss.maxLength = maxLength.get();
+        }
+        _xblockexpression = ss;
+      }
+      return _xblockexpression;
+    };
+    return StringSchema.format().<Optional<Integer>, StringSchema>zip(
+      StringSchema.minLength(), _function).<Optional<Integer>, StringSchema>zip(StringSchema.maxLength(StringSchema.usedMinlength), _function_1);
   }
   
-  public static Gen<String> format() {
-    Integer _integer = new Integer(1);
+  public static Gen<Optional<String>> format() {
     final Function<FormatTypes, String> _function = (FormatTypes f) -> {
       return f.getLiteral();
     };
-    Pair<Integer, Gen<String>> doubleIntegerPair = Pair.<Integer, Gen<String>>of(_integer, SourceDSL.arbitrary().<FormatTypes>enumValues(FormatTypes.class).<String>map(_function));
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<String>> nullPair = Pair.<Integer, Gen<String>>of(_integer_1, Generate.<String>constant(null));
-    return Generate.<String>frequency(doubleIntegerPair, nullPair);
+    return SourceDSL.arbitrary().<FormatTypes>enumValues(FormatTypes.class).<String>map(_function).toOptionals(75);
   }
   
-  public static Gen<Integer> minLength() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<Integer>> intPair = Pair.<Integer, Gen<Integer>>of(_integer, SourceDSL.integers().allPositive());
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<Integer>> nullPair = Pair.<Integer, Gen<Integer>>of(_integer_1, Generate.<Integer>constant(null));
-    return Generate.<Integer>frequency(Collections.<Pair<Integer, Gen<Integer>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Integer>>>newArrayList(intPair, nullPair)));
+  public static Gen<Optional<Integer>> minLength() {
+    return SourceDSL.integers().allPositive().toOptionals(75);
   }
   
-  public static Gen<Integer> maxLength() {
-    Integer _integer = new Integer(1);
-    Pair<Integer, Gen<Integer>> intPair = Pair.<Integer, Gen<Integer>>of(_integer, SourceDSL.integers().allPositive());
-    Integer _integer_1 = new Integer(1);
-    Pair<Integer, Gen<Integer>> nullPair = Pair.<Integer, Gen<Integer>>of(_integer_1, Generate.<Integer>constant(null));
-    return Generate.<Integer>frequency(Collections.<Pair<Integer, Gen<Integer>>>unmodifiableList(CollectionLiterals.<Pair<Integer, Gen<Integer>>>newArrayList(intPair, nullPair)));
+  public static Gen<Optional<Integer>> maxLength() {
+    return StringSchema.maxLength(0);
+  }
+  
+  public static Gen<Optional<Integer>> maxLength(final int minLength) {
+    return SourceDSL.integers().between(minLength, Integer.MAX_VALUE).toOptionals(75);
   }
   
   @Pure
