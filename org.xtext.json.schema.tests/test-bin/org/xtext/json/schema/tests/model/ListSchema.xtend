@@ -29,6 +29,10 @@ class ListSchema {
 	new() {
 	}
 
+	
+	/**
+	 * Returns a CharSequence of defined JSON Schema list keywords.
+	 */
 	def CharSequence toCharSequence() {
 		var alreadyAdded = false;
 		return '''
@@ -63,12 +67,38 @@ class ListSchema {
 		'''
 	}
 	
+	/**
+	 * Does this list schema contain any keywords or is it empty
+	 */
+	def boolean containsKeywords(){
+		return 
+			items !== null || 
+			contains !== null || 
+			uniqueItems !== null || 
+			additionalItemsBoolean !== null || 
+			additionalItemsSchema !== null || 
+			maxItems !== null || 
+			minItems !== null
+	}
+	
+	
+	/**
+	 * Return a generator which generats a list schema where all schemas can be used. i.e. items etc generates all types
+	 */
 	def static Gen<ListSchema> fullListSchema() {
-		items().zip(
-			contains(), 
+		fullListSchema(false)
+	}
+	
+	/**
+	 * Return a generator which generats a list schema where all schemas can be used. i.e. items etc generates all types unless the parameter is sat. 
+	 * Then only schemas containing list schemas can be generated. 
+	 */
+	def static Gen<ListSchema> fullListSchema(boolean onlyListSchemas) {
+		items(onlyListSchemas).zip(
+			contains(onlyListSchemas), 
 			uniqueItems(), 
 			additionalItemsBoolean(),
-			additionalItemsSchema(), 
+			additionalItemsSchema(onlyListSchemas), 
 			[
 				Optional<List<Schema>> items, 
 				Optional<Schema> contains, 
@@ -88,8 +118,7 @@ class ListSchema {
 					}
 					if(additionalItemsBoolean.isPresent){
 						ls.additionalItemsBoolean = additionalItemsBoolean.get()
-					}
-					if(additionalItemsSchema.isPresent){
+					}else if(additionalItemsSchema.isPresent){
 						ls.additionalItemsSchema = additionalItemsSchema.get()
 					}
 					ls
@@ -114,40 +143,97 @@ class ListSchema {
 			]
 		)
 	}
-	def static Gen<Optional<List<Schema>>> items(){
-		if(!StaticConfig.isRecursiveSchemasReached){
-			StaticConfig.currentRecursiveSchemas+=10
-			lists.of(Schema.fullSchema).ofSizeBetween(0, 10).toOptionals(75)
+
+
+	/**
+	 * Returns a generator for generating items which can either generate all types of schemas or just schemas with type list.
+	 */
+	def static Gen<Optional<List<Schema>>> items(boolean onlyListSchemas){
+		if(!StaticConfig.isRecursiveItemsReached){
+			StaticConfig.currentRecursiveItems+=10
+			if(onlyListSchemas){
+				lists.of(Schema.fullListSchema).ofSizeBetween(0, 10).toOptionals(25)
+			}else{
+				lists.of(Schema.fullSchema).ofSizeBetween(0, 10).toOptionals(25)
+			}
 		}else{
 			constant(Optional.empty)
 		}
 	}
-	def static Gen<Optional<Schema>> contains(){
-		if(!StaticConfig.isRecursiveSchemasReached){
-			StaticConfig.currentRecursiveSchemas++
-			Schema.fullSchema.toOptionals(75)
+	
+	/**
+	 * Returns a generator for generating contains which can either generate all types of schemas or just schemas with type list.
+	 */
+	def static Gen<Optional<Schema>> contains(boolean onlyListSchemas){
+		if(!StaticConfig.isRecursiveContainsReached){
+			StaticConfig.currentRecursiveContains++
+			if(onlyListSchemas){
+				Schema.fullListSchema.toOptionals(25)
+			}else{
+				Schema.fullSchema.toOptionals(25)
+			}
 		}else{
 			constant(Optional.empty)
 		}
 	}
+	
+	/**
+	 * Returns a generator for generating uniqueItems
+	 */
 	def static Gen<Optional<Boolean>> uniqueItems(){
-		booleans.all.toOptionals(75)
+		booleans.all.toOptionals(25)
 	}
+	
+	/**
+	 * Returns a generator for generating additionalItems as a boolean
+	 */
 	def static Gen<Optional<Boolean>> additionalItemsBoolean(){
-		booleans.all.toOptionals(75)
+		booleans.all.toOptionals(25)
 	}
+	
+	/**
+	 * Returns a generator for generating additionalItems as a schema of any type
+	 */
 	def static Gen<Optional<Schema>> additionalItemsSchema(){
-		if(!StaticConfig.isRecursiveSchemasReached){
-			StaticConfig.currentRecursiveSchemas++
-			Schema.fullSchema.toOptionals(75)
+		additionalItemsSchema(false)
+	}
+	
+	/**
+	 * Returns a generator for generating additionalItems as a schema of list schemas only
+	 */
+	def static Gen<Optional<Schema>> additionalItemsSchema(boolean onlyListSchemas){
+		if(!StaticConfig.isRecursiveAdditionalItemsSchemaReached){
+			StaticConfig.currentRecursiveAdditionalItemsSchema++
+			Schema.fullListSchema.toOptionals(25)
+			if(onlyListSchemas){
+				Schema.fullListSchema.toOptionals(25)
+			}else{
+				Schema.fullSchema.toOptionals(25)
+			}
 		}else{
 			constant(Optional.empty)
 		}
 	}
+	
+	/**
+	 * Returns a generator for generating minItems
+	 */
 	def static Gen<Optional<Integer>> minItems(){
-		integers().allPositive().toOptionals(75)
+		frequency(
+			Pair.of(2, integers().between(1, Integer.MAX_VALUE-1).toOptionals(25)),
+			Pair.of(1, constant(new Integer(1)).toOptionals(0)),
+			Pair.of(1, constant(Integer.MAX_VALUE).toOptionals(0))
+		);
 	}
+	
+	/**
+	 * Returns a generator for generating maxItems, this does not care about minItems
+	 */
 	def static Gen<Optional<Integer>> maxItems(){
-		integers().allPositive().toOptionals(75)
+		frequency(
+			Pair.of(2, integers().between(1, Integer.MAX_VALUE-1).toOptionals(25)),
+			Pair.of(1, constant(new Integer(1)).toOptionals(0)),
+			Pair.of(1, constant(Integer.MAX_VALUE).toOptionals(0))
+		);
 	}
 }

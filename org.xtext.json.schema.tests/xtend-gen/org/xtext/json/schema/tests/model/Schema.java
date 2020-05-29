@@ -1,11 +1,13 @@
 package org.xtext.json.schema.tests.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Function;
 import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtend2.lib.StringConcatenation;
+import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Pure;
 import org.quicktheories.api.Function5;
 import org.quicktheories.core.Gen;
@@ -37,6 +39,9 @@ public class Schema {
     this.types = types;
   }
   
+  /**
+   * Returns a CharSequence of defined schema types and their defined keywords.
+   */
   public CharSequence toCharSequence() {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("{");
@@ -62,14 +67,25 @@ public class Schema {
           }
         }
         _builder.append("\t");
-        _builder.append("],");
-        _builder.newLine();
+        _builder.append("]");
+        {
+          boolean _containsOtherSchemas = this.containsOtherSchemas();
+          if (_containsOtherSchemas) {
+            _builder.append(",");
+          }
+        }
+        _builder.newLineIfNotEmpty();
       } else {
         _builder.append("\t");
         _builder.append("\"type\": ");
         String _get = this.types.get(0);
         _builder.append(_get, "\t");
-        _builder.append(",");
+        {
+          boolean _containsOtherSchemas_1 = this.containsOtherSchemas();
+          if (_containsOtherSchemas_1) {
+            _builder.append(",");
+          }
+        }
         _builder.newLineIfNotEmpty();
       }
     }
@@ -113,11 +129,21 @@ public class Schema {
     return _builder;
   }
   
+  /**
+   * Does this schema contain other keywords or just the types keyword
+   */
+  public boolean containsOtherSchemas() {
+    return (((((this.objectSchema != null) && this.objectSchema.containsKeywords()) || ((this.stringSchema != null) && this.stringSchema.containsKeywords())) || ((this.listSchema != null) && this.listSchema.containsKeywords())) || ((this.numberSchema != null) && this.numberSchema.containsKeywords()));
+  }
+  
   @Override
   public String toString() {
     return this.toCharSequence().toString();
   }
   
+  /**
+   * Generated a list of unique types with length of 1 to 6 based on all possible types
+   */
   public static Gen<List<String>> types() {
     final Function<JsonTypes, String> _function = (JsonTypes t) -> {
       return t.getLiteral();
@@ -130,6 +156,78 @@ public class Schema {
       SourceDSL.arbitrary().<JsonTypes>enumValues(JsonTypes.class).<String>map(_function)).ofSizeBetween(1, 6).<List<String>>map(_function_1);
   }
   
+  /**
+   * Only generates JSON Schemas of numbers
+   */
+  public static Gen<Schema> fullNumberSchema() {
+    final Function<NumberSchema, Schema> _function = (NumberSchema ns) -> {
+      Schema _xblockexpression = null;
+      {
+        String _literal = JsonTypes.INTEGER.getLiteral();
+        String _literal_1 = JsonTypes.NUMBER.getLiteral();
+        Schema schema = new Schema(Collections.<String>unmodifiableList(CollectionLiterals.<String>newArrayList(_literal, _literal_1)));
+        schema.numberSchema = ns;
+        _xblockexpression = schema;
+      }
+      return _xblockexpression;
+    };
+    return NumberSchema.fullNumberSchema().<Schema>map(_function);
+  }
+  
+  /**
+   * Only generates JSON Schemas of objects
+   */
+  public static Gen<Schema> fullObjectSchema() {
+    final Function<ObjectSchema, Schema> _function = (ObjectSchema os) -> {
+      Schema _xblockexpression = null;
+      {
+        String _literal = JsonTypes.OBJECT.getLiteral();
+        Schema schema = new Schema(Collections.<String>unmodifiableList(CollectionLiterals.<String>newArrayList(_literal)));
+        schema.objectSchema = os;
+        _xblockexpression = schema;
+      }
+      return _xblockexpression;
+    };
+    return ObjectSchema.fullObjectSchema(true).<Schema>map(_function);
+  }
+  
+  /**
+   * Only generates JSON Schemas of lists
+   */
+  public static Gen<Schema> fullListSchema() {
+    final Function<ListSchema, Schema> _function = (ListSchema ls) -> {
+      Schema _xblockexpression = null;
+      {
+        String _literal = JsonTypes.ARRAY.getLiteral();
+        Schema schema = new Schema(Collections.<String>unmodifiableList(CollectionLiterals.<String>newArrayList(_literal)));
+        schema.listSchema = ls;
+        _xblockexpression = schema;
+      }
+      return _xblockexpression;
+    };
+    return ListSchema.fullListSchema(true).<Schema>map(_function);
+  }
+  
+  /**
+   * Only generates JSON Schemas of strings
+   */
+  public static Gen<Schema> fullStringSchema() {
+    final Function<StringSchema, Schema> _function = (StringSchema ss) -> {
+      Schema _xblockexpression = null;
+      {
+        String _literal = JsonTypes.STRING.getLiteral();
+        Schema schema = new Schema(Collections.<String>unmodifiableList(CollectionLiterals.<String>newArrayList(_literal)));
+        schema.stringSchema = ss;
+        _xblockexpression = schema;
+      }
+      return _xblockexpression;
+    };
+    return StringSchema.fullStringSchema().<Schema>map(_function);
+  }
+  
+  /**
+   * Generates JSON Schemas with all types interconnected
+   */
   public static Gen<Schema> fullSchema() {
     final Function<List<String>, Schema> _function = (List<String> types) -> {
       return new Schema(types);
@@ -157,7 +255,7 @@ public class Schema {
       return _xblockexpression;
     };
     return Schema.types().<Schema>map(_function).<ObjectSchema, StringSchema, ListSchema, NumberSchema, Schema>zip(
-      ObjectSchema.fullValidObjectSchema(), 
+      ObjectSchema.fullObjectSchema(), 
       StringSchema.fullStringSchema(), 
       ListSchema.fullListSchema(), 
       NumberSchema.fullNumberSchema(), _function_1);

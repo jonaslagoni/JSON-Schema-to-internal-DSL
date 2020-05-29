@@ -10,14 +10,12 @@ import static org.quicktheories.generators.Generate.constant
 import java.util.Optional
 
 class StringSchema {
-	
 	@Accessors
 	var Integer minLength;
 	@Accessors
 	var Integer maxLength;
 	@Accessors
 	var String format;
-	 
 	
 	//TODO
 	@Accessors
@@ -26,6 +24,10 @@ class StringSchema {
 	new() {
 	}
 	
+	
+	/**
+	 * Returns a CharSequence of defined JSON Schema string keywords.
+	 */
 	def CharSequence toCharSequence() {
 		var alreadyAdded = false;
 		return '''
@@ -44,8 +46,21 @@ class StringSchema {
 		'''
 
 	}
+	
+	/**
+	 * Does this string schema contain any keywords or is it empty
+	 */
+	def boolean containsKeywords(){
+		return 
+			format !== null || 
+			minLength !== null || 
+			maxLength !== null
+	}
 
-	static int usedMinlength = 0;
+	
+	/**
+	 * Return a generator which generats a string schema with all possible keywords
+	 */
 	def static Gen<StringSchema> fullStringSchema() {
 		format().zip(
 			minLength(),
@@ -60,31 +75,47 @@ class StringSchema {
 					
 					if(minLength.isPresent){
 						ss.minLength = minLength.get()
-						usedMinlength = minLength.get()
 					}
 					ss
 				}
 			]
-		).zip(maxLength(usedMinlength), [StringSchema ss, Optional<Integer> maxLength | {
+		).zip(maxLength(), [StringSchema ss, Optional<Integer> maxLength | {
 			if(maxLength.isPresent){
 				ss.maxLength = maxLength.get()
 			}
 			ss
 		}])
 	}
+	
+	/**
+	 * Returns a generator for generating format
+	 */
 	def static Gen<Optional<String>> format(){
 		arbitrary.enumValues(FormatTypes).map(FormatTypes f | {
 			f.literal
-		}).toOptionals(75)
+		}).toOptionals(25)
 		
 	}
+	
+	/**
+	 * Returns a generator for generating minLength
+	 */
 	def static Gen<Optional<Integer>> minLength(){
-		integers().allPositive().toOptionals(75)
+		frequency(
+			Pair.of(2, integers().between(1, Integer.MAX_VALUE-1).toOptionals(50)),
+			Pair.of(1, constant(new Integer(1)).toOptionals(0)),
+			Pair.of(1, constant(Integer.MAX_VALUE).toOptionals(0))
+		);
 	}
+	
+	/**
+	 * Returns a generator for generating maxLength, does not care about a min length.
+	 */
 	def static Gen<Optional<Integer>> maxLength(){
-		maxLength(0)
-	}
-	def static Gen<Optional<Integer>> maxLength(int minLength){
-		integers().between(minLength, Integer.MAX_VALUE).toOptionals(75)
+		frequency(
+			Pair.of(2, integers().between(1, Integer.MAX_VALUE-1).toOptionals(50)),
+			Pair.of(1, constant(new Integer(1)).toOptionals(0)),
+			Pair.of(1, constant(Integer.MAX_VALUE).toOptionals(0))
+		);
 	}
 }

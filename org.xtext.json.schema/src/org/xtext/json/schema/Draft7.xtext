@@ -43,7 +43,7 @@ Schema:
 			&('"format"' ':' format=FormatTypes ','?)?
 			&('"contentMediaType"' ':' mediaType=AnyString ','?)?
 			&('"contentEncoding"' ':'  encoding=AnyString ','?)?
-			&('"multiples"' ':' multipleOf=INT ','?)?
+			&('"multipleOf"' ':' multipleOf=Number ','?)?
 			&('"minimum"' ':' minimum=Number ','?)?
 			&('"exclusiveMinimum"' ':' exclusiveMinimum=Number ','?)?
 			&('"maximum"' ':' maximum=Number ','?)?
@@ -59,10 +59,10 @@ PropertyDependency:
 	name=AnyString ':' '[' dependencies+=AnyString (',' dependencies+=AnyString)* ']'
 ;
 Contains:
-	('[' containSchemas+=Schema (',' containSchemas+=Schema)* ']') | ('{' containSchemas+=Schema '}')
+	('[' containSchemas+=Schema (',' containSchemas+=Schema)* ']') | containSchemas+=Schema
 ;
 Items:
-	('[' items+=AbstractSchema (','items+=AbstractSchema)* ']') | items+=AbstractSchema | selfReference=Boolean
+	('[' items+=AbstractSchema (',' items+=AbstractSchema)* ']') | items+=AbstractSchema | selfReference=Boolean
 ;
 AdditionalProperties:
 	allowedBoolean=Boolean | schema=AbstractSchema
@@ -95,12 +95,14 @@ NamedSchema:
 
 
 enum Boolean:
-	trueValue='true' 
+	UNSET
+	| trueValue='true' 
 	| falseValue='false'
 ;
 
 enum JsonTypes: 
-	string='"string"'
+	UNSET
+	| string='"string"'
 	| integer='"integer"'
 	| number='"number"'
 	| object='"object"'
@@ -110,6 +112,7 @@ enum JsonTypes:
 ;
 
 enum FormatTypes:
+	UNSET |
 	date_time='"date-time"' | 
 	time='"time"' | 
 	date='"date"' | 
@@ -131,9 +134,12 @@ AnyString:
 	name=STRING
 	| keyword=JsonSchemaKeyword
 ;
+terminal ENUMBER:
+   ('E' | 'e') '-'? INT;
 Number:
-	number=INT ('.' decimal=INT)?
+	(negative='-')? number=INT ('.' decimal=INT)? (exponent=ENUMBER)?
 ;
+
 enum JsonSchemaKeyword:
 	title='"title"'
 	| schemaDraft7='"http://json-schema.org/draft-07/schema#"'

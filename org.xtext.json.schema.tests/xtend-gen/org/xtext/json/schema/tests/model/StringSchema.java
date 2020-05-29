@@ -6,7 +6,9 @@ import java.util.function.Function;
 import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Pure;
+import org.quicktheories.api.Pair;
 import org.quicktheories.core.Gen;
+import org.quicktheories.generators.Generate;
 import org.quicktheories.generators.SourceDSL;
 import org.xtext.json.schema.draft7.FormatTypes;
 
@@ -27,6 +29,9 @@ public class StringSchema {
   public StringSchema() {
   }
   
+  /**
+   * Returns a CharSequence of defined JSON Schema string keywords.
+   */
   public CharSequence toCharSequence() {
     boolean alreadyAdded = false;
     StringConcatenation _builder = new StringConcatenation();
@@ -81,8 +86,18 @@ public class StringSchema {
     return _builder;
   }
   
-  private static int usedMinlength = 0;
+  /**
+   * Does this string schema contain any keywords or is it empty
+   */
+  public boolean containsKeywords() {
+    return (((this.format != null) || 
+      (this.minLength != null)) || 
+      (this.maxLength != null));
+  }
   
+  /**
+   * Return a generator which generats a string schema with all possible keywords
+   */
   public static Gen<StringSchema> fullStringSchema() {
     final BiFunction<Optional<String>, Optional<Integer>, StringSchema> _function = (Optional<String> format, Optional<Integer> minLength) -> {
       StringSchema _xblockexpression = null;
@@ -95,7 +110,6 @@ public class StringSchema {
         boolean _isPresent_1 = minLength.isPresent();
         if (_isPresent_1) {
           ss.minLength = minLength.get();
-          StringSchema.usedMinlength = (minLength.get()).intValue();
         }
         _xblockexpression = ss;
       }
@@ -113,26 +127,39 @@ public class StringSchema {
       return _xblockexpression;
     };
     return StringSchema.format().<Optional<Integer>, StringSchema>zip(
-      StringSchema.minLength(), _function).<Optional<Integer>, StringSchema>zip(StringSchema.maxLength(StringSchema.usedMinlength), _function_1);
+      StringSchema.minLength(), _function).<Optional<Integer>, StringSchema>zip(StringSchema.maxLength(), _function_1);
   }
   
+  /**
+   * Returns a generator for generating format
+   */
   public static Gen<Optional<String>> format() {
     final Function<FormatTypes, String> _function = (FormatTypes f) -> {
       return f.getLiteral();
     };
-    return SourceDSL.arbitrary().<FormatTypes>enumValues(FormatTypes.class).<String>map(_function).toOptionals(75);
+    return SourceDSL.arbitrary().<FormatTypes>enumValues(FormatTypes.class).<String>map(_function).toOptionals(25);
   }
   
+  /**
+   * Returns a generator for generating minLength
+   */
   public static Gen<Optional<Integer>> minLength() {
-    return SourceDSL.integers().allPositive().toOptionals(75);
+    Integer _integer = new Integer(1);
+    return Generate.<Optional<Integer>>frequency(
+      Pair.<Integer, Gen<Optional<Integer>>>of(Integer.valueOf(2), SourceDSL.integers().between(1, (Integer.MAX_VALUE - 1)).toOptionals(50)), 
+      Pair.<Integer, Gen<Optional<Integer>>>of(Integer.valueOf(1), Generate.<Integer>constant(_integer).toOptionals(0)), 
+      Pair.<Integer, Gen<Optional<Integer>>>of(Integer.valueOf(1), Generate.<Integer>constant(Integer.valueOf(Integer.MAX_VALUE)).toOptionals(0)));
   }
   
+  /**
+   * Returns a generator for generating maxLength, does not care about a min length.
+   */
   public static Gen<Optional<Integer>> maxLength() {
-    return StringSchema.maxLength(0);
-  }
-  
-  public static Gen<Optional<Integer>> maxLength(final int minLength) {
-    return SourceDSL.integers().between(minLength, Integer.MAX_VALUE).toOptionals(75);
+    Integer _integer = new Integer(1);
+    return Generate.<Optional<Integer>>frequency(
+      Pair.<Integer, Gen<Optional<Integer>>>of(Integer.valueOf(2), SourceDSL.integers().between(1, (Integer.MAX_VALUE - 1)).toOptionals(50)), 
+      Pair.<Integer, Gen<Optional<Integer>>>of(Integer.valueOf(1), Generate.<Integer>constant(_integer).toOptionals(0)), 
+      Pair.<Integer, Gen<Optional<Integer>>>of(Integer.valueOf(1), Generate.<Integer>constant(Integer.valueOf(Integer.MAX_VALUE)).toOptionals(0)));
   }
   
   @Pure

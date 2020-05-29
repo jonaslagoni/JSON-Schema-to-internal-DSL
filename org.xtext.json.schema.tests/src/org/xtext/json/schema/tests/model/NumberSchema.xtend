@@ -11,19 +11,22 @@ import java.util.Optional
 
 class NumberSchema {
 	@Accessors
-	var DoubleInteger multipleOf;
+	var FloatInteger multipleOf;
 	@Accessors
-	var DoubleInteger minimum;
+	var FloatInteger minimum;
 	@Accessors
-	var DoubleInteger exclusiveMinimum;
+	var FloatInteger exclusiveMinimum;
 	@Accessors
-	var DoubleInteger maximum;
+	var FloatInteger maximum;
 	@Accessors
-	var DoubleInteger exclusiveMaximum;
+	var FloatInteger exclusiveMaximum;
 
 	new() {
 	}
 
+	/**
+	 * Returns a CharSequence of defined JSON Schema number keywords.
+	 */
 	def CharSequence toCharSequence() {
 		var alreadyAdded = false;
 		return '''
@@ -43,22 +46,41 @@ class NumberSchema {
 				«IF(alreadyAdded)»,«ENDIF»"maximum": «maximum»
 				«IF(alreadyAdded = true)»«ENDIF»
 			«ENDIF»
-			«IF (maximum !== null)»
+			«IF (exclusiveMaximum !== null)»
 				«IF(alreadyAdded)»,«ENDIF»"exclusiveMaximum": «exclusiveMaximum»
 				«IF(alreadyAdded = true)»«ENDIF»
 			«ENDIF»
 		'''
 
 	}
+	
+	/**
+	 * Does this number schema contain any keywords or is it empty
+	 */
+	def boolean containsKeywords(){
+		return 
+			multipleOf !== null || 
+			minimum !== null || 
+			exclusiveMinimum !== null || 
+			maximum !== null || 
+			exclusiveMaximum !== null
+	}
+	
 
+	/*
+	 * Return a generator which generats a Number schema with all possible keywords
+	 */
 	def static Gen<NumberSchema> fullNumberSchema() {
-		multipleOf().zip(minimum(), exclusiveMinimum(), maximum(),
-				exclusiveMaximum(), [ 
-					Optional<DoubleInteger> multipleOf,
-					Optional<DoubleInteger> minimum, 
-					Optional<DoubleInteger> exclusiveMinimum, 
-					Optional<DoubleInteger> maximum,
-					Optional<DoubleInteger> exclusiveMaximum |
+		multipleOf().zip(
+			minimum(), 
+			exclusiveMinimum(), 
+			maximum(),
+			exclusiveMaximum(), [ 
+				Optional<FloatInteger> multipleOf,
+				Optional<FloatInteger> minimum, 
+				Optional<FloatInteger> exclusiveMinimum, 
+				Optional<FloatInteger> maximum,
+				Optional<FloatInteger> exclusiveMaximum |
 				{
 					var ns = new NumberSchema()
 					if(multipleOf.isPresent){
@@ -78,34 +100,65 @@ class NumberSchema {
 					}
 					ns
 				}
-			])
+			]
+		)
 	}
 
-	def static Gen<Optional<DoubleInteger>> multipleOf() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]).toOptionals(75)
+	/**
+	 * Returns a generator for generating multipleOf
+	 */
+	def static Gen<Optional<FloatInteger>> multipleOf() {
+		oneOf(integerNumber(), org.xtext.json.schema.tests.model.NumberSchema.floatNumber()).map([Number i, Number d|new FloatInteger(i, d)]).toOptionals(75)
 	}
 
-	def static Gen<Optional<DoubleInteger>> minimum() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]).toOptionals(75)
+	/**
+	 * Returns a generator for generating minimum
+	 */
+	def static Gen<Optional<FloatInteger>> minimum() {
+		oneOf(integerNumber(), org.xtext.json.schema.tests.model.NumberSchema.floatNumber()).map([Number i, Number d|new FloatInteger(i, d)]).toOptionals(75)
 	}
 
-	def static Gen<Optional<DoubleInteger>> exclusiveMinimum() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]).toOptionals(75)
+	/**
+	 * Returns a generator for generating exclusiveMinimum
+	 */
+	def static Gen<Optional<FloatInteger>> exclusiveMinimum() {
+		oneOf(integerNumber(), org.xtext.json.schema.tests.model.NumberSchema.floatNumber()).map([Number i, Number d|new FloatInteger(i, d)]).toOptionals(75)
 	}
 
-	def static Gen<Optional<DoubleInteger>> maximum() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]).toOptionals(75)
+
+	/**
+	 * Returns a generator for generating maximum
+	 */
+	def static Gen<Optional<FloatInteger>> maximum() {
+		oneOf(integerNumber(), org.xtext.json.schema.tests.model.NumberSchema.floatNumber()).map([Number i, Number d|new FloatInteger(i, d)]).toOptionals(75)
 	}
 
-	def static Gen<Optional<DoubleInteger>> exclusiveMaximum() {
-		oneOf(integerNumber(), doubleNumber()).map([Number i, Number d|new DoubleInteger(i, d)]).toOptionals(75)
+	/**
+	 * Returns a generator for generating exclusiveMaximum
+	 */
+	def static Gen<Optional<FloatInteger>> exclusiveMaximum() {
+		oneOf(integerNumber(), org.xtext.json.schema.tests.model.NumberSchema.floatNumber()).map([Number i, Number d|new FloatInteger(i, d)]).toOptionals(75)
 	}
 
-	def static Gen<Number> doubleNumber() {
-		return doubles().any().map([Double d|new Double(d)]);
+	/**
+	 * Returns a generator for generating float numbers
+	 */
+	def static Gen<Number> floatNumber() {
+		frequency(
+			Pair.of(2, floats().between(0, Float.MAX_VALUE)),
+			Pair.of(1, constant(new Float(0))),
+			Pair.of(1, constant(Float.MAX_VALUE))
+		).map([Float f|new Float(f)]);
 	}
 
+	/**
+	 * Returns a generator for generating integer numbers
+	 */
 	def static Gen<Number> integerNumber() {
-		return integers().allPositive().map([Integer i|new Integer(i)]);
+		frequency(
+			Pair.of(2, integers().between(1, Integer.MAX_VALUE-1)),
+			Pair.of(1, constant(0)),
+			Pair.of(1, constant(Integer.MAX_VALUE))
+		).map([Integer i|new Integer(i)]);
 	}
 }

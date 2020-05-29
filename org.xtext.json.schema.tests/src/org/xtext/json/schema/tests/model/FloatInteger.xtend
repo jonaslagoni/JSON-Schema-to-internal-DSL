@@ -1,12 +1,13 @@
 package org.xtext.json.schema.tests.model
 
 import org.eclipse.xtend.lib.annotations.Accessors
+import java.text.DecimalFormat
 
-class DoubleInteger {
+class FloatInteger {
 	@Accessors
 	var Integer integerValue;
 	@Accessors
-	var Double doubleValue;
+	var Float floatValue;
 	
 	/**
 	 * Given two numbers one of them should be sat. Either double or integer
@@ -15,23 +16,25 @@ class DoubleInteger {
 		var Number satNumber;
 		if(number1 !== null){
 			satNumber = number1
-		}else{
+		}else if(number2 !== null){
 			satNumber = number2
+		}else{
+			throw new NumberFormatException("None of the numbers sat")
 		}
 		if(satNumber instanceof Integer){
 			this.integerValue = satNumber as Integer;
 		}else {
-			this.doubleValue = satNumber as Double;
+			this.floatValue = satNumber as Float;
 		}
 	}
 	new(Integer intValue){
 		this.integerValue = intValue;
 	}
-	new(Double doubleValue){
-		this.doubleValue = doubleValue;
+	new(Float floatValue){
+		this.floatValue = floatValue;
 	}
 	
 	override toString(){
-		return "" + (integerValue !== null ? integerValue : doubleValue)
+		return "" + (integerValue !== null ? integerValue : floatValue)
 	}
 }

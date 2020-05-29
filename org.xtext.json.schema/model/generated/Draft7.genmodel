@@ -146,7 +146,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/format"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/mediaType"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/encoding"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/multipleOf"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/multipleOf"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/minimum"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/exclusiveMinimum"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/maximum"/>
@@ -205,8 +205,10 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//AnyString/keyword"/>
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//Number">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Number/negative"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Number/number"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Number/decimal"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Number/exponent"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -65,7 +65,8 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="encoding" eType="#//AnyString"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="multipleOf" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="multipleOf" eType="#//Number"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="minimum" eType="#//Number"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="exclusiveMinimum" eType="#//Number"
@@ -179,8 +180,10 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="keyword" eType="#//JsonSchemaKeyword"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Number">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="negative" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="number" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="decimal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exponent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="JsonSchemaKeyword">
     <eLiterals name="title" literal="&quot;title&quot;"/>

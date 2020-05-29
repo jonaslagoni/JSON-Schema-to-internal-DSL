@@ -7,6 +7,7 @@ import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Pure;
 import org.quicktheories.api.Function3;
 import org.quicktheories.api.Function5;
+import org.quicktheories.api.Pair;
 import org.quicktheories.core.Gen;
 import org.quicktheories.generators.Generate;
 import org.quicktheories.generators.SourceDSL;
@@ -39,6 +40,9 @@ public class ListSchema {
   public ListSchema() {
   }
   
+  /**
+   * Returns a CharSequence of defined JSON Schema list keywords.
+   */
   public CharSequence toCharSequence() {
     boolean alreadyAdded = false;
     StringConcatenation _builder = new StringConcatenation();
@@ -166,7 +170,31 @@ public class ListSchema {
     return _builder;
   }
   
+  /**
+   * Does this list schema contain any keywords or is it empty
+   */
+  public boolean containsKeywords() {
+    return (((((((this.items != null) || 
+      (this.contains != null)) || 
+      (this.uniqueItems != null)) || 
+      (this.additionalItemsBoolean != null)) || 
+      (this.additionalItemsSchema != null)) || 
+      (this.maxItems != null)) || 
+      (this.minItems != null));
+  }
+  
+  /**
+   * Return a generator which generats a list schema where all schemas can be used. i.e. items etc generates all types
+   */
   public static Gen<ListSchema> fullListSchema() {
+    return ListSchema.fullListSchema(false);
+  }
+  
+  /**
+   * Return a generator which generats a list schema where all schemas can be used. i.e. items etc generates all types unless the parameter is sat.
+   * Then only schemas containing list schemas can be generated.
+   */
+  public static Gen<ListSchema> fullListSchema(final boolean onlyListSchemas) {
     final Function5<Optional<List<Schema>>, Optional<Schema>, Optional<Boolean>, Optional<Boolean>, Optional<Schema>, ListSchema> _function = (Optional<List<Schema>> items, Optional<Schema> contains, Optional<Boolean> uniqueItems, Optional<Boolean> additionalItemsBoolean, Optional<Schema> additionalItemsSchema) -> {
       ListSchema _xblockexpression = null;
       {
@@ -186,10 +214,11 @@ public class ListSchema {
         boolean _isPresent_3 = additionalItemsBoolean.isPresent();
         if (_isPresent_3) {
           ls.additionalItemsBoolean = additionalItemsBoolean.get();
-        }
-        boolean _isPresent_4 = additionalItemsSchema.isPresent();
-        if (_isPresent_4) {
-          ls.additionalItemsSchema = additionalItemsSchema.get();
+        } else {
+          boolean _isPresent_4 = additionalItemsSchema.isPresent();
+          if (_isPresent_4) {
+            ls.additionalItemsSchema = additionalItemsSchema.get();
+          }
         }
         _xblockexpression = ls;
       }
@@ -210,25 +239,34 @@ public class ListSchema {
       }
       return _xblockexpression;
     };
-    return ListSchema.items().<Optional<Schema>, Optional<Boolean>, Optional<Boolean>, Optional<Schema>, ListSchema>zip(
-      ListSchema.contains(), 
+    return ListSchema.items(onlyListSchemas).<Optional<Schema>, Optional<Boolean>, Optional<Boolean>, Optional<Schema>, ListSchema>zip(
+      ListSchema.contains(onlyListSchemas), 
       ListSchema.uniqueItems(), 
       ListSchema.additionalItemsBoolean(), 
-      ListSchema.additionalItemsSchema(), _function).<Optional<Integer>, Optional<Integer>, ListSchema>zip(
+      ListSchema.additionalItemsSchema(onlyListSchemas), _function).<Optional<Integer>, Optional<Integer>, ListSchema>zip(
       ListSchema.minItems(), 
       ListSchema.maxItems(), _function_1);
   }
   
-  public static Gen<Optional<List<Schema>>> items() {
+  /**
+   * Returns a generator for generating items which can either generate all types of schemas or just schemas with type list.
+   */
+  public static Gen<Optional<List<Schema>>> items(final boolean onlyListSchemas) {
     Gen<Optional<List<Schema>>> _xifexpression = null;
-    boolean _isRecursiveSchemasReached = StaticConfig.isRecursiveSchemasReached();
-    boolean _not = (!_isRecursiveSchemasReached);
+    boolean _isRecursiveItemsReached = StaticConfig.isRecursiveItemsReached();
+    boolean _not = (!_isRecursiveItemsReached);
     if (_not) {
       Gen<Optional<List<Schema>>> _xblockexpression = null;
       {
-        int _currentRecursiveSchemas = StaticConfig.currentRecursiveSchemas;
-        StaticConfig.currentRecursiveSchemas = (_currentRecursiveSchemas + 10);
-        _xblockexpression = SourceDSL.lists().<Schema>of(Schema.fullSchema()).ofSizeBetween(0, 10).toOptionals(75);
+        int _currentRecursiveItems = StaticConfig.currentRecursiveItems;
+        StaticConfig.currentRecursiveItems = (_currentRecursiveItems + 10);
+        Gen<Optional<List<Schema>>> _xifexpression_1 = null;
+        if (onlyListSchemas) {
+          _xifexpression_1 = SourceDSL.lists().<Schema>of(Schema.fullListSchema()).ofSizeBetween(0, 10).toOptionals(25);
+        } else {
+          _xifexpression_1 = SourceDSL.lists().<Schema>of(Schema.fullSchema()).ofSizeBetween(0, 10).toOptionals(25);
+        }
+        _xblockexpression = _xifexpression_1;
       }
       _xifexpression = _xblockexpression;
     } else {
@@ -237,15 +275,24 @@ public class ListSchema {
     return _xifexpression;
   }
   
-  public static Gen<Optional<Schema>> contains() {
+  /**
+   * Returns a generator for generating contains which can either generate all types of schemas or just schemas with type list.
+   */
+  public static Gen<Optional<Schema>> contains(final boolean onlyListSchemas) {
     Gen<Optional<Schema>> _xifexpression = null;
-    boolean _isRecursiveSchemasReached = StaticConfig.isRecursiveSchemasReached();
-    boolean _not = (!_isRecursiveSchemasReached);
+    boolean _isRecursiveContainsReached = StaticConfig.isRecursiveContainsReached();
+    boolean _not = (!_isRecursiveContainsReached);
     if (_not) {
       Gen<Optional<Schema>> _xblockexpression = null;
       {
-        StaticConfig.currentRecursiveSchemas++;
-        _xblockexpression = Schema.fullSchema().toOptionals(75);
+        StaticConfig.currentRecursiveContains++;
+        Gen<Optional<Schema>> _xifexpression_1 = null;
+        if (onlyListSchemas) {
+          _xifexpression_1 = Schema.fullListSchema().toOptionals(25);
+        } else {
+          _xifexpression_1 = Schema.fullSchema().toOptionals(25);
+        }
+        _xblockexpression = _xifexpression_1;
       }
       _xifexpression = _xblockexpression;
     } else {
@@ -254,23 +301,46 @@ public class ListSchema {
     return _xifexpression;
   }
   
+  /**
+   * Returns a generator for generating uniqueItems
+   */
   public static Gen<Optional<Boolean>> uniqueItems() {
-    return SourceDSL.booleans().all().toOptionals(75);
+    return SourceDSL.booleans().all().toOptionals(25);
   }
   
+  /**
+   * Returns a generator for generating additionalItems as a boolean
+   */
   public static Gen<Optional<Boolean>> additionalItemsBoolean() {
-    return SourceDSL.booleans().all().toOptionals(75);
+    return SourceDSL.booleans().all().toOptionals(25);
   }
   
+  /**
+   * Returns a generator for generating additionalItems as a schema of any type
+   */
   public static Gen<Optional<Schema>> additionalItemsSchema() {
+    return ListSchema.additionalItemsSchema(false);
+  }
+  
+  /**
+   * Returns a generator for generating additionalItems as a schema of list schemas only
+   */
+  public static Gen<Optional<Schema>> additionalItemsSchema(final boolean onlyListSchemas) {
     Gen<Optional<Schema>> _xifexpression = null;
-    boolean _isRecursiveSchemasReached = StaticConfig.isRecursiveSchemasReached();
-    boolean _not = (!_isRecursiveSchemasReached);
+    boolean _isRecursiveAdditionalItemsSchemaReached = StaticConfig.isRecursiveAdditionalItemsSchemaReached();
+    boolean _not = (!_isRecursiveAdditionalItemsSchemaReached);
     if (_not) {
       Gen<Optional<Schema>> _xblockexpression = null;
       {
-        StaticConfig.currentRecursiveSchemas++;
-        _xblockexpression = Schema.fullSchema().toOptionals(75);
+        StaticConfig.currentRecursiveAdditionalItemsSchema++;
+        Schema.fullListSchema().toOptionals(25);
+        Gen<Optional<Schema>> _xifexpression_1 = null;
+        if (onlyListSchemas) {
+          _xifexpression_1 = Schema.fullListSchema().toOptionals(25);
+        } else {
+          _xifexpression_1 = Schema.fullSchema().toOptionals(25);
+        }
+        _xblockexpression = _xifexpression_1;
       }
       _xifexpression = _xblockexpression;
     } else {
@@ -279,12 +349,26 @@ public class ListSchema {
     return _xifexpression;
   }
   
+  /**
+   * Returns a generator for generating minItems
+   */
   public static Gen<Optional<Integer>> minItems() {
-    return SourceDSL.integers().allPositive().toOptionals(75);
+    Integer _integer = new Integer(1);
+    return Generate.<Optional<Integer>>frequency(
+      Pair.<Integer, Gen<Optional<Integer>>>of(Integer.valueOf(2), SourceDSL.integers().between(1, (Integer.MAX_VALUE - 1)).toOptionals(25)), 
+      Pair.<Integer, Gen<Optional<Integer>>>of(Integer.valueOf(1), Generate.<Integer>constant(_integer).toOptionals(0)), 
+      Pair.<Integer, Gen<Optional<Integer>>>of(Integer.valueOf(1), Generate.<Integer>constant(Integer.valueOf(Integer.MAX_VALUE)).toOptionals(0)));
   }
   
+  /**
+   * Returns a generator for generating maxItems, this does not care about minItems
+   */
   public static Gen<Optional<Integer>> maxItems() {
-    return SourceDSL.integers().allPositive().toOptionals(75);
+    Integer _integer = new Integer(1);
+    return Generate.<Optional<Integer>>frequency(
+      Pair.<Integer, Gen<Optional<Integer>>>of(Integer.valueOf(2), SourceDSL.integers().between(1, (Integer.MAX_VALUE - 1)).toOptionals(25)), 
+      Pair.<Integer, Gen<Optional<Integer>>>of(Integer.valueOf(1), Generate.<Integer>constant(_integer).toOptionals(0)), 
+      Pair.<Integer, Gen<Optional<Integer>>>of(Integer.valueOf(1), Generate.<Integer>constant(Integer.valueOf(Integer.MAX_VALUE)).toOptionals(0)));
   }
   
   @Pure
