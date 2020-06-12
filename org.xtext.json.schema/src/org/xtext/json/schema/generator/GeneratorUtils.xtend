@@ -7,10 +7,10 @@ import java.util.ArrayList
 import java.util.List
 
 class GeneratorUtils {
-	def static String toJavaType(Schema schema, JsonTypes type, AnyString objectName){
-		return toJavaType(schema, type, GeneratorUtils.realizeName(objectName))
+	def static String removeQuotes(String toCheck){
+		return toCheck.replace('"', "").replace("'", "")
 	}
-		/**
+	/**
 	 * Returns a list of all the properties 
 	 */
 	def static List<CustomProperty> allProperties(Schema schema, Schema root){
@@ -20,7 +20,7 @@ class GeneratorUtils {
 				var additionalPropName = "additionalProps"
 				var additionalPropKeyType = "String"
 				if(schema.propertyNames !== null){
-					var propNameSchema = GeneratorUtils.isSchema(schema.propertyNames) ? (schema.propertyNames as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((schema.propertyNames as Reference).uri),root)
+					var propNameSchema = GeneratorUtils.isSchema(schema.propertyNames) ? (schema.propertyNames as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.removeQuotes((schema.propertyNames as Reference).schemaRef),root)
 					if(propNameSchema !== null){
 						var type = propNameSchema.type.jsonTypes.get(0)
 						switch(type){
@@ -38,7 +38,7 @@ class GeneratorUtils {
 									additionalPropKeyType = GeneratorUtils.getReferenceName(schema.propertyNames).toFirstUpper
 								}else{
 									if(propNameSchema.title !== null){
-										additionalPropKeyType = "List<" + propNameSchema.title.replace(' ', '').toFirstUpper + ">"
+										additionalPropKeyType = "List<" + GeneratorUtils.removeQuotes(propNameSchema.title).replace(' ', '').toFirstUpper + ">"
 									}else{
 										//TODO what if it is a schema with no title?
 										additionalPropKeyType = null 
@@ -48,7 +48,7 @@ class GeneratorUtils {
 							case ARRAY: {
 								if(propNameSchema.items !== null && propNameSchema.items.items.size > 0){
 									var abstractSchemaItem = propNameSchema.items.items.get(0)
-									var schemaItem = GeneratorUtils.isSchema(abstractSchemaItem) ? (abstractSchemaItem as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((abstractSchemaItem as Reference).uri),root)
+									var schemaItem = GeneratorUtils.isSchema(abstractSchemaItem) ? (abstractSchemaItem as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.removeQuotes((abstractSchemaItem as Reference).schemaRef),root)
 									var itemType = schemaItem.type.jsonTypes.get(0)
 									switch(itemType){
 										case BOOLEAN: {
@@ -65,7 +65,7 @@ class GeneratorUtils {
 												additionalPropKeyType = 'List<' + GeneratorUtils.getReferenceName(abstractSchemaItem).toFirstUpper + '>'
 											}else{
 												if(schemaItem.title !== null){
-													additionalPropKeyType = "List<" + schemaItem.title.replace(' ', '').toFirstUpper + ">"
+													additionalPropKeyType = "List<" + GeneratorUtils.removeQuotes(schemaItem.title).replace(' ', '').toFirstUpper + ">"
 												}else{
 													//TODO what if it is a schema with no title?
 													additionalPropKeyType = null 
@@ -77,7 +77,7 @@ class GeneratorUtils {
 												additionalPropKeyType = 'List<' + GeneratorUtils.getReferenceName(abstractSchemaItem).toFirstUpper + '>'
 											}else{
 												if(schemaItem.title !== null){
-													additionalPropKeyType = "List<" + schemaItem.title.replace(' ', '').toFirstUpper + ">"
+													additionalPropKeyType = "List<" + GeneratorUtils.removeQuotes(schemaItem.title).replace(' ', '').toFirstUpper + ">"
 												}else{
 													//TODO what if it is a schema with no title?
 													additionalPropKeyType = null 
@@ -104,7 +104,7 @@ class GeneratorUtils {
 						if(GeneratorUtils.isSchema(additionalPropAbstractSchema)){
 							var additionalPropSchema = additionalPropAbstractSchema as Schema
 							if(additionalPropSchema.title !== null){
-								var customProp = new CustomProperty(additionalPropName, "Map<" + additionalPropKeyType + ", " + additionalPropSchema.title.replace(' ', '').toFirstUpper + ">")
+								var customProp = new CustomProperty(additionalPropName, "Map<" + additionalPropKeyType + ", " + GeneratorUtils.removeQuotes(additionalPropSchema.title).replace(' ', '').toFirstUpper + ">")
 								list.add(customProp)
 							}
 						}else{
@@ -119,10 +119,10 @@ class GeneratorUtils {
 			}
 			if(schema.properties !== null && !schema.properties.isEmpty){
 				for(prop: schema.properties){
-					var propName = GeneratorUtils.realizeName(prop.name)
+					var propName = GeneratorUtils.removeQuotes(prop.name)
 					var propType = ""
 					var type = JsonTypes.NULL
-					var propSchema = GeneratorUtils.isSchema(prop.schema) ? (prop.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((prop.schema as Reference).uri),root)
+					var propSchema = GeneratorUtils.isSchema(prop.schema) ? (prop.schema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.removeQuotes((prop.schema as Reference).schemaRef),root)
 					if(propSchema !== null && propSchema.type !== null && propSchema.type.jsonTypes.size > 0){
 						type = propSchema.type.jsonTypes.get(0)
 						switch(type){
@@ -178,7 +178,7 @@ class GeneratorUtils {
 												}
 											}
 										}else if(arraySchema.title !== null){
-											propType = "List<" + arraySchema.title.replace(' ', '').toFirstUpper + ">"
+											propType = "List<" + GeneratorUtils.removeQuotes(arraySchema.title).replace(' ', '').toFirstUpper + ">"
 										}else{
 											//TODO what if it is a schema with no title?
 											propType = null 
@@ -285,9 +285,6 @@ class GeneratorUtils {
 		return false
 	}
 	
-	def static String realizeName(AnyString anyString){
-		return anyString.name !== null ? anyString.name : anyString.keyword.name().toLowerCase
-	}
 	
 	def static Schema findLocalReference(String ref, Schema root){
 		//TODO support other then "definitions"
@@ -306,7 +303,7 @@ class GeneratorUtils {
 	def static String getReferenceName(AbstractSchema schema){
 		if(schema instanceof Reference){
 			var ref = schema as Reference
-			return getReferenceName(ref.uri.realizeName)
+			return getReferenceName(GeneratorUtils.removeQuotes(ref.schemaRef))
 		}
 		return null
 	}
@@ -322,12 +319,12 @@ class GeneratorUtils {
 	}
 	
 	def private static NamedSchema recursiveFindLocalRef(String propNameToFind, EList<NamedSchema> definitions){
-		var foundSchema = definitions.findFirst[prop | prop.name.realizeName.toLowerCase.equals(propNameToFind.toLowerCase)]
+		var foundSchema = definitions.findFirst[prop | GeneratorUtils.removeQuotes(prop.name).toLowerCase.equals(propNameToFind.toLowerCase)]
 		if(foundSchema !== null){
 			if(foundSchema.schema.isSchema){
 				return foundSchema
 			}else{
-				var newRefToFind = (foundSchema.schema as Reference).uri.realizeName
+				var newRefToFind = GeneratorUtils.removeQuotes((foundSchema.schema as Reference).schemaRef)
 				if(newRefToFind.getReferenceName !== null){
 					return recursiveFindLocalRef(newRefToFind, definitions)
 				}else{

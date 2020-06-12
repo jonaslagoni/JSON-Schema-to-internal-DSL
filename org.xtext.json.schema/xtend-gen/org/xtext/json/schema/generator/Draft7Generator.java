@@ -37,6 +37,10 @@ public class Draft7Generator extends AbstractGenerator {
   
   private BuilderGenerator builderGenerator;
   
+  private int anonymCounter = 1;
+  
+  private ArrayList<String> walkedThroughSchemas = new ArrayList<String>();
+  
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
     ArrayList<CustomModel> _arrayList = new ArrayList<CustomModel>();
@@ -57,10 +61,6 @@ public class Draft7Generator extends AbstractGenerator {
     System.out.println(this.objectList.size());
   }
   
-  private int anonymCounter = 1;
-  
-  private ArrayList<String> walkedThroughSchemas = new ArrayList<String>();
-  
   public void recursiveObjectFinder(final AbstractSchema abstractSchema, final String parentName) {
     if ((abstractSchema == null)) {
       return;
@@ -70,9 +70,12 @@ public class Draft7Generator extends AbstractGenerator {
     if (_isSchema) {
       _xifexpression = ((Schema) abstractSchema);
     } else {
-      _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) abstractSchema).getUri()), this.root);
+      _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.removeQuotes(((Reference) abstractSchema).getSchemaRef()), this.root);
     }
     Schema schema = _xifexpression;
+    if ((schema == null)) {
+      return;
+    }
     boolean _isObject = GeneratorUtils.isObject(schema);
     if (_isObject) {
       String objectName = "";
@@ -88,7 +91,7 @@ public class Draft7Generator extends AbstractGenerator {
         String _title_1 = schema.getTitle();
         boolean _tripleNotEquals = (_title_1 != null);
         if (_tripleNotEquals) {
-          objectName = StringExtensions.toFirstUpper(schema.getTitle().replace(" ", ""));
+          objectName = StringExtensions.toFirstUpper(GeneratorUtils.removeQuotes(schema.getTitle()).replace(" ", ""));
         } else {
           int _plusPlus = this.anonymCounter++;
           String _plus = ("AnonymSchema" + Integer.valueOf(_plusPlus));

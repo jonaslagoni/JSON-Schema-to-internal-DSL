@@ -49,7 +49,7 @@ public class ParserTesting {
         throw Exceptions.sneakyThrow(_e);
       }
     };
-    QuickTheory.qt().withShrinkCycles(0).<org.xtext.json.schema.tests.model.Schema>forAll(org.xtext.json.schema.tests.model.Schema.fullSchema()).check(_function);
+    QuickTheory.qt().<org.xtext.json.schema.tests.model.Schema>forAll(org.xtext.json.schema.tests.model.Schema.fullSchema()).check(_function);
   }
   
   @Test

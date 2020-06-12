@@ -1,5 +1,6 @@
 grammar org.xtext.json.schema.Draft7 with org.eclipse.xtext.common.Terminals
 generate draft7 "http://www.xtext.org/json/schema/Draft7"
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 // inspired by github.com/SOM-Research/asyncapi-toolkit
 Schema:
 	{Schema}
@@ -15,16 +16,17 @@ Schema:
 			&('"items"' ':' items=Items ','?)?
 			&('"contains"' ':' contains=Contains ','?)?
 			&('"definitions"' ':' '{' definitions+=NamedSchema (',' definitions+=NamedSchema)* '}' ','?)?
-			&('"title"' ':' title=STRING ','?)?
-			&('"required"' ':' '[' requiredProperties+=AnyString (',' requiredProperties+=AnyString)* ']' ','?)?
-			&('"description"' ':' description=STRING ','?)?
+			&('"title"' ':' title=AnyString ','?)?
+			&('"required"' ':' '[' requiredProperties+=[NamedSchema|AnyString] (',' requiredProperties+=[NamedSchema|AnyString])* ']' ','?)?
+			&('"description"' ':' description=AnyString ','?)?
 			&('"properties"' ':' '{' properties+=NamedSchema (',' properties+=NamedSchema)* '}' ','?)?
 			&('"enum"' ':'  '[' enumValues+=AnyString (',' enumValues+=AnyString)* ']' ','?)?
 			&('"$schema"' ':' '"http://json-schema.org/draft-07/schema#"' ','?)?
 			&('"$id"' ':' id=AnyString ','?)?
-			&('"if"' ':' ifSchema=Schema ','?)?
-			&('"then"' ':' thenSchema=Schema ','?)?
-			&('"else"' ':' elseSchema=Schema ','?)?
+			&('"$comment"' ':' comment=AnyString','?)?
+			&('"if"' ':' ifSchema=AbstractSchema ','?)?
+			&('"then"' ':' thenSchema=AbstractSchema ','?)?
+			&('"else"' ':' elseSchema=AbstractSchema ','?)?
 			&('"enum"' ':'  '[' enumValues+=AnyString (',' enumValues+=AnyString)* ']' ','?)?
 			&('"const"' ':' (const=AnyString | constBoolean=Boolean) ','?)?
 			&('"anyOf"' ':' '[' anyOfs+=AbstractSchema (',' anyOfs+=AbstractSchema)* ']' ','?)?
@@ -52,14 +54,17 @@ Schema:
 	'}'
 ;
 Dependencies:
-	PropertyDependency=PropertyDependency
-	| (schemaDependencies+=NamedSchema (',' schemaDependencies+=NamedSchema)*)
+	propertyDependencies+=PropertyDependency (',' propertyDependencies+=PropertyDependency)*
+	| (schemaDependencies+=CrossReferencedDependencyNamedSchema (',' schemaDependencies+=CrossReferencedDependencyNamedSchema)*)
+;
+CrossReferencedDependencyNamedSchema:
+	name=[NamedSchema|AnyString] ':' schema=AbstractSchema
 ;
 PropertyDependency:
-	name=AnyString ':' '[' dependencies+=AnyString (',' dependencies+=AnyString)* ']'
+	name=[NamedSchema|AnyString] ':' '[' dependencies+=[NamedSchema|AnyString] (',' dependencies+=[NamedSchema|AnyString])* ']'
 ;
 Contains:
-	('[' containSchemas+=Schema (',' containSchemas+=Schema)* ']') | containSchemas+=Schema
+	('[' containSchemas+=AbstractSchema (',' containSchemas+=AbstractSchema)* ']') | containSchemas+=AbstractSchema
 ;
 Items:
 	('[' items+=AbstractSchema (',' items+=AbstractSchema)* ']') | items+=AbstractSchema | selfReference=Boolean
@@ -74,7 +79,7 @@ Default:
 	 defaultSchema=AbstractSchema | defaultString=AnyString | defaultBoolean=Boolean | defaultNumber=Number | {Default} ('[' (defaultArrayItems+=AbstractSchema (',' defaultArrayItems+=AbstractSchema)*)? ']')
 ;
 Example:
-	exampleSchema=Schema | exampleString=AnyString | exampleBoolean=Boolean | exampleNumber=Number | ('[' exampleArrayItems+=Schema (',' exampleArrayItems+=Schema)* ']')
+	exampleSchema=AbstractSchema | exampleString=AnyString | exampleBoolean=Boolean | exampleNumber=Number | ('[' exampleArrayItems+=AbstractSchema (',' exampleArrayItems+=AbstractSchema)* ']')
 ;
 Types:
 	('[' jsonTypes+=JsonTypes (',' jsonTypes+=JsonTypes)* ']') | jsonTypes+=JsonTypes
@@ -82,13 +87,13 @@ Types:
 AbstractSchema:
 	Reference | Schema
 ;
-
 Reference:
-	{Reference} '{' '"$ref"' ':' uri=AnyString '}'
+	'{' '"$ref"' ':' schemaRef=AnyString '}'
 ;
 
+
 NamedSchema:
-	{NamedSchema} name=AnyString ':' schema=AbstractSchema
+	name=AnyString ':' schema=AbstractSchema
 ;
 
 
@@ -130,85 +135,83 @@ enum FormatTypes:
 	relative_json_pointer='"relative-json-pointer"' | 
 	regex='"regex"'
 ;
-AnyString:
-	name=STRING
-	| keyword=JsonSchemaKeyword
-;
+
 terminal ENUMBER:
    ('E' | 'e') '-'? INT;
 Number:
 	(negative='-')? number=INT ('.' decimal=INT)? (exponent=ENUMBER)?
 ;
 
-enum JsonSchemaKeyword:
-	title='"title"'
-	| schemaDraft7='"http://json-schema.org/draft-07/schema#"'
-	| additionalProperties='"additionalProperties"'
-	| additionalItems='"additionalItems"'
-	| description='"description"'
-	| comment='"$comment"'
-	| id='"$id"'
-	| definitions='"definitions"'
-	| default='"default"'
-	| examples='"examples"'
-	| schema='"$schema"'
-	| ref='"$ref"'
-	| enumKeyword='"enum"'
-	| const='"const"'
-	| type='"type"'	
-	| string='"string"'
-	| integer='"integer"'
-	| number='"number"'
-	| object='"object"'
-	| array='"array"'
-	| boolean='"boolean"'
-	| null='"null"'
-	| date_time='"date-time"'
-	| time='"time"'
-	| date='"date"'
-	| email='"email"'
-	| idn_email='"idn-email"'
-	| hostname='"hostname"'
-	| ipv4='"ipv4"'
-	| ipv6='"ipv6"'
-	| uri='"uri"'
-	| uri_reference='"uri-reference"'
-	| iri='"iri"'
-	| iri_reference='"iri-reference"'
-	| uri_template='"uri-template"'
-	| json_pointer='"json-pointer"'
-	| relative_json_pointer='"relative-json-pointer"'
-	| regex='"regex"'
-	| contains='"contains"'
-	| uniqueItems='"uniqueItems"'
-	| propertyNames='"propertyNames"'
-	| length='"length"'
-	| minLength='"minLength"'
-	| maxLength='"maxLength"'
-	| minItems='"minItems"'
-	| maxItems='"maxItems"'
-	| pattern='"pattern"'
-	| format='"format"'
-	| minProperties='"minProperties"'
-	| maxProperties='"maxProperties"'
-	| dependencies='"dependencies"'
-	| patternProperties='"patternProperties"'
-	| required='"required"'
-	| properties='"properties"'
-	| if='"if"'
-	| then='"then"'
-	| else='"else"'
-	| anyOf='"anyOf"'
-	| oneOf='"oneOf"'
-	| allOf='"allOf"'
-	| not='"not"'	
-	| items='"items"'
-	| contentMediaType='"contentMediaType"'
-	| contentEncoding='"contentEncoding"'
-	| multiples='"multiples"'
-	| minimum='"minimum"'
-	| exclusiveMinimum='"exclusiveMinimum"'
-	| maximum='"maximum"'
-	| exclusiveMaximum='"exclusiveMaximum"';
+AnyString: STRING | JsonSchemaKeyword;
 
 
+JsonSchemaKeyword:
+	'"title"'
+	| '"http://json-schema.org/draft-07/schema#"'
+	| '"additionalProperties"'
+	| '"additionalItems"'
+	| '"description"'
+	| '"$comment"'
+	| '"$id"'
+	| '"definitions"'
+	| '"default"'
+	| '"examples"'
+	| '"$schema"'
+	| '"$ref"'
+	| '"enum"'
+	| '"const"'
+	| '"type"'	
+	| '"string"'
+	| '"integer"'
+	| '"number"'
+	| '"object"'
+	| '"array"'
+	| '"boolean"'
+	| '"null"'
+	| '"date-time"'
+	| '"time"'
+	| '"date"'
+	| '"email"'
+	| '"idn-email"'
+	| '"hostname"'
+	| '"ipv4"'
+	| '"ipv6"'
+	| '"uri"'
+	| '"uri-reference"'
+	| '"iri"'
+	| '"iri-reference"'
+	| '"uri-template"'
+	| '"json-pointer"'
+	| '"relative-json-pointer"'
+	| '"regex"'
+	| '"contains"'
+	| '"uniqueItems"'
+	| '"propertyNames"'
+	| '"length"'
+	| '"minLength"'
+	| '"maxLength"'
+	| '"minItems"'
+	| '"maxItems"'
+	| '"pattern"'
+	| '"format"'
+	| '"minProperties"'
+	| '"maxProperties"'
+	| '"dependencies"'
+	| '"patternProperties"'
+	| '"required"'
+	| '"properties"'
+	| '"if"'
+	| '"then"'
+	| '"else"'
+	| '"anyOf"'
+	| '"oneOf"'
+	| '"allOf"'
+	| '"not"'	
+	| '"items"'
+	| '"contentMediaType"'
+	| '"contentEncoding"'
+	| '"multipleOf"'
+	| '"minimum"'
+	| '"exclusiveMinimum"'
+	| '"maximum"'
+	| '"exclusiveMaximum"';

@@ -12,7 +12,6 @@ import java.util.ArrayList
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.xtext.json.schema.draft7.Schema
 import org.xtext.json.schema.draft7.AbstractSchema
-import org.xtext.json.schema.draft7.AnyString
 import org.xtext.json.schema.draft7.JsonTypes
 import org.xtext.json.schema.draft7.NamedSchema
 import org.eclipse.xtext.naming.IQualifiedNameProvider
@@ -32,6 +31,8 @@ class Draft7Generator extends AbstractGenerator {
 	List<CustomModel> objectList
 	ModelGenerator modelGenerator
 	BuilderGenerator builderGenerator
+	var anonymCounter = 1
+	var walkedThroughSchemas = new ArrayList<String>()
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		objectList = new ArrayList()
 		walkedThroughSchemas = new ArrayList<String>()
@@ -45,12 +46,13 @@ class Draft7Generator extends AbstractGenerator {
 		}]
 		System.out.println(objectList.size)
 	}
-	var anonymCounter = 1
-	var walkedThroughSchemas = new ArrayList<String>()
 	def void recursiveObjectFinder(AbstractSchema abstractSchema, String parentName){
 		if(abstractSchema === null)
 			return
-		var schema = GeneratorUtils.isSchema(abstractSchema) ? (abstractSchema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.realizeName((abstractSchema as Reference).uri),root)
+		var schema = GeneratorUtils.isSchema(abstractSchema) ? (abstractSchema as Schema) : GeneratorUtils.findLocalReference(GeneratorUtils.removeQuotes((abstractSchema as Reference).schemaRef),root)
+		if(schema === null){
+			return
+		}
 		if(GeneratorUtils.isObject(schema)){
 			var objectName = ""
 			if(GeneratorUtils.isReference(abstractSchema)){
@@ -60,7 +62,7 @@ class Draft7Generator extends AbstractGenerator {
 				}
 			}else{
 				if(schema.title !== null){
-					objectName = schema.title.replace(" ", "").toFirstUpper
+					objectName = GeneratorUtils.removeQuotes(schema.title).replace(" ", "").toFirstUpper
 				}else{
 					objectName = "AnonymSchema" + anonymCounter++
 				}
@@ -68,6 +70,7 @@ class Draft7Generator extends AbstractGenerator {
 			if(walkedThroughSchemas.contains(objectName)){
 				return
 			}
+			
 			val cm = new CustomModel(schema, objectName)
 			cm.parentName = parentName;
 			objectList.add(cm)

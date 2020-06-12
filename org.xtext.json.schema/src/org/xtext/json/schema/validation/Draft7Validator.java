@@ -3,6 +3,33 @@
  */
 package org.xtext.json.schema.validation;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.xtext.validation.Check;
+import org.xtext.json.schema.draft7.AbstractSchema;
+import org.xtext.json.schema.draft7.AdditionalItems;
+import org.xtext.json.schema.draft7.AdditionalProperties;
+import org.xtext.json.schema.draft7.Contains;
+import org.xtext.json.schema.draft7.CrossReferencedDependencyNamedSchema;
+import org.xtext.json.schema.draft7.Default;
+import org.xtext.json.schema.draft7.Dependencies;
+import org.xtext.json.schema.draft7.Draft7Package;
+import org.xtext.json.schema.draft7.Example;
+import org.xtext.json.schema.draft7.FormatTypes;
+import org.xtext.json.schema.draft7.Items;
+import org.xtext.json.schema.draft7.JsonTypes;
+import org.xtext.json.schema.draft7.NamedSchema;
+import org.xtext.json.schema.draft7.Number;
+import org.xtext.json.schema.draft7.PropertyDependency;
+import org.xtext.json.schema.draft7.Reference;
+import org.xtext.json.schema.draft7.Schema;
 
 /**
  * This class contains custom validation rules. 
@@ -10,16 +37,623 @@ package org.xtext.json.schema.validation;
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
 public class Draft7Validator extends AbstractDraft7Validator {
+
+	private boolean isNumberSat(Number number) {
+		return ((number.getDecimal() > 0 && number.getNumber() > 0) || (number.getNumber() > 0 && number.getExponent() != null));
+	}
+	private boolean hasType(Schema schemaToCheck, JsonTypes typeToFind) {
+		if(schemaToCheck.getType() != null) {
+			return schemaToCheck.getType().getJsonTypes().contains(typeToFind);
+		}else {
+			return false;
+		}
+	}
+
+	@Check
+	public void VerifyTypeSpecificKeywords(Default defaultKey) {
+		EObject eObjectSchema = defaultKey.eContainer();
+		if(eObjectSchema instanceof Schema) {
+			Schema schema = (Schema)eObjectSchema;
+			if(defaultKey.getDefaultArrayItems().size() > 0 && !hasType(schema, JsonTypes.ARRAY)) {
+				error("Default array items cannot be used without an array json type.",
+						Draft7Package.Literals.DEFAULT__DEFAULT_ARRAY_ITEMS);
+			}
+			if(defaultKey.getDefaultBoolean() != org.xtext.json.schema.draft7.Boolean.UNSET && !hasType(schema, JsonTypes.BOOLEAN)) {
+				error("Default boolean cannot be used without a boolean json type.",
+						Draft7Package.Literals.DEFAULT__DEFAULT_BOOLEAN);
+			}
+			if(isNumberSat(defaultKey.getDefaultNumber()) && !hasType(schema, JsonTypes.NUMBER) && !hasType(schema, JsonTypes.INTEGER)) {
+				error("Default numbers cannot be used without either a number or integer json type.",
+						Draft7Package.Literals.DEFAULT__DEFAULT_NUMBER);
+			}
+			if(defaultKey.getDefaultSchema() != null && !hasType(schema, JsonTypes.OBJECT)) {
+				error("Default schema cannot be used without a object json type.",
+						Draft7Package.Literals.DEFAULT__DEFAULT_SCHEMA);
+			}
+			if(defaultKey.getDefaultString() != null && !hasType(schema, JsonTypes.STRING)) {
+				error("Default string cannot be used without a string json type.",
+						Draft7Package.Literals.DEFAULT__DEFAULT_STRING);
+			}
+		}
+	}
+
+	@Check
+	public void VerifyTypeSpecificKeywords(AdditionalItems additionalItems) {
+
+		EObject eObjectSchema = additionalItems.eContainer();
+		if(eObjectSchema instanceof Schema) {
+			Schema schema = (Schema)eObjectSchema;
+			if(additionalItems.getAllowedBoolean() != org.xtext.json.schema.draft7.Boolean.UNSET && !hasType(schema, JsonTypes.ARRAY)) {
+				error("Additional items keyword cannot be used without array type.",
+						Draft7Package.Literals.ADDITIONAL_ITEMS__ALLOWED_BOOLEAN);
+			}
+			
+			if(additionalItems.getSchema() != null && !hasType(schema, JsonTypes.ARRAY)) {
+				error("Additional items keyword cannot be used without array type.",
+						Draft7Package.Literals.ADDITIONAL_ITEMS__SCHEMA);
+			}
+		}
+	}
+
+	@Check
+	public void VerifyTypeSpecificKeywords(Example example) {
+		EObject eObjectSchema = example.eContainer();
+		if(eObjectSchema instanceof Schema) {
+			Schema schema = (Schema)eObjectSchema;
+			if(example.getExampleArrayItems().size() > 0 && !hasType(schema, JsonTypes.ARRAY)) {
+				error("The example keyword for arrays cannot be used without an array type.",
+						Draft7Package.Literals.EXAMPLE__EXAMPLE_ARRAY_ITEMS);
+			}
+			if(example.getExampleBoolean() != org.xtext.json.schema.draft7.Boolean.UNSET && !hasType(schema, JsonTypes.BOOLEAN)) {
+				error("The example keyword for booleans cannot be used without a boolean type.",
+						Draft7Package.Literals.EXAMPLE__EXAMPLE_BOOLEAN);
+			}
+			if(isNumberSat(example.getExampleNumber()) && !hasType(schema, JsonTypes.NUMBER) && !hasType(schema, JsonTypes.INTEGER)) {
+				error("The example keyword for numbers cannot be used without a number or integer type.",
+						Draft7Package.Literals.EXAMPLE__EXAMPLE_NUMBER);
+			}
+			if(example.getExampleSchema() != null && !hasType(schema, JsonTypes.OBJECT)) {
+				error("The example keyword for schemas cannot be used without an object type.",
+						Draft7Package.Literals.EXAMPLE__EXAMPLE_SCHEMA);
+			}
+			if(example.getExampleString() != null && !hasType(schema, JsonTypes.STRING)) {
+				error("The example keyword for strings cannot be used without a string type.",
+						Draft7Package.Literals.EXAMPLE__EXAMPLE_STRING);
+			}
+		}
+	}
+	@Check
+	public void VerifyTypeSpecificKeywords(Items items) {
+		EObject eObjectSchema = items.eContainer();
+		if(eObjectSchema instanceof Schema) {
+			Schema schema = (Schema)eObjectSchema;
+			if(items.getItems().size() > 0 && !hasType(schema, JsonTypes.ARRAY)) {
+				error("The items keyword for arrays cannot be used without an array type.",
+						Draft7Package.Literals.ITEMS__ITEMS);
+			}
+		}
+	}
+	@Check
+	public void VerifyTypeSpecificKeywords(Contains contains) {
+		EObject eObjectSchema = contains.eContainer();
+		if(eObjectSchema instanceof Schema) {
+			Schema schema = (Schema)eObjectSchema;
+			if(contains.getContainSchemas().size() > 0 && !hasType(schema, JsonTypes.ARRAY)) {
+				error("The contains keyword for arrays cannot be used without an array type.",
+						Draft7Package.Literals.SCHEMA__CONTAINS);
+			}
+		}
+	}
+	@Check
+	public void VerifyTypeSpecificKeywords(AdditionalProperties additionalProps) {
+		EObject eObjectSchema = additionalProps.eContainer();
+		if(eObjectSchema instanceof Schema) {
+			Schema schema = (Schema)eObjectSchema;
+			if(additionalProps.getAllowedBoolean() != org.xtext.json.schema.draft7.Boolean.UNSET && !hasType(schema, JsonTypes.OBJECT)) {
+				error("The additional property keyword cannot be used without an object type.",
+						Draft7Package.Literals.ADDITIONAL_PROPERTIES__ALLOWED_BOOLEAN);
+			}
+			if(additionalProps.getSchema() != null && !hasType(schema, JsonTypes.OBJECT)) {
+				error("The additional property keyword cannot be used without an object type.",
+						Draft7Package.Literals.ADDITIONAL_PROPERTIES__SCHEMA);
+			}
+		}
+	}
+	@Check
+	public void VerifyTypeSpecificKeywords(Dependencies deps) {
+		EObject eObjectSchema = deps.eContainer();
+		if(eObjectSchema instanceof Schema) {
+			Schema schema = (Schema)eObjectSchema;
+			if(deps.getPropertyDependencies() != null && !hasType(schema, JsonTypes.OBJECT)) {
+				error("To use dependency keyword an object type has to be defined.",
+						Draft7Package.Literals.DEPENDENCIES__PROPERTY_DEPENDENCIES);
+			}
 	
-//	public static final INVALID_NAME = 'invalidName'
-//
-//	@Check
-//	public void checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.getName().charAt(0))) {
-//			warning("Name should start with a capital",
-//					Draft7Package.Literals.GREETING__NAME,
-//					INVALID_NAME);
-//		}
-//	}
+			if(deps.getSchemaDependencies().size() > 0 && !hasType(schema, JsonTypes.OBJECT)) {
+				error("To use dependency keyword an object type has to be defined.",
+						Draft7Package.Literals.DEPENDENCIES__SCHEMA_DEPENDENCIES);
+			}
+		}
+	}
+
+	@Check
+	public void VerifyTypeSpecificKeywords(Schema schema) {
+		if(schema.getPatternProperties().size() > 0 && !hasType(schema, JsonTypes.OBJECT)) {
+			error("To use pattern properties an object type has to be defined.",
+					Draft7Package.Literals.SCHEMA__PATTERN_PROPERTIES);
+		}
+		if(schema.getDefinitions().size() > 0 && !hasType(schema, JsonTypes.OBJECT)) {
+			error("To use pattern properties an object type has to be defined.",
+					Draft7Package.Literals.SCHEMA__DEFINITIONS);
+		}
+		if(schema.getRequiredProperties().size() > 0 && !hasType(schema, JsonTypes.OBJECT)) {
+			error("To use requred properties an object type has to be defined.",
+					Draft7Package.Literals.SCHEMA__REQUIRED_PROPERTIES);
+		}
+		if(schema.getProperties().size() > 0 && !hasType(schema, JsonTypes.OBJECT)) {
+			error("To use properties an object type has to be defined.",
+					Draft7Package.Literals.SCHEMA__PROPERTIES);
+		}
+		if(schema.getUnique() != org.xtext.json.schema.draft7.Boolean.UNSET && !hasType(schema, JsonTypes.ARRAY)) {
+			error("To use the unique keyword an array type has to be defined.",
+					Draft7Package.Literals.SCHEMA__UNIQUE);
+		}
+		if(schema.getPropertyNames() != null && !hasType(schema, JsonTypes.OBJECT)) {
+			error("To use property names an object type has to be defined.",
+					Draft7Package.Literals.SCHEMA__PROPERTY_NAMES);
+		}
+		if(schema.getMinProperties() > 0 && !hasType(schema, JsonTypes.OBJECT)){
+			error("To use the max properties keyword an object type has to be defined.",
+					Draft7Package.Literals.SCHEMA__MIN_PROPERTIES);
+		}
+		if(schema.getMaxProperties() > 0 && !hasType(schema, JsonTypes.OBJECT)) {
+			error("To use the min properties keyword an object type has to be defined.",
+					Draft7Package.Literals.SCHEMA__MAX_PROPERTIES);
+		}
+		if(schema.getMaxItems() > 0 && !hasType(schema, JsonTypes.ARRAY)) {
+			error("To use the max items keyword an array type has to be defined.",
+					Draft7Package.Literals.SCHEMA__MAX_ITEMS);
+		}
+		if(schema.getMinItems() > 0 && !hasType(schema, JsonTypes.ARRAY)) {
+			error("To use the min items keyword an array type has to be defined.",
+					Draft7Package.Literals.SCHEMA__MIN_ITEMS);
+		}
+		if(schema.getMaxLength() > 0 && !hasType(schema, JsonTypes.STRING)) {
+			error("To use the max length keyword a string type has to be defined.",
+					Draft7Package.Literals.SCHEMA__MAX_LENGTH);
+		}
+		if(schema.getMinLength() > 0 && !hasType(schema, JsonTypes.STRING)) {
+			error("To use the min length keyword a string type has to be defined.",
+					Draft7Package.Literals.SCHEMA__MIN_LENGTH);
+		}
+		if(schema.getPattern() != null && !hasType(schema, JsonTypes.STRING)) {
+			error("To use the pattern keyword a string type has to be defined.",
+					Draft7Package.Literals.SCHEMA__PATTERN);
+		}
+		if(schema.getFormat() != FormatTypes.UNSET && !hasType(schema, JsonTypes.STRING)) {
+			error("To use the format keyword a string type has to be defined.",
+					Draft7Package.Literals.SCHEMA__FORMAT);
+		}
+		if(schema.getMediaType() != null && !hasType(schema, JsonTypes.STRING)) {
+			error("To use the media type keyword a string type has to be defined.",
+					Draft7Package.Literals.SCHEMA__MEDIA_TYPE);
+		}
+		if(schema.getEncoding() != null && !hasType(schema, JsonTypes.STRING)) {
+			error("To use the encoding keyword a string type has to be defined.",
+					Draft7Package.Literals.SCHEMA__ENCODING);			
+		}
+		if(isNumberSat(schema.getMultipleOf()) && !hasType(schema, JsonTypes.NUMBER) && !hasType(schema, JsonTypes.INTEGER)) {
+			error("To use the multiple of keyword a number or integer type has to be defined.",
+					Draft7Package.Literals.SCHEMA__MULTIPLE_OF);
+		}
+		if(isNumberSat(schema.getMinimum()) && !hasType(schema, JsonTypes.NUMBER) && !hasType(schema, JsonTypes.INTEGER)) {
+			error("To use the minimum keyword a number or integer type has to be defined.",
+					Draft7Package.Literals.SCHEMA__MINIMUM);
+		}
+		if(isNumberSat(schema.getExclusiveMinimum()) && !hasType(schema, JsonTypes.NUMBER) && !hasType(schema, JsonTypes.INTEGER)) {
+			error("To use the exclusive minimum keyword a number or integer type has to be defined.",
+					Draft7Package.Literals.SCHEMA__EXCLUSIVE_MINIMUM);
+		}
+
+		if(isNumberSat(schema.getMaximum()) && !hasType(schema, JsonTypes.NUMBER) && !hasType(schema, JsonTypes.INTEGER)) {
+			error("To use the maximum keyword a number or integer type has to be defined.",
+					Draft7Package.Literals.SCHEMA__MAXIMUM);
+		}
+
+		if(isNumberSat(schema.getExclusiveMaximum()) && !hasType(schema, JsonTypes.NUMBER) && !hasType(schema, JsonTypes.INTEGER)) {
+			error("To use the exclusive maximum keyword a number or integer type has to be defined.",
+					Draft7Package.Literals.SCHEMA__EXCLUSIVE_MAXIMUM);
+		}
+	}
+
+
+	@Check
+	public void DependenciesShouldBeUnique(Schema schema) {
+		if(schema.getDependencies() != null) {
+			Dependencies deps = schema.getDependencies();
+			if(!deps.getPropertyDependencies().isEmpty()) {
+				Map<?, ?> map = deps.getPropertyDependencies().stream()
+			    	      .collect(Collectors.toMap(PropertyDependency::getName, PropertyDependency::getDependencies,
+			    	              (prop1, prop2) -> {
+			    	                  return prop1;
+			    	              }));
+
+				if(map.size() < deps.getPropertyDependencies().size()) {
+					warning("Dependency keys must be unique.",
+							Draft7Package.Literals.SCHEMA__DEPENDENCIES);
+				}
+			}
+			if(!deps.getSchemaDependencies().isEmpty()) {
+				Map<?, ?> map = deps.getSchemaDependencies().stream()
+			    	      .collect(Collectors.toMap(CrossReferencedDependencyNamedSchema::getName, CrossReferencedDependencyNamedSchema::getSchema,
+			    	              (prop1, prop2) -> {
+			    	                  return prop1;
+			    	              }));
+				if(map.size() < deps.getSchemaDependencies().size()) {
+					warning("Dependency keys must be unique.",
+							Draft7Package.Literals.SCHEMA__DEPENDENCIES);
+				}
+			}
+		}
+	}
+
+	@Check
+	public void PropertiesShouldBeUnique(Schema schema) {
+		if(!schema.getProperties().isEmpty()) {
+		    Map<String, AbstractSchema> map = schema.getProperties().stream()
+		    	      .collect(Collectors.toMap(NamedSchema::getName, NamedSchema::getSchema,
+		    	              (prop1, prop2) -> {
+		    	                  return prop1;
+		    	              }));
+			if(map.size() < schema.getProperties().size()) {
+				warning("Property keys are not unique and may create trouble later.",
+						Draft7Package.Literals.SCHEMA__PROPERTIES);
+			}
+		}
+	}
+
+
+	@Check
+	public void RequiredPropertiesShouldBeUnique(Schema schema) {
+		if(!schema.getRequiredProperties().isEmpty()) {
+			Set<NamedSchema> set = new HashSet<NamedSchema>(schema.getRequiredProperties());
+			if(set.size() < schema.getRequiredProperties().size()) {
+				error("Required properties must be unique",
+						Draft7Package.Literals.SCHEMA__REQUIRED_PROPERTIES);
+			}
+		}
+	}
+
+	@Check
+	public void Info(Default defaultKey) {
+		if(defaultKey.getDefaultArrayItems().size() > 0) {
+			info("The default keyword specifies a default value for an item. JSON processing tools may use this information to provide a default value for a missing key/value pair, though many JSON schema validators simply ignore the default keyword. It should validate against the schema in which it resides, but that isn’t required." + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html for more info.",
+					Draft7Package.Literals.DEFAULT__DEFAULT_ARRAY_ITEMS);
+		}
+		if(defaultKey.getDefaultBoolean() != org.xtext.json.schema.draft7.Boolean.UNSET) {
+			info("The default keyword specifies a default value for an item. JSON processing tools may use this information to provide a default value for a missing key/value pair, though many JSON schema validators simply ignore the default keyword. It should validate against the schema in which it resides, but that isn’t required." + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html for more info.",
+					Draft7Package.Literals.DEFAULT__DEFAULT_BOOLEAN);
+		}
+		if(isNumberSat(defaultKey.getDefaultNumber())) {
+			info("The default keyword specifies a default value for an item. JSON processing tools may use this information to provide a default value for a missing key/value pair, though many JSON schema validators simply ignore the default keyword. It should validate against the schema in which it resides, but that isn’t required." + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html for more info.",
+					Draft7Package.Literals.DEFAULT__DEFAULT_NUMBER);
+		}
+		if(defaultKey.getDefaultSchema() != null) {
+			info("The default keyword specifies a default value for an item. JSON processing tools may use this information to provide a default value for a missing key/value pair, though many JSON schema validators simply ignore the default keyword. It should validate against the schema in which it resides, but that isn’t required." + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html for more info.",
+					Draft7Package.Literals.DEFAULT__DEFAULT_SCHEMA);
+		}
+		if(defaultKey.getDefaultString() != null) {
+			info("The default keyword specifies a default value for an item. JSON processing tools may use this information to provide a default value for a missing key/value pair, though many JSON schema validators simply ignore the default keyword. It should validate against the schema in which it resides, but that isn’t required." + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html for more info.",
+					Draft7Package.Literals.DEFAULT__DEFAULT_STRING);
+		}
+	}
+
+	@Check
+	public void Info(AdditionalItems additionalItems) {
+
+		if(additionalItems.getAllowedBoolean() != org.xtext.json.schema.draft7.Boolean.UNSET) {
+			info("The additionalItems keyword controls whether it’s valid to have additional items in the array beyond what is defined in items. Here, we’ll reuse the example schema above, but set additionalItems to false, which has the effect of disallowing extra items in the array." + 
+					"\r\n" +
+					"The additionalItems keyword may also be a schema to validate against every additional item in the array." +
+					"See https://json-schema.org/understanding-json-schema/reference/array.html#tuple-validation for more info.",
+					Draft7Package.Literals.ADDITIONAL_ITEMS__ALLOWED_BOOLEAN);
+		}
+		
+		if(additionalItems.getSchema() != null) {
+			info("The additionalItems keyword controls whether it’s valid to have additional items in the array beyond what is defined in items. Here, we’ll reuse the example schema above, but set additionalItems to false, which has the effect of disallowing extra items in the array." + 
+					"\r\n" +
+					"The additionalItems keyword may also be a schema to validate against every additional item in the array." +
+					"See https://json-schema.org/understanding-json-schema/reference/array.html#tuple-validation for more info.",
+					Draft7Package.Literals.ADDITIONAL_ITEMS__SCHEMA);
+		}
+	}
+
+	@Check
+	public void Info(Example example) {
+		if(example.getExampleArrayItems().size() > 0) {
+			info("The examples keyword is a place to provide an array of examples that validate against the schema. This isn’t used for validation, but may help with explaining the effect and purpose of the schema to a reader. Each entry should validate against the schema in which is resides, but that isn’t strictly required" + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html for more info.",
+					Draft7Package.Literals.EXAMPLE__EXAMPLE_ARRAY_ITEMS);
+		}
+		if(example.getExampleBoolean() != org.xtext.json.schema.draft7.Boolean.UNSET) {
+			info("The examples keyword is a place to provide an array of examples that validate against the schema. This isn’t used for validation, but may help with explaining the effect and purpose of the schema to a reader. Each entry should validate against the schema in which is resides, but that isn’t strictly required" + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html for more info.",
+					Draft7Package.Literals.EXAMPLE__EXAMPLE_BOOLEAN);
+		}
+		if(isNumberSat(example.getExampleNumber())) {
+			info("The examples keyword is a place to provide an array of examples that validate against the schema. This isn’t used for validation, but may help with explaining the effect and purpose of the schema to a reader. Each entry should validate against the schema in which is resides, but that isn’t strictly required" + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html for more info.",
+					Draft7Package.Literals.EXAMPLE__EXAMPLE_NUMBER);
+		}
+		if(example.getExampleSchema() != null) {
+			info("The examples keyword is a place to provide an array of examples that validate against the schema. This isn’t used for validation, but may help with explaining the effect and purpose of the schema to a reader. Each entry should validate against the schema in which is resides, but that isn’t strictly required" + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html for more info.",
+					Draft7Package.Literals.EXAMPLE__EXAMPLE_SCHEMA);
+		}
+		if(example.getExampleString() != null) {
+			info("The examples keyword is a place to provide an array of examples that validate against the schema. This isn’t used for validation, but may help with explaining the effect and purpose of the schema to a reader. Each entry should validate against the schema in which is resides, but that isn’t strictly required" + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html for more info.",
+					Draft7Package.Literals.EXAMPLE__EXAMPLE_STRING);
+		}
+	}		
+	@Check
+	public void Info(Reference ref) {
+		if(ref.getSchemaRef() != null) {
+			info("Reference any existing schema" + 
+					"See https://json-schema.org/understanding-json-schema/structuring.html#extending for more info.",
+					Draft7Package.Literals.REFERENCE__SCHEMA_REF);
+		}
+	}
+	@Check
+	public void Info(Items items) {
+		if(items.getItems().size() > 0) {
+			info("List validation is useful for arrays of arbitrary length where each item matches the same schema. For this kind of array, set the items keyword to a single schema that will be used to validate all of the items in the array." + 
+					"See https://json-schema.org/understanding-json-schema/reference/array.html#items for more info.",
+					Draft7Package.Literals.ITEMS__ITEMS);
+		}
+	}
+	@Check
+	public void Info(Contains contains) {
+		if(contains.getContainSchemas().size() > 0) {
+			info("The contains schema only needs to validate against one or more items in the array." + 
+					"See https://json-schema.org/understanding-json-schema/reference/array.html#list-validation for more info.",
+					Draft7Package.Literals.SCHEMA__CONTAINS);
+		}
+	}
+	@Check
+	public void Info(AdditionalProperties additionalProps) {
+		if(additionalProps.getAllowedBoolean() != org.xtext.json.schema.draft7.Boolean.UNSET) {
+			info("The additionalProperties keyword is used to control the handling of extra stuff, that is, properties whose names are not listed in the properties keyword. By default any additional properties are allowed. The additionalProperties keyword may be either a boolean or an object. If additionalProperties is a boolean and set to false, no additional properties will be allowed. If additionalProperties is an object, that object is a schema that will be used to validate any additional properties not listed in properties." + 
+					"See https://json-schema.org/understanding-json-schema/reference/object.html#properties for more info.",
+					Draft7Package.Literals.ADDITIONAL_PROPERTIES__ALLOWED_BOOLEAN);
+		}
+		if(additionalProps.getSchema() != null) {
+			info("The additionalProperties keyword is used to control the handling of extra stuff, that is, properties whose names are not listed in the properties keyword. By default any additional properties are allowed. The additionalProperties keyword may be either a boolean or an object. If additionalProperties is a boolean and set to false, no additional properties will be allowed. If additionalProperties is an object, that object is a schema that will be used to validate any additional properties not listed in properties." + 
+					"See https://json-schema.org/understanding-json-schema/reference/object.html#properties for more info.",
+					Draft7Package.Literals.ADDITIONAL_PROPERTIES__SCHEMA);
+		}
+	}
+	@Check
+	public void Info(Dependencies deps) {
+		if(deps.getPropertyDependencies() != null) {
+			info("The dependencies keyword allows the schema of the object to change based on the presence of certain special properties.\r\n" + 
+					"\r\n" + 
+					"There are two forms of dependencies in JSON Schema:\r\n" + 
+					"\r\n" + 
+					"Property dependencies declare that certain other properties must be present if a given property is present.\r\n" + 
+					"Schema dependencies declare that the schema changes when a given property is present." + 
+					"See https://json-schema.org/understanding-json-schema/reference/object.html#dependencies for more info.",
+					Draft7Package.Literals.DEPENDENCIES__PROPERTY_DEPENDENCIES);
+		}
+		if(deps.getSchemaDependencies().size() > 0) {
+			info("The dependencies keyword allows the schema of the object to change based on the presence of certain special properties.\r\n" + 
+					"\r\n" + 
+					"There are two forms of dependencies in JSON Schema:\r\n" + 
+					"\r\n" + 
+					"Property dependencies declare that certain other properties must be present if a given property is present.\r\n" + 
+					"Schema dependencies declare that the schema changes when a given property is present." + 
+					"See https://json-schema.org/understanding-json-schema/reference/object.html#dependencies for more info.",
+					Draft7Package.Literals.DEPENDENCIES__SCHEMA_DEPENDENCIES);
+		}
+	}
+
+	@Check
+	public void Info(Schema schema) {	
+		if(schema.getType() != null) {
+			info("At its core, JSON Schema defines the following basic types:\r\n" +
+					"string\r\n" + 
+					"Numeric types\r\n" + 
+					"object\r\n" + 
+					"array\r\n" + 
+					"boolean\r\n" + 
+					"null\r\n" + 
+					"See https://json-schema.org/understanding-json-schema/reference/type.html for more info.",
+					Draft7Package.Literals.SCHEMA__TYPE);
+		}
+		if(schema.getPatternProperties().size() > 0) {
+			info("additionalProperties can restrict the object so that it either has no additional properties that weren’t explicitly listed, or it can specify a schema for any additional properties on the object. Sometimes that isn’t enough, and you may want to restrict the names of the extra properties, or you may want to say that, given a particular kind of name, the value should match a particular schema. That’s where patternProperties comes in: it is a new keyword that maps from regular expressions to schemas. If an additional property matches a given regular expression, it must also validate against the corresponding schema." + 
+					"See https://json-schema.org/understanding-json-schema/reference/object.html#pattern-properties for more info.",
+					Draft7Package.Literals.SCHEMA__PATTERN_PROPERTIES);
+		}
+		if(schema.getDefinitions().size() > 0) {
+			info("Use the definition keyword to define reusable schemas." + 
+					"See https://json-schema.org/understanding-json-schema/structuring.html#reuse for more info.",
+					Draft7Package.Literals.SCHEMA__DEFINITIONS);
+		}
+		if(schema.getTitle() != null) {
+			info("The title keyword must be a string. A “title” will preferably be short." + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html#annotations for more info.",
+					Draft7Package.Literals.SCHEMA__TITLE);
+		}
+		if(schema.getRequiredProperties().size() > 0) {
+			info("By default, the properties defined by the properties keyword are not required. However, one can provide a list of required properties using the required keyword.\r\n" + 
+					"\r\n" + 
+					"The required keyword takes an array of zero or more strings. Each of these strings must be unique." + 
+					"See https://json-schema.org/understanding-json-schema/reference/object.html#required-properties for more info.",
+					Draft7Package.Literals.SCHEMA__REQUIRED_PROPERTIES);
+		}
+		if(schema.getDescription() != null) {
+			info("The description keyword must be a string. A “description” will provide a more lengthy explanation about the purpose of the data described by the schema." + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html#annotations for more info.",
+					Draft7Package.Literals.SCHEMA__DESCRIPTION);
+		}
+		if(schema.getProperties().size() > 0) {
+			info("The properties (key-value pairs) on an object are defined using the properties keyword. The value of properties is an object, where each key is the name of a property and each value is a JSON schema used to validate that property." + 
+					"See https://json-schema.org/understanding-json-schema/reference/object.html#properties for more info.",
+					Draft7Package.Literals.SCHEMA__PROPERTIES);
+		}
+		if(schema.getEnumValues().size() > 0) {
+			info("The enum keyword is used to restrict a value to a fixed set of values. It must be an array with at least one element, where each element is unique." + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html#enumerated-values for more info.",
+					Draft7Package.Literals.SCHEMA__ENUM_VALUES);
+		}
+		if(schema.getId() != null) {
+			info("The $id property is a URI-reference that serves two purposes:\r\n" + 
+					"\r\n" + 
+					"It declares a unique identifier for the schema.\r\n" + 
+					"It declares a base URI against which $ref URI-references are resolved." + 
+					"\r\n" + 
+					"See https://json-schema.org/understanding-json-schema/structuring.html#the-id-property for more info.",
+					Draft7Package.Literals.SCHEMA__ID);
+		}
+		if(schema.getComment() != null) {
+			info("The $comment keyword is strictly intended for adding comments to the JSON schema source. Its value must always be a string. Unlike the annotations title, description and examples, JSON schema implementations aren’t allowed to attach any meaning or behavior to it whatsoever, and may even strip them at any time. Therefore, they are useful for leaving notes to future editors of a JSON schema, (which is quite likely your future self), but should not be used to communicate to users of the schema." + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html#id3 for more info.",
+					Draft7Package.Literals.SCHEMA__COMMENT);
+		}
+		if(schema.getIfSchema() != null) {
+			info("The if, then and else keywords allow the application of a subschema based on the outcome of another schema, much like the if/then/else constructs you’ve probably seen in traditional programming languages." + 
+					"See https://json-schema.org/understanding-json-schema/reference/conditionals.html for more info.",
+					Draft7Package.Literals.SCHEMA__IF_SCHEMA);
+		}
+		if(schema.getThenSchema() != null) {
+			info("The if, then and else keywords allow the application of a subschema based on the outcome of another schema, much like the if/then/else constructs you’ve probably seen in traditional programming languages." + 
+					"See https://json-schema.org/understanding-json-schema/reference/conditionals.html for more info.",
+					Draft7Package.Literals.SCHEMA__THEN_SCHEMA);
+		}
+		if(schema.getElseSchema() != null) {
+			info("The if, then and else keywords allow the application of a subschema based on the outcome of another schema, much like the if/then/else constructs you’ve probably seen in traditional programming languages." + 
+					"See https://json-schema.org/understanding-json-schema/reference/conditionals.html for more info.",
+					Draft7Package.Literals.SCHEMA__ELSE_SCHEMA);
+		}
+		if(schema.getConst() != null) {
+			info("The const keyword is used to restrict a value to a single value." + 
+					"See https://json-schema.org/understanding-json-schema/reference/generic.html#constant-values for more info.",
+					Draft7Package.Literals.SCHEMA__CONST);
+		}
+		if(schema.getAnyOfs().size() > 0) {
+			info("To validate against anyOf, the given data must be valid against any (one or more) of the given subschemas." + 
+					"See https://json-schema.org/understanding-json-schema/reference/combining.html#anyof for more info.",
+					Draft7Package.Literals.SCHEMA__ANY_OFS);
+		}
+		if(schema.getOneOfs().size() > 0) {
+			info("To validate against oneOf, the given data must be valid against exactly one of the given subschemas." + 
+					"See https://json-schema.org/understanding-json-schema/reference/combining.html#oneof for more info.",
+					Draft7Package.Literals.SCHEMA__ONE_OFS);
+		}
+		if(schema.getAllOfs().size() > 0) {
+			info("To validate against allOf, the given data must be valid against all of the given subschemas." + 
+					"See https://json-schema.org/understanding-json-schema/reference/combining.html#allof for more info.",
+					Draft7Package.Literals.SCHEMA__ALL_OFS);
+		}
+		if(schema.getNot() != null) {
+			info("This doesn’t strictly combine schemas, but it belongs in this chapter along with other things that help to modify the effect of schemas in some way. The not keyword declares that a instance validates if it doesn’t validate against the given subschema." + 
+					"See https://json-schema.org/understanding-json-schema/reference/combining.html#not for more info.",
+					Draft7Package.Literals.SCHEMA__NOT);
+		}
+		if(schema.getUnique() != org.xtext.json.schema.draft7.Boolean.UNSET) {
+			info("A schema can ensure that each of the items in an array is unique. Simply set the uniqueItems keyword to true." + 
+					"See https://json-schema.org/understanding-json-schema/reference/array.html#uniqueness for more info.",
+					Draft7Package.Literals.SCHEMA__UNIQUE);
+		}
+		if(schema.getPropertyNames() != null) {
+			info("The names of properties can be validated against a schema, irrespective of their values. This can be useful if you don’t want to enforce specific properties, but you want to make sure that the names of those properties follow a specific convention. You might, for example, want to enforce that all names are valid ASCII tokens so they can be used as attributes in a particular programming language." + 
+					"See https://json-schema.org/understanding-json-schema/reference/object.html#property-names for more info.",
+					Draft7Package.Literals.SCHEMA__PROPERTY_NAMES);
+		}
+		if(schema.getMinProperties() > 0){
+			info("The number of properties on an object can be restricted using the minProperties and maxProperties keywords. Each of these must be a non-negative integer." + 
+					"See https://json-schema.org/understanding-json-schema/reference/object.html#size for more info.",
+					Draft7Package.Literals.SCHEMA__MIN_PROPERTIES);
+		}
+		if(schema.getMaxProperties() > 0) {
+			info("The number of properties on an object can be restricted using the minProperties and maxProperties keywords. Each of these must be a non-negative integer." + 
+					"See https://json-schema.org/understanding-json-schema/reference/object.html#size for more info.",
+					Draft7Package.Literals.SCHEMA__MAX_PROPERTIES);
+		}
+		if(schema.getMaxItems() > 0) {
+			info("he length of the array can be specified using the minItems and maxItems keywords. The value of each keyword must be a non-negative number. These keywords work whether doing List validation or Tuple validation." + 
+					"See https://json-schema.org/understanding-json-schema/reference/array.html#length for more info.",
+					Draft7Package.Literals.SCHEMA__MAX_ITEMS);
+		}
+		if(schema.getMinItems() > 0) {
+			info("he length of the array can be specified using the minItems and maxItems keywords. The value of each keyword must be a non-negative number. These keywords work whether doing List validation or Tuple validation." + 
+					"See https://json-schema.org/understanding-json-schema/reference/array.html#length for more info.",
+					Draft7Package.Literals.SCHEMA__MIN_ITEMS);
+		}
+		if(schema.getMaxLength() > 0) {
+			info("The length of a string can be constrained using the minLength and maxLength keywords. For both keywords, the value must be a non-negative number." + 
+					"See https://json-schema.org/understanding-json-schema/reference/string.html#length for more info.",
+					Draft7Package.Literals.SCHEMA__MAX_LENGTH);
+		}
+		if(schema.getMinLength() > 0) {
+			info("The length of a string can be constrained using the minLength and maxLength keywords. For both keywords, the value must be a non-negative number." + 
+					"See https://json-schema.org/understanding-json-schema/reference/string.html#length for more info.",
+					Draft7Package.Literals.SCHEMA__MIN_LENGTH);
+		}
+		if(schema.getPattern() != null) {
+			info("The pattern keyword is used to restrict a string to a particular regular expression. The regular expression syntax is the one defined in JavaScript (ECMA 262 specifically)." + 
+					"See https://json-schema.org/understanding-json-schema/reference/string.html#pattern for more info.",
+					Draft7Package.Literals.SCHEMA__PATTERN);
+		}
+		if(schema.getFormat() != FormatTypes.UNSET) {
+			info("The format keyword allows for basic semantic validation on certain kinds of string values that are commonly used. This allows values to be constrained beyond what the other tools in JSON Schema, including Regular Expressions can do." + 
+					"See https://json-schema.org/understanding-json-schema/reference/string.html#format for more info.",
+					Draft7Package.Literals.SCHEMA__FORMAT);
+		}
+		if(schema.getMediaType() != null) {
+			info("The contentMediaType keyword specifies the MIME type of the contents of a string, as described in RFC 2046. There is a list of MIME types officially registered by the IANA, but the set of types supported will be application and operating system dependent. Mozilla Developer Network also maintains a shorter list of MIME types that are important for the web" + 
+					"See https://json-schema.org/understanding-json-schema/reference/non_json_data.html#contentmediatype for more info.",
+					Draft7Package.Literals.SCHEMA__MEDIA_TYPE);
+		}
+		if(schema.getEncoding() != null) {
+			info("The contentEncoding keyword specifies the encoding used to store the contents, as specified in RFC 2054, part 6.1." + 
+					"See https://json-schema.org/understanding-json-schema/reference/non_json_data.html#contentencoding for more info.",
+					Draft7Package.Literals.SCHEMA__ENCODING);			
+		}
+		if(isNumberSat(schema.getMultipleOf())) {
+			info("Numbers can be restricted to a multiple of a given number, using the multipleOf keyword. It may be set to any positive number." + 
+					"See https://json-schema.org/understanding-json-schema/reference/numeric.html#multiples for more info.",
+					Draft7Package.Literals.SCHEMA__MULTIPLE_OF);
+		}
+		if(isNumberSat(schema.getMinimum())) {
+			info("Ranges of numbers are specified using a combination of the minimum and maximum keywords, (or exclusiveMinimum and exclusiveMaximum for expressing exclusive range)." + 
+					"See https://json-schema.org/understanding-json-schema/reference/numeric.html#range for more info.",
+					Draft7Package.Literals.SCHEMA__MINIMUM);
+		}
+		if(isNumberSat(schema.getExclusiveMinimum())) {
+			info("Ranges of numbers are specified using a combination of the minimum and maximum keywords, (or exclusiveMinimum and exclusiveMaximum for expressing exclusive range)." + 
+					"See https://json-schema.org/understanding-json-schema/reference/numeric.html#range for more info.",
+					Draft7Package.Literals.SCHEMA__EXCLUSIVE_MINIMUM);
+		}
+
+		if(isNumberSat(schema.getMaximum())) {
+			info("Ranges of numbers are specified using a combination of the minimum and maximum keywords, (or exclusiveMinimum and exclusiveMaximum for expressing exclusive range)." + 
+					"See https://json-schema.org/understanding-json-schema/reference/numeric.html#range for more info.",
+					Draft7Package.Literals.SCHEMA__MAXIMUM);
+		}
+
+		if(isNumberSat(schema.getExclusiveMaximum())) {
+			info("Ranges of numbers are specified using a combination of the minimum and maximum keywords, (or exclusiveMinimum and exclusiveMaximum for expressing exclusive range)." + 
+					"See https://json-schema.org/understanding-json-schema/reference/numeric.html#range for more info.",
+					Draft7Package.Literals.SCHEMA__EXCLUSIVE_MAXIMUM);
+		}
+
+	}
 	
 }

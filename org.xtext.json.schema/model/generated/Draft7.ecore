@@ -23,23 +23,22 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="definitions" upperBound="-1"
         eType="#//NamedSchema" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="requiredProperties" upperBound="-1"
-        eType="#//AnyString" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="requiredProperties" unique="false"
+        upperBound="-1" eType="#//NamedSchema"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
         eType="#//NamedSchema" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="enumValues" upperBound="-1"
-        eType="#//AnyString" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="id" eType="#//AnyString"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="enumValues" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="comment" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ifSchema" eType="#//AbstractSchema"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="ifSchema" eType="#//Schema"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="thenSchema" eType="#//AbstractSchema"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="thenSchema" eType="#//Schema"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elseSchema" eType="#//AbstractSchema"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="elseSchema" eType="#//Schema"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="const" eType="#//AnyString"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="const" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="constBoolean" eType="#//Boolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="anyOfs" upperBound="-1"
         eType="#//AbstractSchema" containment="true"/>
@@ -58,13 +57,10 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="minItems" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxLength" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="minLength" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="pattern" eType="#//AnyString"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="format" eType="#//FormatTypes"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="mediaType" eType="#//AnyString"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="encoding" eType="#//AnyString"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mediaType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="encoding" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="multipleOf" eType="#//Number"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="minimum" eType="#//Number"
@@ -77,20 +73,24 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Dependencies">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="PropertyDependency" eType="#//PropertyDependency"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyDependencies" upperBound="-1"
+        eType="#//PropertyDependency" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="schemaDependencies" upperBound="-1"
-        eType="#//NamedSchema" containment="true"/>
+        eType="#//CrossReferencedDependencyNamedSchema" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CrossReferencedDependencyNamedSchema">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="name" eType="#//NamedSchema"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="schema" eType="#//AbstractSchema"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PropertyDependency">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="name" eType="#//AnyString"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="dependencies" upperBound="-1"
-        eType="#//AnyString" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="name" eType="#//NamedSchema"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dependencies" unique="false"
+        upperBound="-1" eType="#//NamedSchema"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Contains">
     <eStructuralFeatures xsi:type="ecore:EReference" name="containSchemas" upperBound="-1"
-        eType="#//Schema" containment="true"/>
+        eType="#//AbstractSchema" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Items">
     <eStructuralFeatures xsi:type="ecore:EReference" name="items" upperBound="-1"
@@ -110,8 +110,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="Default">
     <eStructuralFeatures xsi:type="ecore:EReference" name="defaultSchema" eType="#//AbstractSchema"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultString" eType="#//AnyString"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultString" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultBoolean" eType="#//Boolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="defaultNumber" eType="#//Number"
         containment="true"/>
@@ -119,15 +118,14 @@
         eType="#//AbstractSchema" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Example">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="exampleSchema" eType="#//Schema"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exampleSchema" eType="#//AbstractSchema"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="exampleString" eType="#//AnyString"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleString" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="exampleBoolean" eType="#//Boolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="exampleNumber" eType="#//Number"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="exampleArrayItems" upperBound="-1"
-        eType="#//Schema" containment="true"/>
+        eType="#//AbstractSchema" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Types">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="jsonTypes" unique="false"
@@ -135,125 +133,51 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AbstractSchema"/>
   <eClassifiers xsi:type="ecore:EClass" name="Reference" eSuperTypes="#//AbstractSchema">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="uri" eType="#//AnyString"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="schemaRef" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NamedSchema">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="name" eType="#//AnyString"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="schema" eType="#//AbstractSchema"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="Boolean">
-    <eLiterals name="trueValue" literal="true"/>
-    <eLiterals name="falseValue" value="1" literal="false"/>
+    <eLiterals name="UNSET" literal="UNSET"/>
+    <eLiterals name="trueValue" value="1" literal="true"/>
+    <eLiterals name="falseValue" value="2" literal="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="JsonTypes">
-    <eLiterals name="string" literal="&quot;string&quot;"/>
-    <eLiterals name="integer" value="1" literal="&quot;integer&quot;"/>
-    <eLiterals name="number" value="2" literal="&quot;number&quot;"/>
-    <eLiterals name="object" value="3" literal="&quot;object&quot;"/>
-    <eLiterals name="array" value="4" literal="&quot;array&quot;"/>
-    <eLiterals name="boolean" value="5" literal="&quot;boolean&quot;"/>
-    <eLiterals name="null" value="6" literal="&quot;null&quot;"/>
+    <eLiterals name="UNSET" literal="UNSET"/>
+    <eLiterals name="string" value="1" literal="&quot;string&quot;"/>
+    <eLiterals name="integer" value="2" literal="&quot;integer&quot;"/>
+    <eLiterals name="number" value="3" literal="&quot;number&quot;"/>
+    <eLiterals name="object" value="4" literal="&quot;object&quot;"/>
+    <eLiterals name="array" value="5" literal="&quot;array&quot;"/>
+    <eLiterals name="boolean" value="6" literal="&quot;boolean&quot;"/>
+    <eLiterals name="null" value="7" literal="&quot;null&quot;"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="FormatTypes">
-    <eLiterals name="date_time" literal="&quot;date-time&quot;"/>
-    <eLiterals name="time" value="1" literal="&quot;time&quot;"/>
-    <eLiterals name="date" value="2" literal="&quot;date&quot;"/>
-    <eLiterals name="email" value="3" literal="&quot;email&quot;"/>
-    <eLiterals name="idn_email" value="4" literal="&quot;idn-email&quot;"/>
-    <eLiterals name="hostname" value="5" literal="&quot;hostname&quot;"/>
-    <eLiterals name="ipv4" value="6" literal="&quot;ipv4&quot;"/>
-    <eLiterals name="ipv6" value="7" literal="&quot;ipv6&quot;"/>
-    <eLiterals name="uri" value="8" literal="&quot;uri&quot;"/>
-    <eLiterals name="uri_reference" value="9" literal="&quot;uri-reference&quot;"/>
-    <eLiterals name="iri" value="10" literal="&quot;iri&quot;"/>
-    <eLiterals name="iri_reference" value="11" literal="&quot;iri-reference&quot;"/>
-    <eLiterals name="uri_template" value="12" literal="&quot;uri-template&quot;"/>
-    <eLiterals name="json_pointer" value="13" literal="&quot;json-pointer&quot;"/>
-    <eLiterals name="relative_json_pointer" value="14" literal="&quot;relative-json-pointer&quot;"/>
-    <eLiterals name="regex" value="15" literal="&quot;regex&quot;"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AnyString">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="keyword" eType="#//JsonSchemaKeyword"/>
+    <eLiterals name="UNSET" literal="UNSET"/>
+    <eLiterals name="date_time" value="1" literal="&quot;date-time&quot;"/>
+    <eLiterals name="time" value="2" literal="&quot;time&quot;"/>
+    <eLiterals name="date" value="3" literal="&quot;date&quot;"/>
+    <eLiterals name="email" value="4" literal="&quot;email&quot;"/>
+    <eLiterals name="idn_email" value="5" literal="&quot;idn-email&quot;"/>
+    <eLiterals name="hostname" value="6" literal="&quot;hostname&quot;"/>
+    <eLiterals name="ipv4" value="7" literal="&quot;ipv4&quot;"/>
+    <eLiterals name="ipv6" value="8" literal="&quot;ipv6&quot;"/>
+    <eLiterals name="uri" value="9" literal="&quot;uri&quot;"/>
+    <eLiterals name="uri_reference" value="10" literal="&quot;uri-reference&quot;"/>
+    <eLiterals name="iri" value="11" literal="&quot;iri&quot;"/>
+    <eLiterals name="iri_reference" value="12" literal="&quot;iri-reference&quot;"/>
+    <eLiterals name="uri_template" value="13" literal="&quot;uri-template&quot;"/>
+    <eLiterals name="json_pointer" value="14" literal="&quot;json-pointer&quot;"/>
+    <eLiterals name="relative_json_pointer" value="15" literal="&quot;relative-json-pointer&quot;"/>
+    <eLiterals name="regex" value="16" literal="&quot;regex&quot;"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Number">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="negative" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="number" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="decimal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="exponent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="JsonSchemaKeyword">
-    <eLiterals name="title" literal="&quot;title&quot;"/>
-    <eLiterals name="schemaDraft7" value="1" literal="&quot;http://json-schema.org/draft-07/schema#&quot;"/>
-    <eLiterals name="additionalProperties" value="2" literal="&quot;additionalProperties&quot;"/>
-    <eLiterals name="additionalItems" value="3" literal="&quot;additionalItems&quot;"/>
-    <eLiterals name="description" value="4" literal="&quot;description&quot;"/>
-    <eLiterals name="comment" value="5" literal="&quot;$comment&quot;"/>
-    <eLiterals name="id" value="6" literal="&quot;$id&quot;"/>
-    <eLiterals name="definitions" value="7" literal="&quot;definitions&quot;"/>
-    <eLiterals name="default" value="8" literal="&quot;default&quot;"/>
-    <eLiterals name="examples" value="9" literal="&quot;examples&quot;"/>
-    <eLiterals name="schema" value="10" literal="&quot;$schema&quot;"/>
-    <eLiterals name="ref" value="11" literal="&quot;$ref&quot;"/>
-    <eLiterals name="enumKeyword" value="12" literal="&quot;enum&quot;"/>
-    <eLiterals name="const" value="13" literal="&quot;const&quot;"/>
-    <eLiterals name="type" value="14" literal="&quot;type&quot;"/>
-    <eLiterals name="string" value="15" literal="&quot;string&quot;"/>
-    <eLiterals name="integer" value="16" literal="&quot;integer&quot;"/>
-    <eLiterals name="number" value="17" literal="&quot;number&quot;"/>
-    <eLiterals name="object" value="18" literal="&quot;object&quot;"/>
-    <eLiterals name="array" value="19" literal="&quot;array&quot;"/>
-    <eLiterals name="boolean" value="20" literal="&quot;boolean&quot;"/>
-    <eLiterals name="null" value="21" literal="&quot;null&quot;"/>
-    <eLiterals name="date_time" value="22" literal="&quot;date-time&quot;"/>
-    <eLiterals name="time" value="23" literal="&quot;time&quot;"/>
-    <eLiterals name="date" value="24" literal="&quot;date&quot;"/>
-    <eLiterals name="email" value="25" literal="&quot;email&quot;"/>
-    <eLiterals name="idn_email" value="26" literal="&quot;idn-email&quot;"/>
-    <eLiterals name="hostname" value="27" literal="&quot;hostname&quot;"/>
-    <eLiterals name="ipv4" value="28" literal="&quot;ipv4&quot;"/>
-    <eLiterals name="ipv6" value="29" literal="&quot;ipv6&quot;"/>
-    <eLiterals name="uri" value="30" literal="&quot;uri&quot;"/>
-    <eLiterals name="uri_reference" value="31" literal="&quot;uri-reference&quot;"/>
-    <eLiterals name="iri" value="32" literal="&quot;iri&quot;"/>
-    <eLiterals name="iri_reference" value="33" literal="&quot;iri-reference&quot;"/>
-    <eLiterals name="uri_template" value="34" literal="&quot;uri-template&quot;"/>
-    <eLiterals name="json_pointer" value="35" literal="&quot;json-pointer&quot;"/>
-    <eLiterals name="relative_json_pointer" value="36" literal="&quot;relative-json-pointer&quot;"/>
-    <eLiterals name="regex" value="37" literal="&quot;regex&quot;"/>
-    <eLiterals name="contains" value="38" literal="&quot;contains&quot;"/>
-    <eLiterals name="uniqueItems" value="39" literal="&quot;uniqueItems&quot;"/>
-    <eLiterals name="propertyNames" value="40" literal="&quot;propertyNames&quot;"/>
-    <eLiterals name="length" value="41" literal="&quot;length&quot;"/>
-    <eLiterals name="minLength" value="42" literal="&quot;minLength&quot;"/>
-    <eLiterals name="maxLength" value="43" literal="&quot;maxLength&quot;"/>
-    <eLiterals name="minItems" value="44" literal="&quot;minItems&quot;"/>
-    <eLiterals name="maxItems" value="45" literal="&quot;maxItems&quot;"/>
-    <eLiterals name="pattern" value="46" literal="&quot;pattern&quot;"/>
-    <eLiterals name="format" value="47" literal="&quot;format&quot;"/>
-    <eLiterals name="minProperties" value="48" literal="&quot;minProperties&quot;"/>
-    <eLiterals name="maxProperties" value="49" literal="&quot;maxProperties&quot;"/>
-    <eLiterals name="dependencies" value="50" literal="&quot;dependencies&quot;"/>
-    <eLiterals name="patternProperties" value="51" literal="&quot;patternProperties&quot;"/>
-    <eLiterals name="required" value="52" literal="&quot;required&quot;"/>
-    <eLiterals name="properties" value="53" literal="&quot;properties&quot;"/>
-    <eLiterals name="if" value="54" literal="&quot;if&quot;"/>
-    <eLiterals name="then" value="55" literal="&quot;then&quot;"/>
-    <eLiterals name="else" value="56" literal="&quot;else&quot;"/>
-    <eLiterals name="anyOf" value="57" literal="&quot;anyOf&quot;"/>
-    <eLiterals name="oneOf" value="58" literal="&quot;oneOf&quot;"/>
-    <eLiterals name="allOf" value="59" literal="&quot;allOf&quot;"/>
-    <eLiterals name="not" value="60" literal="&quot;not&quot;"/>
-    <eLiterals name="items" value="61" literal="&quot;items&quot;"/>
-    <eLiterals name="contentMediaType" value="62" literal="&quot;contentMediaType&quot;"/>
-    <eLiterals name="contentEncoding" value="63" literal="&quot;contentEncoding&quot;"/>
-    <eLiterals name="multiples" value="64" literal="&quot;multiples&quot;"/>
-    <eLiterals name="minimum" value="65" literal="&quot;minimum&quot;"/>
-    <eLiterals name="exclusiveMinimum" value="66" literal="&quot;exclusiveMinimum&quot;"/>
-    <eLiterals name="maximum" value="67" literal="&quot;maximum&quot;"/>
-    <eLiterals name="exclusiveMaximum" value="68" literal="&quot;exclusiveMaximum&quot;"/>
   </eClassifiers>
 </ecore:EPackage>

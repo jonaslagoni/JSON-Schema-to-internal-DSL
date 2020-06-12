@@ -7,10 +7,12 @@
   <genPackages prefix="Draft7" basePackage="org.xtext.json.schema" disposableProviderFactory="true"
       fileExtensions="json" ecorePackage="Draft7.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Draft7.ecore#//Boolean">
+      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//Boolean/UNSET"/>
       <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//Boolean/trueValue"/>
       <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//Boolean/falseValue"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Draft7.ecore#//JsonTypes">
+      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonTypes/UNSET"/>
       <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonTypes/string"/>
       <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonTypes/integer"/>
       <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonTypes/number"/>
@@ -20,6 +22,7 @@
       <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonTypes/null"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Draft7.ecore#//FormatTypes">
+      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//FormatTypes/UNSET"/>
       <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//FormatTypes/date_time"/>
       <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//FormatTypes/time"/>
       <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//FormatTypes/date"/>
@@ -37,77 +40,6 @@
       <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//FormatTypes/relative_json_pointer"/>
       <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//FormatTypes/regex"/>
     </genEnums>
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Draft7.ecore#//JsonSchemaKeyword">
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/title"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/schemaDraft7"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/additionalProperties"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/additionalItems"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/description"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/comment"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/id"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/definitions"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/default"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/examples"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/schema"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/ref"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/enumKeyword"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/const"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/type"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/string"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/integer"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/number"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/object"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/array"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/boolean"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/null"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/date_time"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/time"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/date"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/email"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/idn_email"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/hostname"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/ipv4"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/ipv6"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/uri"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/uri_reference"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/iri"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/iri_reference"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/uri_template"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/json_pointer"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/relative_json_pointer"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/regex"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/contains"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/uniqueItems"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/propertyNames"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/length"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/minLength"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/maxLength"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/minItems"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/maxItems"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/pattern"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/format"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/minProperties"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/maxProperties"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/dependencies"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/patternProperties"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/required"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/properties"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/if"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/then"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/else"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/anyOf"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/oneOf"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/allOf"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/not"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/items"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/contentMediaType"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/contentEncoding"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/multiples"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/minimum"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/exclusiveMinimum"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/maximum"/>
-      <genEnumLiterals ecoreEnumLiteral="Draft7.ecore#//JsonSchemaKeyword/exclusiveMaximum"/>
-    </genEnums>
     <genClasses ecoreClass="Draft7.ecore#//Schema">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/dependencies"/>
@@ -120,15 +52,16 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/contains"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/definitions"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/title"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/requiredProperties"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/requiredProperties"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/description"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/properties"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/enumValues"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/enumValues"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/comment"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/ifSchema"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/thenSchema"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/elseSchema"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/const"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/const"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/constBoolean"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/anyOfs"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/oneOfs"/>
@@ -142,10 +75,10 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/minItems"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/maxLength"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/minLength"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/pattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/pattern"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/format"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/mediaType"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/encoding"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/mediaType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Schema/encoding"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/multipleOf"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/minimum"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/exclusiveMinimum"/>
@@ -153,12 +86,16 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Schema/exclusiveMaximum"/>
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//Dependencies">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Dependencies/PropertyDependency"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Dependencies/propertyDependencies"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Dependencies/schemaDependencies"/>
     </genClasses>
+    <genClasses ecoreClass="Draft7.ecore#//CrossReferencedDependencyNamedSchema">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Draft7.ecore#//CrossReferencedDependencyNamedSchema/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//CrossReferencedDependencyNamedSchema/schema"/>
+    </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//PropertyDependency">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//PropertyDependency/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//PropertyDependency/dependencies"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Draft7.ecore#//PropertyDependency/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Draft7.ecore#//PropertyDependency/dependencies"/>
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//Contains">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Contains/containSchemas"/>
@@ -177,14 +114,14 @@
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//Default">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Default/defaultSchema"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Default/defaultString"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Default/defaultString"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Default/defaultBoolean"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Default/defaultNumber"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Default/defaultArrayItems"/>
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//Example">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Example/exampleSchema"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Example/exampleString"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Example/exampleString"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Example/exampleBoolean"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Example/exampleNumber"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Example/exampleArrayItems"/>
@@ -194,15 +131,11 @@
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//AbstractSchema"/>
     <genClasses ecoreClass="Draft7.ecore#//Reference">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//Reference/uri"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Reference/schemaRef"/>
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//NamedSchema">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//NamedSchema/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//NamedSchema/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Draft7.ecore#//NamedSchema/schema"/>
-    </genClasses>
-    <genClasses ecoreClass="Draft7.ecore#//AnyString">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//AnyString/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//AnyString/keyword"/>
     </genClasses>
     <genClasses ecoreClass="Draft7.ecore#//Number">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Draft7.ecore#//Number/negative"/>

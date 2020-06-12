@@ -3,6 +3,16 @@
  */
 package org.xtext.json.schema.scoping;
 
+import java.util.List;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.xtext.scoping.IScope;
+import org.eclipse.xtext.scoping.Scopes;
+import org.xtext.json.schema.draft7.CrossReferencedDependencyNamedSchema;
+import org.xtext.json.schema.draft7.Draft7Package;
+import org.xtext.json.schema.draft7.PropertyDependency;
+import org.xtext.json.schema.draft7.Schema;
 
 /**
  * This class contains custom scoping description.
@@ -11,5 +21,19 @@ package org.xtext.json.schema.scoping;
  * on how and when to use it.
  */
 public class Draft7ScopeProvider extends AbstractDraft7ScopeProvider {
-
+	@Override
+	public IScope getScope(EObject context, EReference reference) {
+		
+		if(reference == Draft7Package.Literals.SCHEMA__REQUIRED_PROPERTIES && context instanceof Schema) {
+			Schema schema = (Schema)context;
+		    return Scopes.scopeFor(schema.getProperties());
+		}
+		if(
+			(reference == Draft7Package.Literals.PROPERTY_DEPENDENCY && context instanceof PropertyDependency) || 
+			(reference == Draft7Package.Literals.CROSS_REFERENCED_DEPENDENCY_NAMED_SCHEMA && context instanceof CrossReferencedDependencyNamedSchema)){
+			Schema schema = (Schema)context.eContainer().eContainer();
+		    return Scopes.scopeFor(schema.getProperties());
+		}
+	    return super.getScope(context, reference);
+	}
 }

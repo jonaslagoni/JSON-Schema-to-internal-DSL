@@ -25,7 +25,6 @@ class BuilderGenerator {
 	
 	def generateBuilderFile(CustomModel model, IFileSystemAccess2 fsa) {
 		fsa.generateFile("builder/" +model.name.toFirstUpper+"Builder.java", model.parentName !== null ? model.generateBuilder : model.generateRootBuilder)
-
 	}
 	
 	def CharSequence generateRootBuilderVariables(CustomModel model) {

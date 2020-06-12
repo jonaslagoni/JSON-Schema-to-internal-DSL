@@ -44,7 +44,6 @@ class ParserTesting {
 	@Test
 	def void anyValidArbitraryJsonSchemaShouldBeParsed() {
 		qt().
-		withShrinkCycles(0).
 		forAll(Schema.fullSchema).
 		check([ Schema s |
 			{

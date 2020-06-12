@@ -7,7 +7,6 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.xtext.json.schema.draft7.AbstractSchema;
-import org.xtext.json.schema.draft7.AnyString;
 import org.xtext.json.schema.draft7.JsonTypes;
 import org.xtext.json.schema.draft7.NamedSchema;
 import org.xtext.json.schema.draft7.Reference;
@@ -17,8 +16,8 @@ import org.xtext.json.schema.generator.CustomProperty;
 
 @SuppressWarnings("all")
 public class GeneratorUtils {
-  public static String toJavaType(final Schema schema, final JsonTypes type, final AnyString objectName) {
-    return GeneratorUtils.toJavaType(schema, type, GeneratorUtils.realizeName(objectName));
+  public static String removeQuotes(final String toCheck) {
+    return toCheck.replace("\"", "").replace("\'", "");
   }
   
   /**
@@ -40,7 +39,7 @@ public class GeneratorUtils {
             _xifexpression = ((Schema) _propertyNames_1);
           } else {
             AbstractSchema _propertyNames_2 = schema.getPropertyNames();
-            _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) _propertyNames_2).getUri()), root);
+            _xifexpression = GeneratorUtils.findLocalReference(GeneratorUtils.removeQuotes(((Reference) _propertyNames_2).getSchemaRef()), root);
           }
           Schema propNameSchema = _xifexpression;
           if ((propNameSchema != null)) {
@@ -64,7 +63,7 @@ public class GeneratorUtils {
                     String _title = propNameSchema.getTitle();
                     boolean _tripleNotEquals_1 = (_title != null);
                     if (_tripleNotEquals_1) {
-                      String _firstUpper = StringExtensions.toFirstUpper(propNameSchema.getTitle().replace(" ", ""));
+                      String _firstUpper = StringExtensions.toFirstUpper(GeneratorUtils.removeQuotes(propNameSchema.getTitle()).replace(" ", ""));
                       String _plus = ("List<" + _firstUpper);
                       String _plus_1 = (_plus + ">");
                       additionalPropKeyType = _plus_1;
@@ -81,7 +80,7 @@ public class GeneratorUtils {
                     if (_isSchema_1) {
                       _xifexpression_1 = ((Schema) abstractSchemaItem);
                     } else {
-                      _xifexpression_1 = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) abstractSchemaItem).getUri()), root);
+                      _xifexpression_1 = GeneratorUtils.findLocalReference(GeneratorUtils.removeQuotes(((Reference) abstractSchemaItem).getSchemaRef()), root);
                     }
                     Schema schemaItem = _xifexpression_1;
                     JsonTypes itemType = schemaItem.getType().getJsonTypes().get(0);
@@ -107,7 +106,7 @@ public class GeneratorUtils {
                             String _title_1 = schemaItem.getTitle();
                             boolean _tripleNotEquals_2 = (_title_1 != null);
                             if (_tripleNotEquals_2) {
-                              String _firstUpper_2 = StringExtensions.toFirstUpper(schemaItem.getTitle().replace(" ", ""));
+                              String _firstUpper_2 = StringExtensions.toFirstUpper(GeneratorUtils.removeQuotes(schemaItem.getTitle()).replace(" ", ""));
                               String _plus_4 = ("List<" + _firstUpper_2);
                               String _plus_5 = (_plus_4 + ">");
                               additionalPropKeyType = _plus_5;
@@ -127,7 +126,7 @@ public class GeneratorUtils {
                             String _title_2 = schemaItem.getTitle();
                             boolean _tripleNotEquals_3 = (_title_2 != null);
                             if (_tripleNotEquals_3) {
-                              String _firstUpper_4 = StringExtensions.toFirstUpper(schemaItem.getTitle().replace(" ", ""));
+                              String _firstUpper_4 = StringExtensions.toFirstUpper(GeneratorUtils.removeQuotes(schemaItem.getTitle()).replace(" ", ""));
                               String _plus_8 = ("List<" + _firstUpper_4);
                               String _plus_9 = (_plus_8 + ">");
                               additionalPropKeyType = _plus_9;
@@ -167,7 +166,7 @@ public class GeneratorUtils {
               String _title_3 = additionalPropSchema.getTitle();
               boolean _tripleNotEquals_5 = (_title_3 != null);
               if (_tripleNotEquals_5) {
-                String _firstUpper_5 = StringExtensions.toFirstUpper(additionalPropSchema.getTitle().replace(" ", ""));
+                String _firstUpper_5 = StringExtensions.toFirstUpper(GeneratorUtils.removeQuotes(additionalPropSchema.getTitle()).replace(" ", ""));
                 String _plus_10 = ((("Map<" + additionalPropKeyType) + ", ") + _firstUpper_5);
                 String _plus_11 = (_plus_10 + ">");
                 CustomProperty customProp = new CustomProperty(additionalPropName, _plus_11);
@@ -190,7 +189,7 @@ public class GeneratorUtils {
         EList<NamedSchema> _properties = schema.getProperties();
         for (final NamedSchema prop : _properties) {
           {
-            String propName = GeneratorUtils.realizeName(prop.getName());
+            String propName = GeneratorUtils.removeQuotes(prop.getName());
             String propType = "";
             JsonTypes type_1 = JsonTypes.NULL;
             Schema _xifexpression_2 = null;
@@ -200,7 +199,7 @@ public class GeneratorUtils {
               _xifexpression_2 = ((Schema) _schema_1);
             } else {
               AbstractSchema _schema_2 = prop.getSchema();
-              _xifexpression_2 = GeneratorUtils.findLocalReference(GeneratorUtils.realizeName(((Reference) _schema_2).getUri()), root);
+              _xifexpression_2 = GeneratorUtils.findLocalReference(GeneratorUtils.removeQuotes(((Reference) _schema_2).getSchemaRef()), root);
             }
             Schema propSchema = _xifexpression_2;
             if ((((propSchema != null) && (propSchema.getType() != null)) && (propSchema.getType().getJsonTypes().size() > 0))) {
@@ -273,7 +272,7 @@ public class GeneratorUtils {
                           String _title_4 = arraySchema.getTitle();
                           boolean _tripleNotEquals_7 = (_title_4 != null);
                           if (_tripleNotEquals_7) {
-                            String _firstUpper_8 = StringExtensions.toFirstUpper(arraySchema.getTitle().replace(" ", ""));
+                            String _firstUpper_8 = StringExtensions.toFirstUpper(GeneratorUtils.removeQuotes(arraySchema.getTitle()).replace(" ", ""));
                             String _plus_16 = ("List<" + _firstUpper_8);
                             String _plus_17 = (_plus_16 + ">");
                             propType = _plus_17;
@@ -395,18 +394,6 @@ public class GeneratorUtils {
     return false;
   }
   
-  public static String realizeName(final AnyString anyString) {
-    String _xifexpression = null;
-    String _name = anyString.getName();
-    boolean _tripleNotEquals = (_name != null);
-    if (_tripleNotEquals) {
-      _xifexpression = anyString.getName();
-    } else {
-      _xifexpression = anyString.getKeyword().name().toLowerCase();
-    }
-    return _xifexpression;
-  }
-  
   public static Schema findLocalReference(final String ref, final Schema root) {
     String propName = GeneratorUtils.getReferenceName(ref);
     if ((propName != null)) {
@@ -423,7 +410,7 @@ public class GeneratorUtils {
   public static String getReferenceName(final AbstractSchema schema) {
     if ((schema instanceof Reference)) {
       Reference ref = ((Reference) schema);
-      return GeneratorUtils.getReferenceName(GeneratorUtils.realizeName(ref.getUri()));
+      return GeneratorUtils.getReferenceName(GeneratorUtils.removeQuotes(ref.getSchemaRef()));
     }
     return null;
   }
@@ -452,7 +439,7 @@ public class GeneratorUtils {
   
   private static NamedSchema recursiveFindLocalRef(final String propNameToFind, final EList<NamedSchema> definitions) {
     final Function1<NamedSchema, Boolean> _function = (NamedSchema prop) -> {
-      return Boolean.valueOf(GeneratorUtils.realizeName(prop.getName()).toLowerCase().equals(propNameToFind.toLowerCase()));
+      return Boolean.valueOf(GeneratorUtils.removeQuotes(prop.getName()).toLowerCase().equals(propNameToFind.toLowerCase()));
     };
     NamedSchema foundSchema = IterableExtensions.<NamedSchema>findFirst(definitions, _function);
     if ((foundSchema != null)) {
@@ -461,7 +448,7 @@ public class GeneratorUtils {
         return foundSchema;
       } else {
         AbstractSchema _schema = foundSchema.getSchema();
-        String newRefToFind = GeneratorUtils.realizeName(((Reference) _schema).getUri());
+        String newRefToFind = GeneratorUtils.removeQuotes(((Reference) _schema).getSchemaRef());
         String _referenceName = GeneratorUtils.getReferenceName(newRefToFind);
         boolean _tripleNotEquals = (_referenceName != null);
         if (_tripleNotEquals) {
